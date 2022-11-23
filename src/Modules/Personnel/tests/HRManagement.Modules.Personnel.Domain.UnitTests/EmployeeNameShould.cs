@@ -13,7 +13,7 @@ public class EmployeeNameShould
     {
         var nameCreation = Name.Create(firstName, lastName);
         
-        nameCreation.Error.ShouldNotBeNull();
+        nameCreation.Error.Count.ShouldBeGreaterThan(0);
     }
 }
 

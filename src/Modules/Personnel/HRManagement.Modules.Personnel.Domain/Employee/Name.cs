@@ -14,23 +14,10 @@ public class Name : ValueObject
         LastName = lastName;
     }
 
-    public static Result<Name, Error> Create(string firstName, string lastName)
+    public static Result<Name, List<Error>> Create(string firstName, string lastName)
     {
-        var firstNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(firstName, nameof(FirstName)));
-        if (firstNameNullOrEmptyRule.IsFailure)
-            return Error.Deserialize(firstNameNullOrEmptyRule.Error);
-
-        var lastNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(lastName, nameof(LastName)));
-        if (lastNameNullOrEmptyRule.IsFailure)
-            return Error.Deserialize(lastNameNullOrEmptyRule.Error);
-
-        var firstNameRule = CheckRule(new ValidNameRule(firstName));
-        if (firstNameRule.IsFailure)
-            return Error.Deserialize(firstNameRule.Error);
-        
-        var lastNameRule = CheckRule(new ValidNameRule(lastName));
-        if (lastNameRule.IsFailure)
-            return Error.Deserialize(lastNameRule.Error);
+        var errors = ValidateBusinessRules(firstName, lastName);
+        if (errors.Any()) return errors;
         
         return new Name(firstName, lastName);
     }
@@ -39,5 +26,26 @@ public class Name : ValueObject
     {
         yield return FirstName;
         yield return LastName;
+    }
+
+    private static List<Error> ValidateBusinessRules(string firstName, string lastName)
+    {
+        var errors = new List<Error>();
+        var firstNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(firstName, nameof(FirstName)));
+        if (firstNameNullOrEmptyRule.IsFailure)
+            errors.Add(Error.Deserialize(firstNameNullOrEmptyRule.Error));
+
+        var lastNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(lastName, nameof(LastName)));
+        if (lastNameNullOrEmptyRule.IsFailure)
+            errors.Add(Error.Deserialize(lastNameNullOrEmptyRule.Error));
+
+        var firstNameRule = CheckRule(new ValidNameRule(firstName));
+        if (firstNameRule.IsFailure)
+            errors.Add(Error.Deserialize(firstNameRule.Error));
+        
+        var lastNameRule = CheckRule(new ValidNameRule(lastName));
+        if (lastNameRule.IsFailure)
+            errors.Add(Error.Deserialize(lastNameRule.Error));
+        return errors;
     }
 }

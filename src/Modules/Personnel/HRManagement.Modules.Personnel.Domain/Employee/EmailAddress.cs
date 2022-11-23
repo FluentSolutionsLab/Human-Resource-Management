@@ -12,15 +12,10 @@ public class EmailAddress : ValueObject
         Email = email;
     }
 
-    public static Result<EmailAddress, Error> Create(string email)
+    public static Result<EmailAddress, List<Error>> Create(string email)
     {
-        var notNullOrEmptyRule = CheckRule(new NotNullOrEmptyEmailAddressRule(email, nameof(Email)));
-        if (notNullOrEmptyRule.IsFailure)
-            return Error.Deserialize(notNullOrEmptyRule.Error);
-
-        var validEmailRule = CheckRule(new ValidEmailAddressRule(email));
-        if (validEmailRule.IsFailure)
-            return Error.Deserialize(validEmailRule.Error);
+        var errors = ValidateBusinessRules(email);
+        if (errors.Any()) return errors;
 
         return new EmailAddress(email);
     }
@@ -28,5 +23,18 @@ public class EmailAddress : ValueObject
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Email;
+    }
+    
+    private static List<Error> ValidateBusinessRules(string email)
+    {
+        var errors = new List<Error>();
+        var notNullOrEmptyRule = CheckRule(new NotNullOrEmptyEmailAddressRule(email, nameof(Email)));
+        if (notNullOrEmptyRule.IsFailure)
+            errors.Add(Error.Deserialize(notNullOrEmptyRule.Error));
+
+        var validEmailRule = CheckRule(new ValidEmailAddressRule(email));
+        if (validEmailRule.IsFailure)
+            errors.Add(Error.Deserialize(validEmailRule.Error));
+        return errors;
     }
 }

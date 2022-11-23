@@ -17,7 +17,7 @@ public class ValidEmailAddressRule : IBusinessRule
 
     public bool IsBroken()
     {
-        return !EmailRegex.IsMatch(_email);
+        return !string.IsNullOrEmpty(_email) && !EmailRegex.IsMatch(_email);
     }
 
     public Error Error => DomainErrors.InvalidEmailAddress(_email);

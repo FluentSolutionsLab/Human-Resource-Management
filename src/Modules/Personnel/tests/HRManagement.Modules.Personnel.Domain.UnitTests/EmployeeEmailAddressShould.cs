@@ -13,7 +13,7 @@ public class EmployeeEmailAddressShould
     {
         var emailCreation = EmailAddress.Create(emailAddress);
         
-        emailCreation.Error.ShouldNotBeNull();
+        emailCreation.Error.Count.ShouldBeGreaterThan(0);
     }
 }
 
@@ -21,9 +21,8 @@ public class EmailAddressNotInvalidTestData : TheoryData<string>
 {
     public EmailAddressNotInvalidTestData()
     {
-        var randomAlphaNumeric = new Faker().Random.AlphaNumeric(9);
         Add(null!);
         Add(string.Empty);
-        Add(randomAlphaNumeric);
+        Add(new Faker().Random.AlphaNumeric(9));
     }
 }

@@ -1,3 +1,4 @@
+
 namespace HRManagement.Modules.Personnel.Domain;
 
 public static class DomainErrors
@@ -20,5 +21,20 @@ public static class DomainErrors
     public static Error NullOrEmptyName(string fieldName)
     {
         return new Error("value.not.valid", $"The field {fieldName} cannot be null or empty.");
+    }
+
+    public static Error NotFound(string entityName, object id)
+    {
+        return new Error("resource.not.found", $"No match found for the resource '{entityName}' with Id '{id}'.");
+    }
+
+    public static Error ResourceAlreadyExists()
+    {
+        return new Error("resource.already.exists", $"A resource with the same key attributes already exists.");
+    }
+
+    public static Error InvalidDate(string date)
+    {
+        return new Error("value.not.valid", $"{date} is not a valid date");
     }
 }

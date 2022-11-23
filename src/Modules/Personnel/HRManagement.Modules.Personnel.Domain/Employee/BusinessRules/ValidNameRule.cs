@@ -16,7 +16,7 @@ public class ValidNameRule : IBusinessRule
 
     public bool IsBroken()
     {
-        return !NameRegex.IsMatch(_name);
+        return !string.IsNullOrEmpty(_name) && !NameRegex.IsMatch(_name);
     }
 
     public Error Error => DomainErrors.InvalidName(_name);
