@@ -7,7 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Modules\Personnel\HRManagement.Modules.Personnel.Application\HRManagement.Modules.Personnel.Application.csproj" />
     </ItemGroup>
 
 </Project>

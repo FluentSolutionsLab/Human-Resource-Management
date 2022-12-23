@@ -1,4 +1,5 @@
 using AutoMapper;
+using HRManagement.Modules.Personnel.Application.Features.Employee;
 using HRManagement.Modules.Personnel.Domain.Employee;
 
 namespace HRManagement.Modules.Personnel.Application.DTOs;
@@ -13,5 +14,9 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.EmailAddress.Email))
             .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.Date.ToShortDateString()))
             .ForMember(dest => dest.HireDate, opt => opt.MapFrom(src => src.HireDate.ToShortDateString()));
+
+        CreateMap<HireEmployeeDto, HireEmployeeCommand>();
+
+        CreateMap<UpdateEmployeeDto, UpdateEmployeeCommand>();
     }
 }
