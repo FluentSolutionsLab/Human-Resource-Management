@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -25,11 +26,10 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
         if (errors.Any()) return errors;
 
-        var actualDate = DateOnly.FromDateTime(DateTime.Parse(request.DateOfBirth));
         Expression<Func<Domain.Employee.Employee, bool>> existingEmployeeCondition =
             e => e.Name.FirstName == request.FirstName
                  && e.Name.LastName == request.LastName
-                 && e.DateOfBirth.Date == actualDate;
+                 && e.DateOfBirth.Date == dateOfBirthCreation.Value.Date;
 
         var existingEmployees = await _repository.GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
@@ -48,6 +48,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
     {
         var errors = new List<Error>();
+
         nameCreation = Name.Create(request.FirstName, request.LastName);
         if (nameCreation.IsFailure) errors.AddRange(nameCreation.Error);
 
@@ -56,6 +57,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
 
         dateOfBirthCreation = DateOfBirth.Create(request.DateOfBirth);
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
+        
         return errors;
     }
 }

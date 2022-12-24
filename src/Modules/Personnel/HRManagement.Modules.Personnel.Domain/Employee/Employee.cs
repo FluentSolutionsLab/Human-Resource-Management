@@ -1,15 +1,20 @@
 ﻿using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
-public sealed class Employee : Entity<Guid>
+public class Employee : Common.Domain.Entity<Guid>
 {
-    public Name Name { get; private set; }
-    public EmailAddress EmailAddress { get; private set; }
-    public DateOfBirth DateOfBirth { get; private set; }
+    public Name Name { get; private set; } = null!;
+    public EmailAddress EmailAddress { get; private set; } = null!;
+    public DateOfBirth DateOfBirth { get; private set; } = null!;
     public DateOnly HireDate { get; }
     public DateOnly? TerminationDate { get; private set; }
 
+    protected Employee()
+    {
+    }
+    
     private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
     {
         Id = Guid.NewGuid();

@@ -1,3 +1,5 @@
+using HRManagement.Common.Domain;
+
 namespace HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
 
 public class DateOfBirthNotInFutureRule : IBusinessRule

@@ -1,4 +1,4 @@
-﻿using HRManagement.Modules.Personnel.Domain;
+﻿using HRManagement.Common.Domain;
 
 namespace HRManagement.Api.Models;
 
@@ -15,7 +15,7 @@ public class ApiResponse<TData>
 
     public static ApiResponse<TData> Ok(TData data)
     {
-        return new ApiResponse<TData>(data, null);
+        return new ApiResponse<TData>(data, default);
     }
 
     public static ApiResponse<TData> Error(Error error)

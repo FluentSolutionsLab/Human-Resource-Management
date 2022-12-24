@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
-using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 

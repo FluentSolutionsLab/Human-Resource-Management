@@ -70,7 +70,7 @@ public class HireEmployeeCommandHandlerShould
         var fixture = SetFixture(out var mockEmployeeRepo);
         var person = new Faker().Person;
         mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>()))
+            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {BuildFakeEmployee(person)});
         var sut = fixture.Create<HireEmployeeCommandHandler>();
 
@@ -87,7 +87,7 @@ public class HireEmployeeCommandHandlerShould
         var person = new Faker().Person;
         var employeesRepo = new List<Employee>();
         mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>()))
+            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee>());
         mockEmployeeRepo
             .Setup(d => d.CommitAsync())

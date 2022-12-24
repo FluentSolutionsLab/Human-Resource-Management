@@ -1,4 +1,4 @@
-namespace HRManagement.Modules.Personnel.Domain;
+namespace HRManagement.Common.Domain;
 
 public interface IBusinessRule
 {

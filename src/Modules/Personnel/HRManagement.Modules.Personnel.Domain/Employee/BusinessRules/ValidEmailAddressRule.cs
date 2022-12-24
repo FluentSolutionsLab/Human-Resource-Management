@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using HRManagement.Common.Domain;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
 

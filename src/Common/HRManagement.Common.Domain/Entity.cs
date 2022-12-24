@@ -1,8 +1,8 @@
 using CSharpFunctionalExtensions;
 
-namespace HRManagement.Modules.Personnel.Domain;
+namespace HRManagement.Common.Domain;
 
-public abstract class ValueObject : CSharpFunctionalExtensions.ValueObject
+public abstract class Entity<TId> : CSharpFunctionalExtensions.Entity<TId>
 {
     protected static Result<Error> CheckRule(IBusinessRule rule)
     {

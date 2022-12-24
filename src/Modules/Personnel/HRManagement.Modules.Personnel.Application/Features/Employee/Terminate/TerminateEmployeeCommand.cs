@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
-using HRManagement.Modules.Personnel.Domain;
 using MediatR;
 
 namespace HRManagement.Modules.Personnel.Application.Features.Employee;

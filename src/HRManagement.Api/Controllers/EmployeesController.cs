@@ -28,7 +28,7 @@ public class EmployeesController : CommonController
         return FormatResponse(result);
     }
 
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> Find(string id)
     {
         var request = new GetEmployeeQuery {EmployeeId = id};
@@ -45,7 +45,7 @@ public class EmployeesController : CommonController
             : BadRequest(ApiResponse<EmployeeDto>.Error(error));
     }
 
-    [HttpPut("id")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] UpdateEmployeeDto updatedEmployee)
     {
         var command = _mapper.Map<UpdateEmployeeCommand>(updatedEmployee);
@@ -54,7 +54,7 @@ public class EmployeesController : CommonController
         return isSuccess ? NoContent() : BadRequest(ApiResponse<Unit>.Error(error));
     }
 
-    [HttpPut("id")]
+    [HttpPut("terminate/{id}")]
     public async Task<IActionResult> Terminate(string id)
     {
         var command = new TerminateEmployeeCommand {EmployeeId = id};
@@ -62,7 +62,7 @@ public class EmployeesController : CommonController
         return isSuccess ? NoContent() : BadRequest(ApiResponse<Unit>.Error(error));
     }
 
-    [HttpDelete("id")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var command = new HardDeleteEmployeeCommand {EmployeeId = id};

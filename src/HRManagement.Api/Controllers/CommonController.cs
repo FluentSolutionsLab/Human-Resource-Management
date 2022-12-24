@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
-using HRManagement.Modules.Personnel.Domain;
+using HRManagement.Common.Domain;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagement.Api.Controllers;

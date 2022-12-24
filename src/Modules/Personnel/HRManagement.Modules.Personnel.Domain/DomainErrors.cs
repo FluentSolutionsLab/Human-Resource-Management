@@ -1,3 +1,4 @@
+using HRManagement.Common.Domain;
 
 namespace HRManagement.Modules.Personnel.Domain;
 

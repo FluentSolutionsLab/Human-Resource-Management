@@ -33,7 +33,7 @@ public class GetEmployeesQueryHandlerShould
             HireDate = employee.HireDate.ToShortDateString()
         };
         mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>()))
+            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {employee});
         mockMapper
             .Setup(x => x.Map<List<EmployeeDto>>(It.IsAny<List<Employee>>()))

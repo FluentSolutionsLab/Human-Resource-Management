@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Domain;
@@ -39,6 +40,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
     {
         var errors = new List<Error>();
+        
         nameCreation = Name.Create(request.FirstName, request.LastName);
         if (nameCreation.IsFailure) errors.AddRange(nameCreation.Error);
 
@@ -47,6 +49,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
 
         dateOfBirthCreation = DateOfBirth.Create(request.DateOfBirth);
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
+
         return errors;
     }
 }
