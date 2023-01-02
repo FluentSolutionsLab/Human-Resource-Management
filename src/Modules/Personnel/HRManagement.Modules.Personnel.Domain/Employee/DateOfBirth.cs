@@ -1,14 +1,12 @@
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
-using ValueObject = HRManagement.Common.Domain.ValueObject;
+using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
 public class DateOfBirth : ValueObject
 {
-    public DateOnly Date { get; }
-
     protected DateOfBirth()
     {
     }
@@ -17,6 +15,8 @@ public class DateOfBirth : ValueObject
     {
         Date = date;
     }
+
+    public DateOnly Date { get; }
 
     public static Result<DateOfBirth, List<Error>> Create(string date)
     {
@@ -35,11 +35,11 @@ public class DateOfBirth : ValueObject
     {
         var actualDateRule = CheckRule(new DateOfBirthMustBeActualDateRule(date));
         if (actualDateRule.IsFailure)
-            return new List<Error>{Error.Deserialize(actualDateRule.Error)};
+            return new List<Error> {Error.Deserialize(actualDateRule.Error)};
 
         actualDate = DateOnly.FromDateTime(DateTime.Parse(date));
-        
+
         var rule = CheckRule(new DateOfBirthNotInFutureRule(actualDate));
-        return rule.IsFailure ? new List<Error>{Error.Deserialize(rule.Error)} : new List<Error>();
+        return rule.IsFailure ? new List<Error> {Error.Deserialize(rule.Error)} : new List<Error>();
     }
 }

@@ -1,4 +1,4 @@
-namespace HRManagement.Common.Domain;
+namespace HRManagement.Common.Domain.Models;
 
 public sealed class Error
 {

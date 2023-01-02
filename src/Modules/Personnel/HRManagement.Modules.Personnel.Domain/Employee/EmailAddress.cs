@@ -1,14 +1,12 @@
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
-using ValueObject = HRManagement.Common.Domain.ValueObject;
+using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
 public class EmailAddress : ValueObject
 {
-    public string Email { get; } = null!;
-
     protected EmailAddress()
     {
     }
@@ -17,6 +15,8 @@ public class EmailAddress : ValueObject
     {
         Email = email;
     }
+
+    public string Email { get; } = null!;
 
     public static Result<EmailAddress, List<Error>> Create(string email)
     {
@@ -30,7 +30,7 @@ public class EmailAddress : ValueObject
     {
         yield return Email;
     }
-    
+
     private static List<Error> ValidateBusinessRules(string email)
     {
         var errors = new List<Error>();

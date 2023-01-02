@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -17,8 +17,9 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         _mapper = mapper;
         _repository = repository;
     }
-    
-    public async Task<Result<List<EmployeeDto>, Error>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
+
+    public async Task<Result<List<EmployeeDto>, Error>> Handle(GetEmployeesQuery request,
+        CancellationToken cancellationToken)
     {
         var employees = await _repository.GetAsync();
 

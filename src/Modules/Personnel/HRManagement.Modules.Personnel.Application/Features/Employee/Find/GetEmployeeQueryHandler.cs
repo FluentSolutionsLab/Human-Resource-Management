@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -21,7 +21,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
 
     public async Task<Result<EmployeeDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
     {
-        if (!Guid.TryParse(request.EmployeeId, out var employeeId)) 
+        if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 
         Maybe<Domain.Employee.Employee> employee = await _repository.GetByIdAsync(employeeId);

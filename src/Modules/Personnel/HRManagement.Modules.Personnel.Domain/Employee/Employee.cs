@@ -1,20 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
-public class Employee : Common.Domain.Entity<Guid>
+public class Employee : Common.Domain.Models.Entity<Guid>
 {
-    public Name Name { get; private set; } = null!;
-    public EmailAddress EmailAddress { get; private set; } = null!;
-    public DateOfBirth DateOfBirth { get; private set; } = null!;
-    public DateOnly HireDate { get; }
-    public DateOnly? TerminationDate { get; private set; }
-
     protected Employee()
     {
     }
-    
+
     private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
     {
         Id = Guid.NewGuid();
@@ -23,6 +17,12 @@ public class Employee : Common.Domain.Entity<Guid>
         DateOfBirth = dateOfBirth;
         HireDate = DateOnly.FromDateTime(DateTime.Now);
     }
+
+    public Name Name { get; private set; } = null!;
+    public EmailAddress EmailAddress { get; private set; } = null!;
+    public DateOfBirth DateOfBirth { get; private set; } = null!;
+    public DateOnly HireDate { get; }
+    public DateOnly? TerminationDate { get; private set; }
 
     public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
     {

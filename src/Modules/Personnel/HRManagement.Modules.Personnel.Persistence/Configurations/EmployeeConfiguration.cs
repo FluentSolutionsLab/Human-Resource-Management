@@ -17,16 +17,18 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             x.Property(xx => xx.FirstName).HasColumnName("FirstName");
             x.Property(xx => xx.LastName).HasColumnName("LastName");
         }).Navigation(x => x.Name).IsRequired();
-        builder.OwnsOne(x => x.EmailAddress, x =>
-        {
-            x.Property(xx => xx.Email).HasColumnName("Email");
-        }).Navigation(x => x.EmailAddress).IsRequired();
-        builder.OwnsOne(x => x.DateOfBirth, x =>
-        {
-            x.Property(xx => xx.Date).HasColumnName("DateOfBirth").HasConversion<DateOnlyConverter, DateOnlyComparer>();
-        }).Navigation(x => x.DateOfBirth).IsRequired();
-        builder.Property(x => x.HireDate).HasColumnName("HireDate").HasConversion<DateOnlyConverter, DateOnlyComparer>().IsRequired();
-        builder.Property(x => x.TerminationDate).HasColumnName("TerminationDate").HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        builder.OwnsOne(x => x.EmailAddress, x => { x.Property(xx => xx.Email).HasColumnName("Email"); })
+            .Navigation(x => x.EmailAddress).IsRequired();
+        builder.OwnsOne(x => x.DateOfBirth,
+            x =>
+            {
+                x.Property(xx => xx.Date).HasColumnName("DateOfBirth")
+                    .HasConversion<DateOnlyConverter, DateOnlyComparer>();
+            }).Navigation(x => x.DateOfBirth).IsRequired();
+        builder.Property(x => x.HireDate).HasColumnName("HireDate").HasConversion<DateOnlyConverter, DateOnlyComparer>()
+            .IsRequired();
+        builder.Property(x => x.TerminationDate).HasColumnName("TerminationDate")
+            .HasConversion<DateOnlyConverter, DateOnlyComparer>();
     }
 }
 

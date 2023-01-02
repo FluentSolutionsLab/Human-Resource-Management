@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagement.Api.Controllers;
@@ -8,8 +8,8 @@ namespace HRManagement.Api.Controllers;
 [ApiController]
 [Consumes("application/json")]
 [Produces("application/json")]
-[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<>))]
-[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiResponse<>))]
+[ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status400BadRequest)]
+[ProducesResponseType(typeof(ApiResponse<>), StatusCodes.Status500InternalServerError)]
 public abstract class CommonController : ControllerBase
 {
     protected ActionResult FormatResponse<TData>(Result<TData> result)

@@ -1,4 +1,4 @@
-﻿using HRManagement.Common.Domain;
+﻿using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.Employee;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,7 +14,8 @@ public class PersonnelDbContext : DbContext
 
     public PersonnelDbContext(IOptions<AppSettings> settings, IConfiguration configuration)
     {
-        _connectionString = settings.Value.ConnectionStrings.PersonnelManagement ?? throw new ArgumentNullException(nameof(settings));
+        _connectionString = settings.Value.ConnectionStrings.PersonnelManagement ??
+                            throw new ArgumentNullException(nameof(settings));
         _isDevEnvironment = configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == "Development";
     }
 
@@ -28,7 +29,8 @@ public class PersonnelDbContext : DbContext
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder
-                    .AddFilter((category, level) => category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information)
+                    .AddFilter((category, level) =>
+                        category == DbLoggerCategory.Database.Command.Name && level == LogLevel.Information)
                     .AddConsole();
             });
             optionsBuilder.UseLoggerFactory(loggerFactory).EnableSensitiveDataLogging();

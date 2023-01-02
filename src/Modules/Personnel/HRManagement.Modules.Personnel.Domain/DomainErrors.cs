@@ -1,4 +1,4 @@
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain;
 
@@ -31,7 +31,7 @@ public static class DomainErrors
 
     public static Error ResourceAlreadyExists()
     {
-        return new Error("resource.already.exists", $"A resource with the same key attributes already exists.");
+        return new Error("resource.already.exists", "A resource with the same key attributes already exists.");
     }
 
     public static Error InvalidDate(string date)

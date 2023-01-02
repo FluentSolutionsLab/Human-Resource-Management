@@ -1,15 +1,12 @@
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
-using ValueObject = HRManagement.Common.Domain.ValueObject;
+using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
 public class Name : ValueObject
 {
-    public string FirstName { get; } = null!;
-    public string LastName { get; } = null!;
-
     protected Name()
     {
     }
@@ -20,11 +17,14 @@ public class Name : ValueObject
         LastName = lastName;
     }
 
+    public string FirstName { get; } = null!;
+    public string LastName { get; } = null!;
+
     public static Result<Name, List<Error>> Create(string firstName, string lastName)
     {
         var errors = ValidateBusinessRules(firstName, lastName);
         if (errors.Any()) return errors;
-        
+
         return new Name(firstName, lastName);
     }
 
@@ -46,7 +46,7 @@ public class Name : ValueObject
 
         var firstNameRule = CheckRule(new ValidNameRule(firstName));
         if (firstNameRule.IsFailure) errors.Add(Error.Deserialize(firstNameRule.Error));
-        
+
         var lastNameRule = CheckRule(new ValidNameRule(lastName));
         if (lastNameRule.IsFailure) errors.Add(Error.Deserialize(lastNameRule.Error));
 

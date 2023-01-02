@@ -1,8 +1,9 @@
 using CSharpFunctionalExtensions;
+using HRManagement.Common.Domain.Contracts;
 
-namespace HRManagement.Common.Domain;
+namespace HRManagement.Common.Domain.Models;
 
-public abstract class ValueObject : CSharpFunctionalExtensions.ValueObject
+public abstract class Entity<TId> : CSharpFunctionalExtensions.Entity<TId>
 {
     protected static Result<Error> CheckRule(IBusinessRule rule)
     {

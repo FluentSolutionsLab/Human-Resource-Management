@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -21,7 +21,8 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         _repository = repository;
     }
 
-    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request,
+        CancellationToken cancellationToken)
     {
         var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
         if (errors.Any()) return errors;
@@ -34,7 +35,8 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         var existingEmployees = await _repository.GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
-        var employeeCreation = Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value);
+        var employeeCreation =
+            Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value);
         if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
 
         var employee = employeeCreation.Value;
@@ -57,7 +59,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
 
         dateOfBirthCreation = DateOfBirth.Create(request.DateOfBirth);
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
-        
+
         return errors;
     }
 }

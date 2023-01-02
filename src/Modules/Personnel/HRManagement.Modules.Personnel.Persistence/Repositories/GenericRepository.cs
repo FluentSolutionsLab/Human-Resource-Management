@@ -1,11 +1,12 @@
 ﻿using System.Linq.Expressions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Modules.Personnel.Persistence.Repositories;
 
-public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> where TEntity : Entity<TId> where TId : struct
+public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
+    where TEntity : Entity<TId> where TId : struct
 {
     private readonly PersonnelDbContext _dbContext;
     //TODO: Add Caching on Queries, and Resiliency on Commands
@@ -23,7 +24,8 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId> 
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "")
+    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "")
     {
         IQueryable<TEntity> query = _dbSet;
 

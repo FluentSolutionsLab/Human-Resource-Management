@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using MediatR;
 

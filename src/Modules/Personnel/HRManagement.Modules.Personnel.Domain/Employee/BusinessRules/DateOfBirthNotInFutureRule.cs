@@ -1,4 +1,5 @@
-using HRManagement.Common.Domain;
+using HRManagement.Common.Domain.Contracts;
+using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
 
