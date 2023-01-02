@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace HRManagement.Api.Controllers;
 
 [ApiController]
+[Consumes("application/json")]
+[Produces("application/json")]
+[ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ApiResponse<>))]
+[ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ApiResponse<>))]
 public abstract class CommonController : ControllerBase
 {
     protected ActionResult FormatResponse<TData>(Result<TData> result)

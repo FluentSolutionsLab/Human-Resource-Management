@@ -24,7 +24,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options => options.DefaultModelsExpandDepth(-1));
     using (var serviceScope = app.Services.CreateScope())
     {
         var services = serviceScope.ServiceProvider;

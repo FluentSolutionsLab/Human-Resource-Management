@@ -21,6 +21,7 @@ public class EmployeesController : CommonController
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<EmployeeDto>>))]
     public async Task<IActionResult> Find()
     {
         var request = new GetEmployeesQuery();
@@ -29,6 +30,7 @@ public class EmployeesController : CommonController
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<EmployeeDto>))]
     public async Task<IActionResult> Find(string id)
     {
         var request = new GetEmployeeQuery {EmployeeId = id};
@@ -37,6 +39,7 @@ public class EmployeesController : CommonController
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(ApiResponse<EmployeeDto>))]
     public async Task<IActionResult> Hire([FromBody] HireEmployeeDto newEmployee)
     {
         var (isSuccess, _, employee, error) = await _mediator.Send(_mapper.Map<HireEmployeeCommand>(newEmployee));
@@ -46,6 +49,7 @@ public class EmployeesController : CommonController
     }
 
     [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Update(string id, [FromBody] UpdateEmployeeDto updatedEmployee)
     {
         var command = _mapper.Map<UpdateEmployeeCommand>(updatedEmployee);
@@ -54,7 +58,8 @@ public class EmployeesController : CommonController
         return isSuccess ? NoContent() : BadRequest(ApiResponse<Unit>.Error(error));
     }
 
-    [HttpPut("terminate/{id}")]
+    [HttpPut("{id}/terminate")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Terminate(string id)
     {
         var command = new TerminateEmployeeCommand {EmployeeId = id};
@@ -63,6 +68,7 @@ public class EmployeesController : CommonController
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Delete(string id)
     {
         var command = new HardDeleteEmployeeCommand {EmployeeId = id};
