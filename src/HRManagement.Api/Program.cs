@@ -1,6 +1,5 @@
 using Carter;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application;
 using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -12,7 +11,6 @@ builder.Services
     .AddScoped(sp => sp.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value);
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
