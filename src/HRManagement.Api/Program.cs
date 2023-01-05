@@ -1,4 +1,4 @@
-using HRManagement.Common.Domain;
+using HRManagement.Api.Endpoints;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application;
 using HRManagement.Modules.Personnel.Persistence;
@@ -14,7 +14,6 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices();
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -31,13 +30,8 @@ if (app.Environment.IsDevelopment())
         var services = serviceScope.ServiceProvider;
         var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
         DataSeeder.SeedEmployees(personnelDbContext);
-    }
-}
+    }}
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+app.AddEmployeesManagementEndpoints();
 
 app.Run();
