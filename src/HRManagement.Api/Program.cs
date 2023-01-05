@@ -30,7 +30,7 @@ if (app.Environment.IsDevelopment())
     {
         var services = serviceScope.ServiceProvider;
         var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
-        DataSeeder.SeedEmployees(personnelDbContext);
+        DatabaseInitializer.Initialize(personnelDbContext);
     }}
 
 app.MapCarter();
