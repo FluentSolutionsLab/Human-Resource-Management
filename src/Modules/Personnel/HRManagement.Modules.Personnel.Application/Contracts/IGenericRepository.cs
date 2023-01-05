@@ -7,8 +7,8 @@ public interface IGenericRepository<TEntity, TId> where TEntity : Entity<TId> wh
 {
     Task<TEntity> GetByIdAsync(TId id);
 
-    Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "");
+    Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "");
 
     Task AddAsync(TEntity entity);
     void Update(TEntity entity);

@@ -24,8 +24,8 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null, string includeProperties = "")
+    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
     {
         IQueryable<TEntity> query = _dbSet;
 
