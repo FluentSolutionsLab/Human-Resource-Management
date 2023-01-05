@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Carter;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -7,9 +8,9 @@ using MediatR;
 
 namespace HRManagement.Api.Endpoints;
 
-public static class EmployeesManagement
+public class EmployeesManagement : ICarterModule
 {
-    public static void AddEmployeesManagementEndpoints(this IEndpointRouteBuilder app)
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
         const string employees = "/employees";
 

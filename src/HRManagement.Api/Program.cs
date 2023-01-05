@@ -1,4 +1,4 @@
-using HRManagement.Api.Endpoints;
+using Carter;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application;
 using HRManagement.Modules.Personnel.Persistence;
@@ -18,6 +18,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
+builder.Services.AddCarter();
 
 var app = builder.Build();
 
@@ -32,6 +33,6 @@ if (app.Environment.IsDevelopment())
         DataSeeder.SeedEmployees(personnelDbContext);
     }}
 
-app.AddEmployeesManagementEndpoints();
+app.MapCarter();
 
 app.Run();
