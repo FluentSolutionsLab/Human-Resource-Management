@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using AutoMapper;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
@@ -12,12 +11,10 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
-    private readonly IMapper _mapper;
     private readonly IEmployeeRepository _repository;
 
-    public HireEmployeeCommandHandler(IMapper mapper, IEmployeeRepository repository)
+    public HireEmployeeCommandHandler(IEmployeeRepository repository)
     {
-        _mapper = mapper;
         _repository = repository;
     }
 
@@ -43,7 +40,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         await _repository.AddAsync(employee);
         await _repository.CommitAsync();
 
-        return _mapper.Map<EmployeeDto>(employee);
+        return EmployeeDto.MapFromEntity(employee);
     }
 
     private List<Error> CheckForErrors(HireEmployeeCommand request, out Result<Name, List<Error>> nameCreation,

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Carter;
+﻿using Carter;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
 using HRManagement.Modules.Personnel.Application.DTOs;
@@ -16,8 +15,7 @@ public class EmployeesManagement : ICarterModule
 
         app.MapGet(employees, async (IMediator mediator) =>
         {
-            var request = new GetEmployeesQuery();
-            var (isSuccess, _, value, error) = await mediator.Send(request);
+            var (isSuccess, _, value, error) = await mediator.Send(new GetEmployeesQuery());
             return isSuccess
                 ? Results.Ok(ApiResponse<List<EmployeeDto>>.Ok(value))
                 : Results.BadRequest(ApiResponse<List<EmployeeDto>>.Error(error));
@@ -25,26 +23,23 @@ public class EmployeesManagement : ICarterModule
 
         app.MapGet($"{employees}/{{id}}", async (IMediator mediator, string id) =>
         {
-            var request = new GetEmployeeQuery {EmployeeId = id};
-            var (isSuccess, _, value, error) = await mediator.Send(request);
+            var (isSuccess, _, value, error) = await mediator.Send(new GetEmployeeQuery {EmployeeId = id});
             return isSuccess
                 ? Results.Ok(ApiResponse<EmployeeDto>.Ok(value))
                 : Results.BadRequest(ApiResponse<EmployeeDto>.Error(error));
         });
 
-        app.MapPost(employees, async (IMediator mediator, IMapper mapper, HireEmployeeDto newEmployee) =>
+        app.MapPost(employees, async (IMediator mediator, HireEmployeeDto newEmployee) =>
         {
-            var (isSuccess, _, employee, error) = await mediator.Send(mapper.Map<HireEmployeeCommand>(newEmployee));
+            var (isSuccess, _, employee, error) = await mediator.Send(HireEmployeeCommand.MapFromDto(newEmployee));
             return isSuccess
                 ? Results.Created($"{employees}/{{id}}", ApiResponse<EmployeeDto>.Ok(employee))
                 : Results.BadRequest(ApiResponse<EmployeeDto>.Error(error));
         });
 
-        app.MapPut($"{employees}/{{id}}", async (IMediator mediator, IMapper mapper, string id, UpdateEmployeeDto updatedEmployee) =>
+        app.MapPut($"{employees}/{{id}}", async (IMediator mediator, string id, UpdateEmployeeDto updatedEmployee) =>
             {
-                var command = mapper.Map<UpdateEmployeeCommand>(updatedEmployee);
-                command.EmployeeId = id;
-                var (isSuccess, _, _, error) = await mediator.Send(command);
+                var (isSuccess, _, _, error) = await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
                 return isSuccess ? Results.NoContent() : Results.BadRequest(ApiResponse<Unit>.Error(error));
             });
 
@@ -56,8 +51,7 @@ public class EmployeesManagement : ICarterModule
 
         app.MapDelete($"{employees}/{{id}}", async (IMediator mediator, string id) =>
         {
-            var command = new HardDeleteEmployeeCommand {EmployeeId = id};
-            var (isSuccess, _, _, error) = await mediator.Send(command);
+            var (isSuccess, _, _, error) = await mediator.Send(new HardDeleteEmployeeCommand {EmployeeId = id});
             return isSuccess ? Results.NoContent() : Results.BadRequest(ApiResponse<Unit>.Error(error));
         });
     }

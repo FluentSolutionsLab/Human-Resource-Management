@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using CSharpFunctionalExtensions;
+﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
@@ -10,12 +9,10 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
-    private readonly IMapper _mapper;
     private readonly IEmployeeRepository _repository;
 
-    public GetEmployeeQueryHandler(IMapper mapper, IEmployeeRepository repository)
+    public GetEmployeeQueryHandler(IEmployeeRepository repository)
     {
-        _mapper = mapper;
         _repository = repository;
     }
 
@@ -28,6 +25,6 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         if (employee.HasNoValue)
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 
-        return _mapper.Map<EmployeeDto>(employee.Value);
+        return EmployeeDto.MapFromEntity(employee.Value);
     }
 }
