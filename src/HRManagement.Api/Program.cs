@@ -28,7 +28,8 @@ if (app.Environment.IsDevelopment())
         var services = serviceScope.ServiceProvider;
         var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
         DatabaseInitializer.Initialize(personnelDbContext);
-    }}
+    }
+}
 
 app.MapCarter();
 

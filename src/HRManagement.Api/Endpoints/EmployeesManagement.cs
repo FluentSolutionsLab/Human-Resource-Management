@@ -36,10 +36,10 @@ public class EmployeesManagement : ICarterModule
         });
 
         app.MapPut($"{employees}/{{id}}", async (IMediator mediator, string id, UpdateEmployeeDto updatedEmployee) =>
-            {
-                var (isSuccess, _, _, error) = await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
-                return isSuccess ? Results.NoContent() : Results.BadRequest(ApiResponse<Unit>.Error(error));
-            });
+        {
+            var (isSuccess, _, _, error) = await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
+            return isSuccess ? Results.NoContent() : Results.BadRequest(ApiResponse<Unit>.Error(error));
+        });
 
         app.MapPut($"{employees}/{{id}}/terminate", async (IMediator mediator, string id) =>
         {
