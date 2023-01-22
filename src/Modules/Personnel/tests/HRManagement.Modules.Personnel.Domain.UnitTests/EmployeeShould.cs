@@ -11,7 +11,7 @@ public class EmployeeShould
     [ClassData(typeof(NameEmailAddressOrDOBTestData))]
     public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
     {
-        Assert.Throws<ArgumentNullException>(() => Employee.Employee.Create(name, emailAddress, dateOfBirth));
+        Assert.Throws<ArgumentNullException>(() => Employee.Employee.Create(name, emailAddress, dateOfBirth, null));
     }    
 
     [Theory]
@@ -21,7 +21,7 @@ public class EmployeeShould
         Assert.Throws<ArgumentNullException>(() =>
         {
             var employee = BuildFakeEmployee();
-            employee.Update(name, emailAddress, dateOfBirth);
+            employee.Update(name, emailAddress, dateOfBirth, null);
         });
     }
 
@@ -41,7 +41,8 @@ public class EmployeeShould
         var employee = Employee.Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value).Value;
+            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            null).Value;
         return employee;
     }
 }

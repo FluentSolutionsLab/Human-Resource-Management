@@ -114,7 +114,7 @@ public class UpdateEmployeeCommandHandlerShould
                 var name = Name.Create($"{updateEmployee.FirstName} Updated", updateEmployee.LastName).Value;
                 var email = EmailAddress.Create(updateEmployee.EmailAddress).Value;
                 var dateOfBirth = DateOfBirth.Create(updateEmployee.DateOfBirth).Value;
-                employee.Update(name, email, dateOfBirth);
+                employee.Update(name, email, dateOfBirth, null);
             });
         var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
@@ -136,7 +136,8 @@ public class UpdateEmployeeCommandHandlerShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value).Value;
+            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            null).Value;
         return employee;
     }
 

@@ -33,7 +33,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
         var employeeCreation =
-            Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value);
+            Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
         if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
 
         var employee = employeeCreation.Value;
