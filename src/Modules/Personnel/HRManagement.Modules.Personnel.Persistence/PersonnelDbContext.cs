@@ -1,5 +1,6 @@
 ﻿using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.Employee;
+using HRManagement.Modules.Personnel.Domain.Role;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -19,6 +20,7 @@ public class PersonnelDbContext : DbContext
     }
 
     public DbSet<Employee> Employees { get; set; }
+    public DbSet<Role> Roles { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

@@ -62,7 +62,8 @@ public class GetEmployeeQueryHandlerShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value).Value;
+            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            null).Value;
         mockEmployeeRepo.Setup(d => d.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(employee);
     }
 

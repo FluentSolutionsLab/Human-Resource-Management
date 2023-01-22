@@ -4,6 +4,7 @@ using HRManagement.Modules.Personnel.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagement.Modules.Personnel.Persistence.Migrations
 {
     [DbContext(typeof(PersonnelDbContext))]
-    partial class PersonnelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230122204829_AddRoleTable")]
+    partial class AddRoleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,7 +61,7 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
-                    b.Property<byte?>("ReportsToId")
+                    b.Property<byte>("ReportsToId")
                         .HasColumnType("tinyint")
                         .HasColumnName("ReportsToId");
 
@@ -147,7 +149,9 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                 {
                     b.HasOne("HRManagement.Modules.Personnel.Domain.Role.Role", "ReportsTo")
                         .WithMany()
-                        .HasForeignKey("ReportsToId");
+                        .HasForeignKey("ReportsToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ReportsTo");
                 });

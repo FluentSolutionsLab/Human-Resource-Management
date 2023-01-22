@@ -31,7 +31,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         if (errors.Any()) return errors;
 
         var employee = employeeOrNot.Value;
-        employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value);
+        employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
         _repository.Update(employee);
         await _repository.CommitAsync();
 

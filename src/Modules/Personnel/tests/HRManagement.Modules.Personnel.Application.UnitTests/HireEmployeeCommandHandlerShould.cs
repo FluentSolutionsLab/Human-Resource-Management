@@ -113,7 +113,8 @@ public class HireEmployeeCommandHandlerShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value).Value;
+            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            null).Value;
         return employee;
     }
 
