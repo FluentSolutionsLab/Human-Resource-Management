@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
 builder.Services.AddCarter();
+builder.Services.AddSwaggerGen(c => c.TagActionsBy(d => new List<string> {d.ActionDescriptor.DisplayName!}));
 
 var app = builder.Build();
 
