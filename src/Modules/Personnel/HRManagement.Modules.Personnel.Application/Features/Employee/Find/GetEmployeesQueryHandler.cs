@@ -1,12 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Application.DTOs;
 
 namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
-public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<List<EmployeeDto>, Error>>
+public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<List<EmployeeDto>>>
 {
     private readonly IEmployeeRepository _repository;
 
@@ -15,8 +14,7 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         _repository = repository;
     }
 
-    public async Task<Result<List<EmployeeDto>, Error>> Handle(GetEmployeesQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<List<EmployeeDto>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
     {
         var employees = await _repository.GetAsync();
 
