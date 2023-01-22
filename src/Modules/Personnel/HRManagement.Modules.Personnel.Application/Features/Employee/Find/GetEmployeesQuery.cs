@@ -5,6 +5,6 @@ using HRManagement.Modules.Personnel.Application.DTOs;
 
 namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
-public class GetEmployeesQuery : IQuery<Result<List<EmployeeDto>, Error>>
+public class GetEmployeesQuery : IQuery<Result<List<EmployeeDto>>>
 {
 }

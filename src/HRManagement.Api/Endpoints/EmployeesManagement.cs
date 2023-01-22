@@ -15,10 +15,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapGet(employees, async (IMediator mediator) =>
         {
-            var (isSuccess, _, value, error) = await mediator.Send(new GetEmployeesQuery());
-            return isSuccess
-                ? Results.Ok(ApiResponse<List<EmployeeDto>>.Ok(value))
-                : Results.BadRequest(ApiResponse<List<EmployeeDto>>.Error(error));
+            var (_, _, value, _) = await mediator.Send(new GetEmployeesQuery());
+            return Results.Ok(ApiResponse<List<EmployeeDto>>.Ok(value));
         });
 
         app.MapGet($"{employees}/{{id}}", async (IMediator mediator, string id) =>
