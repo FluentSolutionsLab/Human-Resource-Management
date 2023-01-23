@@ -10,11 +10,11 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, Result<Unit, List<Error>>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateEmployeeCommandHandler(IEmployeeRepository repository)
+    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Unit, List<Error>>> Handle(UpdateEmployeeCommand request,
@@ -23,7 +23,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return new List<Error> {DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId)};
 
-        Maybe<Domain.Employee.Employee> employeeOrNot = await _repository.GetByIdAsync(employeeId);
+        Maybe<Domain.Employee.Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue)
             return new List<Error> {DomainErrors.NotFound(nameof(Domain.Employee.Employee), employeeId)};
 
@@ -32,14 +32,13 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
 
         var employee = employeeOrNot.Value;
         employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
-        _repository.Update(employee);
-        await _repository.CommitAsync();
+        _unitOfWork.Employees.Update(employee);
+        await _unitOfWork.SaveChangesAsync();
 
         return Unit.Value;
     }
 
-    private List<Error> CheckForErrors(UpdateEmployeeCommand request, out Result<Name, List<Error>> nameCreation,
-        out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
+    private List<Error> CheckForErrors(UpdateEmployeeCommand request, out Result<Name, List<Error>> nameCreation, out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
     {
         var errors = new List<Error>();
 

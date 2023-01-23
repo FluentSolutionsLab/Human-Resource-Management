@@ -18,9 +18,9 @@ public class UpdateEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidNameOnUpdateTestData))]
     public async Task ReturnError_WhenNameInvalid(string firstName, string lastName)
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockEmployeeRepo.Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.FirstName = firstName;
         command.LastName = lastName;
@@ -36,9 +36,9 @@ public class UpdateEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidEmailOnUpdateTestData))]
     public async Task ReturnError_WhenEmailInvalid(string emailAddress)
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockEmployeeRepo.Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.EmailAddress = emailAddress;
         var sut = fixture.Create<UpdateEmployeeCommandHandler>();
@@ -52,9 +52,9 @@ public class UpdateEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidDateOfBirthOnUpdateTestData))]
     public async Task ReturnError_WhenDateOfBirthInvalid(string dateOfBirth)
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockEmployeeRepo.Setup(repository => repository.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.DateOfBirth = dateOfBirth;
         var sut = fixture.Create<UpdateEmployeeCommandHandler>();
@@ -83,11 +83,11 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeNotFound()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var updateEmployee = BuildFakeCommand(person);
-        mockEmployeeRepo
-            .Setup(d => d.GetByIdAsync(It.IsAny<Guid>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
         var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
@@ -100,15 +100,15 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task UpdateEmployee_WhenEmployeeExists()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var employee = BuildFakeEmployee(person);
         var updateEmployee = BuildFakeCommand(person);
-        mockEmployeeRepo
-            .Setup(d => d.GetByIdAsync(It.IsAny<Guid>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employee);
-        mockEmployeeRepo
-            .Setup(d => d.CommitAsync())
+        mockUnitOfWork
+            .Setup(d => d.SaveChangesAsync())
             .Callback(() =>
             {
                 var name = Name.Create($"{updateEmployee.FirstName} Updated", updateEmployee.LastName).Value;
@@ -124,10 +124,10 @@ public class UpdateEmployeeCommandHandlerShould
         employee.Name.FirstName.ShouldEndWith(" Updated");
     }
 
-    private static IFixture SetFixture(out Mock<IEmployeeRepository> mockEmployeeRepo)
+    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockEmployeeRepo = fixture.Freeze<Mock<IEmployeeRepository>>();
+        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         return fixture;
     }
 

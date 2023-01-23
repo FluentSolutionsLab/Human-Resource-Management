@@ -9,11 +9,11 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployeeCommand, Result<Unit, Error>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public TerminateEmployeeCommandHandler(IEmployeeRepository repository)
+    public TerminateEmployeeCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Unit, Error>> Handle(TerminateEmployeeCommand request, CancellationToken cancellationToken)
@@ -21,13 +21,13 @@ public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployee
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 
-        Maybe<Domain.Employee.Employee> employeeOrNot = await _repository.GetByIdAsync(employeeId);
+        Maybe<Domain.Employee.Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Domain.Employee.Employee), employeeId);
 
         var employee = employeeOrNot.Value;
         employee.Terminate();
-        _repository.Update(employee);
-        await _repository.CommitAsync();
+        _unitOfWork.Employees.Update(employee);
+        await _unitOfWork.SaveChangesAsync();
 
         return Unit.Value;
     }

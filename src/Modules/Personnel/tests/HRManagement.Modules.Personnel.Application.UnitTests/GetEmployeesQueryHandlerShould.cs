@@ -16,15 +16,15 @@ public class GetEmployeesQueryHandlerShould
     [Fact]
     public async Task ReturnListOfEmployees_WhenCalled()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
             null).Value;
-        mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {employee});
         var sut = fixture.Create<GetEmployeesQueryHandler>();
 
@@ -34,10 +34,10 @@ public class GetEmployeesQueryHandlerShould
         result.Value.First().FirstName.ShouldBe(person.FirstName);
     }
 
-    private static IFixture SetFixture(out Mock<IEmployeeRepository> mockEmployeeRepo)
+    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockEmployeeRepo = fixture.Freeze<Mock<IEmployeeRepository>>();
+        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         return fixture;
     }
 }

@@ -9,25 +9,25 @@ namespace HRManagement.Modules.Personnel.Application.Features.Role;
 
 public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, Result<Unit, List<Error>>>
 {
-    private readonly IRoleRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateRoleCommandHandler(IRoleRepository repository)
+    public UpdateRoleCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Unit, List<Error>>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
-        var role = await _repository.GetByIdAsync(request.Id);
+        var role = await _unitOfWork.Roles.GetByIdAsync(request.Id);
         if (role == null) return new List<Error> {DomainErrors.NotFound(nameof(Domain.Role.Role), request.Id)};
 
-        var rolesWithSaneName = await _repository.GetAsync(role => role.Name == request.Name);
+        var rolesWithSaneName = await _unitOfWork.Roles.GetAsync(role => role.Name == request.Name);
         if (rolesWithSaneName.Any(r => r.Id != request.Id)) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
         
         Domain.Role.Role reportsTo = null;
         if (request.ReportsToId.HasValue)
         {
-            reportsTo = await _repository.GetByIdAsync(request.ReportsToId.Value);
+            reportsTo = await _unitOfWork.Roles.GetByIdAsync(request.ReportsToId.Value);
             if (reportsTo == null)
                 return new List<Error> {DomainErrors.NotFound(nameof(Domain.Role.Role), request.ReportsToId)};
         }
@@ -35,8 +35,8 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, Resul
         var roleUpdate = role.Update(request.Name, reportsTo);
         if (roleUpdate.IsFailure) return new List<Error> {roleUpdate.Error};
 
-        _repository.Update(roleUpdate.Value);
-        await _repository.CommitAsync();
+        _unitOfWork.Roles.Update(roleUpdate.Value);
+        await _unitOfWork.SaveChangesAsync();
 
         return Unit.Value;
     }

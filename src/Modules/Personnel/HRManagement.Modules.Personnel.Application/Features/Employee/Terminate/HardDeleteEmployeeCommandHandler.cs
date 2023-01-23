@@ -9,24 +9,23 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class HardDeleteEmployeeCommandHandler : ICommandHandler<HardDeleteEmployeeCommand, Result<Unit, Error>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public HardDeleteEmployeeCommandHandler(IEmployeeRepository repository)
+    public HardDeleteEmployeeCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Unit, Error>> Handle(HardDeleteEmployeeCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<Unit, Error>> Handle(HardDeleteEmployeeCommand request, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 
-        Maybe<Domain.Employee.Employee> employeeOrNot = await _repository.GetByIdAsync(employeeId);
+        Maybe<Domain.Employee.Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Domain.Employee.Employee), employeeId);
 
-        _repository.Delete(employeeOrNot.Value);
-        await _repository.CommitAsync();
+        _unitOfWork.Employees.Delete(employeeOrNot.Value);
+        await _unitOfWork.SaveChangesAsync();
 
         return Unit.Value;
     }

@@ -9,16 +9,16 @@ namespace HRManagement.Modules.Personnel.Application.Features.Role;
 
 public class GetRoleByIdQueryHandler : IQueryHandler<GetRoleByIdQuery, Result<RoleDto, Error>>
 {
-    private readonly IRoleRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetRoleByIdQueryHandler(IRoleRepository repository)
+    public GetRoleByIdQueryHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<RoleDto, Error>> Handle(GetRoleByIdQuery request, CancellationToken cancellationToken)
     {
-        var role = await _repository.GetByIdAsync(request.Id);
+        var role = await _unitOfWork.Roles.GetByIdAsync(request.Id);
         if (role == null) return DomainErrors.NotFound(nameof(Domain.Role.Role), request.Id);
 
         return RoleDto.MapFromEntity(role);

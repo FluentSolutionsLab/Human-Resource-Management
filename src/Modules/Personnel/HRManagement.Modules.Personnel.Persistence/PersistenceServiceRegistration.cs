@@ -11,7 +11,6 @@ public static class PersistenceServiceRegistration
     {
         services.AddApplicationServices();
         services.AddDbContext<PersonnelDbContext>();
-        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }

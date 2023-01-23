@@ -67,10 +67,10 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeAlreadyExists()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
-        mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {BuildFakeEmployee(person)});
         var sut = fixture.Create<HireEmployeeCommandHandler>();
 
@@ -83,14 +83,14 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task StoreNewEmployee_WhenHiringSuccessful()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var employeesRepo = new List<Employee>();
-        mockEmployeeRepo
-            .Setup(d => d.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee>());
-        mockEmployeeRepo
-            .Setup(d => d.CommitAsync())
+        mockUnitOfWork
+            .Setup(d => d.SaveChangesAsync())
             .Callback(() => employeesRepo.Add(BuildFakeEmployee(person)));
         var employeesCount = employeesRepo.Count;
         var sut = fixture.Create<HireEmployeeCommandHandler>();
@@ -101,10 +101,10 @@ public class HireEmployeeCommandHandlerShould
         employeesRepo.Count.ShouldBe(employeesCount + 1);
     }
     
-    private static IFixture SetFixture(out Mock<IEmployeeRepository> mockEmployeeRepo)
+    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockEmployeeRepo = fixture.Freeze<Mock<IEmployeeRepository>>();
+        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         return fixture;
     }
 
