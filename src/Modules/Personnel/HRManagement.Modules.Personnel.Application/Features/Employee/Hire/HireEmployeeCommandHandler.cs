@@ -18,8 +18,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         _repository = repository;
     }
 
-    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
     {
         var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
         if (errors.Any()) return errors;
@@ -32,8 +31,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         var existingEmployees = await _repository.GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
-        var employeeCreation =
-            Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
+        var employeeCreation = Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
         if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
 
         var employee = employeeCreation.Value;
@@ -43,8 +41,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         return EmployeeDto.MapFromEntity(employee);
     }
 
-    private List<Error> CheckForErrors(HireEmployeeCommand request, out Result<Name, List<Error>> nameCreation,
-        out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
+    private List<Error> CheckForErrors(HireEmployeeCommand request, out Result<Name, List<Error>> nameCreation, out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
     {
         var errors = new List<Error>();
 
