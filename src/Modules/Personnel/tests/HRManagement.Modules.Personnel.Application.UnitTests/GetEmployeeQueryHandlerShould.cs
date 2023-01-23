@@ -16,9 +16,9 @@ public class GetEmployeeQueryHandlerShould
     [Fact]
     public async Task ReturnEmployee_WhenEmployeeExists()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
-        PrepareMocks(mockEmployeeRepo, person);
+        PrepareMocks(mockUnitOfWork, person);
         var sut = fixture.Create<GetEmployeeQueryHandler>();
         var getEmployee = fixture.Create<GetEmployeeQuery>();
         getEmployee.EmployeeId = Guid.NewGuid().ToString();
@@ -47,8 +47,8 @@ public class GetEmployeeQueryHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeDoesNotExist()
     {
-        var fixture = SetFixture(out var mock);
-        mock.Setup(d => d.GetByIdAsync(It.IsAny<Guid>()))!.ReturnsAsync(default(Employee));
+        var fixture = SetFixture(out var mockUnitOfWork);
+        mockUnitOfWork.Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))!.ReturnsAsync(default(Employee));
         var sut = fixture.Create<GetEmployeeQueryHandler>();
 
         var result = await sut.Handle(fixture.Create<GetEmployeeQuery>(), CancellationToken.None);
@@ -57,20 +57,20 @@ public class GetEmployeeQueryHandlerShould
         result.Error.Code.ShouldBe(DomainErrors.NotFound(It.IsAny<string>(), It.IsAny<Guid>()).Code);
     }
 
-    private static void PrepareMocks(Mock<IEmployeeRepository> mockEmployeeRepo, Person person)
+    private static void PrepareMocks(Mock<IUnitOfWork> mockEmployeeRepo, Person person)
     {
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
             null).Value;
-        mockEmployeeRepo.Setup(d => d.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(employee);
+        mockEmployeeRepo.Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(employee);
     }
 
-    private static IFixture SetFixture(out Mock<IEmployeeRepository> mockEmployeeRepo)
+    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockEmployeeRepo = fixture.Freeze<Mock<IEmployeeRepository>>();
+        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         return fixture;
     }
 }

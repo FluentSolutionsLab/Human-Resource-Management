@@ -56,18 +56,4 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
             _dbSet.Attach(entity);
         _dbSet.Remove(entity);
     }
-
-    public async Task CommitAsync()
-    {
-        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-        try
-        {
-            await _dbContext.SaveChangesAsync();
-            await transaction.CommitAsync();
-        }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync();
-        }
-    }
 }

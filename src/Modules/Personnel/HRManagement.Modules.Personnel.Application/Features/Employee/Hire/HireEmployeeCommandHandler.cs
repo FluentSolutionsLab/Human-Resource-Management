@@ -11,11 +11,11 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public HireEmployeeCommandHandler(IEmployeeRepository repository)
+    public HireEmployeeCommandHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
@@ -28,15 +28,15 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
                  && e.Name.LastName == request.LastName
                  && e.DateOfBirth.Date == dateOfBirthCreation.Value.Date;
 
-        var existingEmployees = await _repository.GetAsync(existingEmployeeCondition);
+        var existingEmployees = await _unitOfWork.Employees.GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
         var employeeCreation = Domain.Employee.Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
         if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
 
         var employee = employeeCreation.Value;
-        await _repository.AddAsync(employee);
-        await _repository.CommitAsync();
+        await _unitOfWork.Employees.AddAsync(employee);
+        await _unitOfWork.SaveChangesAsync();
 
         return EmployeeDto.MapFromEntity(employee);
     }

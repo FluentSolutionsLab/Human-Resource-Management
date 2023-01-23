@@ -32,10 +32,10 @@ public class HardDeleteEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeNotFound()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var hardDeleteEmployee = BuildFakeCommand();
-        mockEmployeeRepo
-            .Setup(d => d.GetByIdAsync(It.IsAny<Guid>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
         var sut = fixture.Create<HardDeleteEmployeeCommandHandler>();
 
@@ -48,15 +48,15 @@ public class HardDeleteEmployeeCommandHandlerShould
     [Fact]
     public async Task HardDeleteEmployee_WhenEmployeeExists()
     {
-        var fixture = SetFixture(out var mockEmployeeRepo);
+        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var employees = new List<Employee>{BuildFakeEmployee(person)};
         var hardDeleteEmployee = BuildFakeCommand();
-        mockEmployeeRepo
-            .Setup(d => d.GetByIdAsync(It.IsAny<Guid>()))
+        mockUnitOfWork
+            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employees.First());
-        mockEmployeeRepo
-            .Setup(d => d.CommitAsync())
+        mockUnitOfWork
+            .Setup(d => d.SaveChangesAsync())
             .Callback(() => employees.Clear());
         var sut = fixture.Create<HardDeleteEmployeeCommandHandler>();
 
@@ -66,10 +66,10 @@ public class HardDeleteEmployeeCommandHandlerShould
         employees.Count.ShouldBe(0);
     }
 
-    private static IFixture SetFixture(out Mock<IEmployeeRepository> mockEmployeeRepo)
+    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockEmployeeRepo = fixture.Freeze<Mock<IEmployeeRepository>>();
+        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         return fixture;
     }
     

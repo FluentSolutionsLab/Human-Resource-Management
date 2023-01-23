@@ -9,11 +9,11 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetEmployeeQueryHandler(IEmployeeRepository repository)
+    public GetEmployeeQueryHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<EmployeeDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
@@ -21,7 +21,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 
-        Maybe<Domain.Employee.Employee> employee = await _repository.GetByIdAsync(employeeId);
+        Maybe<Domain.Employee.Employee> employee = await _unitOfWork.Employees.GetByIdAsync(employeeId);
         if (employee.HasNoValue)
             return DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId);
 

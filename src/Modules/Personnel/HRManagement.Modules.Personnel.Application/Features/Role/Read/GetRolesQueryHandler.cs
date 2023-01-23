@@ -7,16 +7,16 @@ namespace HRManagement.Modules.Personnel.Application.Features.Role;
 
 public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<List<RoleDto>>>
 {
-    private readonly IRoleRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetRolesQueryHandler(IRoleRepository repository)
+    public GetRolesQueryHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<List<RoleDto>>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
     {
-        var roles = await _repository.GetAsync();
+        var roles = await _unitOfWork.Roles.GetAsync();
 
         return roles.Select(RoleDto.MapFromEntity).ToList();
     }

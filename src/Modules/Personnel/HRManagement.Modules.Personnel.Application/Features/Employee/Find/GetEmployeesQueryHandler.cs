@@ -7,16 +7,16 @@ namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
 public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<List<EmployeeDto>>>
 {
-    private readonly IEmployeeRepository _repository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetEmployeesQueryHandler(IEmployeeRepository repository)
+    public GetEmployeesQueryHandler(IUnitOfWork unitOfWork)
     {
-        _repository = repository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<List<EmployeeDto>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
     {
-        var employees = await _repository.GetAsync();
+        var employees = await _unitOfWork.Employees.GetAsync();
 
         return employees.Select(EmployeeDto.MapFromEntity).ToList();
     }
