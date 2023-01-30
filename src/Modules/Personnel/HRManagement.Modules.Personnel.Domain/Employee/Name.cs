@@ -28,6 +28,8 @@ public class Name : ValueObject
         return new Name(firstName, lastName);
     }
 
+    public override string ToString() => $"{LastName}, {FirstName}";
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return FirstName;

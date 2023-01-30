@@ -9,7 +9,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     {
     }
 
-    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role)
+    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -17,6 +17,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         DateOfBirth = dateOfBirth;
         HireDate = DateOnly.FromDateTime(DateTime.Now);
         Role = role;
+        ReportsTo = reportsTo;
     }
 
     public Name Name { get; private set; } = null!;
@@ -25,30 +26,46 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     public DateOnly HireDate { get; }
     public DateOnly? TerminationDate { get; private set; }
     public virtual Role.Role Role { get; private set; }
+    public virtual Employee ReportsTo { get; private set; }
 
-    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role)
+    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
     {
         if (name == null) throw new ArgumentNullException(nameof(name));
         if (emailAddress == null) throw new ArgumentNullException(nameof(emailAddress));
         if (dateOfBirth == null) throw new ArgumentNullException(nameof(dateOfBirth));
 
-        return new Employee(name, emailAddress, dateOfBirth, role);
+        var error = CheckHierarchyRules(role, reportsTo);
+
+        return error != null ? error : new Employee(name, emailAddress, dateOfBirth, role, reportsTo);
     }
 
-    public void Update(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role)
+    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
     {
         if (name == null) throw new ArgumentNullException(nameof(name));
         if (emailAddress == null) throw new ArgumentNullException(nameof(emailAddress));
         if (dateOfBirth == null) throw new ArgumentNullException(nameof(dateOfBirth));
+
+        var error = CheckHierarchyRules(role, reportsTo);
 
         Name = name;
         EmailAddress = emailAddress;
         DateOfBirth = dateOfBirth;
         Role = role;
+        ReportsTo = reportsTo;
+
+        return error != null ? error : this;
     }
 
     public void Terminate()
     {
         TerminationDate = DateOnly.FromDateTime(DateTime.Now);
+    }
+    
+    private static Error CheckHierarchyRules(Role.Role role, Employee reportsTo)
+    {
+        if (reportsTo == null || role == null) return default;
+
+        var mustReportToIntendedRoleRule = CheckRule(new EmployeeMustReportToIntendedRoleRule(reportsTo.Role.Name, role.ReportsTo.Name));
+        return mustReportToIntendedRoleRule.IsFailure ? Error.Deserialize(mustReportToIntendedRoleRule.Error) : default;
     }
 }

@@ -22,13 +22,14 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.OwnsOne(x => x.DateOfBirth,
             x =>
             {
-                x.Property(xx => xx.Date).HasColumnName("DateOfBirth")
-                    .HasConversion<DateOnlyConverter, DateOnlyComparer>();
+                x.Property(xx => xx.Date).HasColumnName("DateOfBirth").HasConversion<DateOnlyConverter, DateOnlyComparer>();
             }).Navigation(x => x.DateOfBirth).IsRequired();
-        builder.Property(x => x.HireDate).HasColumnName("HireDate").HasConversion<DateOnlyConverter, DateOnlyComparer>()
-            .IsRequired();
-        builder.Property(x => x.TerminationDate).HasColumnName("TerminationDate")
-            .HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        builder.Property(x => x.HireDate).HasColumnName("HireDate").HasConversion<DateOnlyConverter, DateOnlyComparer>().IsRequired();
+        builder.Property(x => x.TerminationDate).HasColumnName("TerminationDate").HasConversion<DateOnlyConverter, DateOnlyComparer>();
+        builder.HasOne(x => x.Role).WithMany().IsRequired();
+        builder.Property<byte>("RoleId").HasColumnName("RoleId").IsRequired();
+        builder.HasOne(x => x.ReportsTo).WithMany();
+        builder.Property<Guid?>("ReportsToId").HasColumnName("ReportsToId");
     }
 }
 

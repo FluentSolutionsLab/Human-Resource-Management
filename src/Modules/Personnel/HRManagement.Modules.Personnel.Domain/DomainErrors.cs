@@ -38,4 +38,14 @@ public static class DomainErrors
     {
         return new Error("value.not.valid", $"{date} is not a valid date");
     }
+
+    public static Error EmployeeCannotReportToSameRole()
+    {
+        return new Error("invalid.operation", "An employee cannot report to another one with the same role.");
+    }
+
+    public static Error EmployeeMustReportToIntendedRole()
+    {
+        return new Error("invalid.operation", "An employee must report to another one with the intended role.");
+    }
 }

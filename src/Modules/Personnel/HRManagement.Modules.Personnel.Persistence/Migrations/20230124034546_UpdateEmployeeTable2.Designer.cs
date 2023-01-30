@@ -4,6 +4,7 @@ using HRManagement.Modules.Personnel.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRManagement.Modules.Personnel.Persistence.Migrations
 {
     [DbContext(typeof(PersonnelDbContext))]
-    partial class PersonnelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230124034546_UpdateEmployeeTable2")]
+    partial class UpdateEmployeeTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,7 +34,7 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("HireDate");
 
-                    b.Property<Guid?>("ReportsToId")
+                    b.Property<Guid>("ReportsToId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ReportsToId");
 
@@ -81,7 +83,9 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                 {
                     b.HasOne("HRManagement.Modules.Personnel.Domain.Employee.Employee", "ReportsTo")
                         .WithMany()
-                        .HasForeignKey("ReportsToId");
+                        .HasForeignKey("ReportsToId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("HRManagement.Modules.Personnel.Domain.Role.Role", "Role")
                         .WithMany()

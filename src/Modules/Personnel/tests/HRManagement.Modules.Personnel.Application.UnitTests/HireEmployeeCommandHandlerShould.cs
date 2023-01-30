@@ -7,6 +7,7 @@ using HRManagement.Modules.Personnel.Application.DTOs;
 using HRManagement.Modules.Personnel.Application.Features.Employee;
 using HRManagement.Modules.Personnel.Domain;
 using HRManagement.Modules.Personnel.Domain.Employee;
+using HRManagement.Modules.Personnel.Domain.Role;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -81,24 +82,17 @@ public class HireEmployeeCommandHandlerShould
     }
 
     [Fact]
-    public async Task StoreNewEmployee_WhenHiringSuccessful()
+    public async Task ReturnError_WhenManagerIdIsInvalid()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
+        var fixture = SetFixture(out var _);
         var person = new Faker().Person;
-        var employeesRepo = new List<Employee>();
-        mockUnitOfWork
-            .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
-            .ReturnsAsync(new List<Employee>());
-        mockUnitOfWork
-            .Setup(d => d.SaveChangesAsync())
-            .Callback(() => employeesRepo.Add(BuildFakeEmployee(person)));
-        var employeesCount = employeesRepo.Count;
         var sut = fixture.Create<HireEmployeeCommandHandler>();
-
-        var result = await sut.Handle(BuildFakeCommand(person), CancellationToken.None);
-
-        result.Value.ShouldNotBeNull();
-        employeesRepo.Count.ShouldBe(employeesCount + 1);
+        var hireEmployeeCommand = BuildFakeCommand(person);
+        hireEmployeeCommand.ReportsToId = string.Empty;
+        
+        var result = await sut.Handle(hireEmployeeCommand, CancellationToken.None);
+        result.Error.Count.ShouldBe(1);
+        result.Error.First().Code.ShouldBe(DomainErrors.NotFound(nameof(Role), hireEmployeeCommand.ReportsToId).Code);
     }
     
     private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
@@ -110,24 +104,25 @@ public class HireEmployeeCommandHandlerShould
 
     private static Employee BuildFakeEmployee(Person person)
     {
-        var employee = Employee.Create(
+        return Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            Role.Create("ceo", null).Value,
             null).Value;
-        return employee;
     }
 
     private static HireEmployeeCommand BuildFakeCommand(Person person)
     {
-        var hireEmployee = new HireEmployeeCommand
+        return new HireEmployeeCommand
         {
             EmailAddress = person.Email,
             FirstName = person.FirstName,
             LastName = person.LastName,
-            DateOfBirth = person.DateOfBirth.ToString("d")
+            DateOfBirth = person.DateOfBirth.ToString("d"),
+            ReportsToId = It.IsNotNull<Guid>().ToString(),
+            RoleId = It.IsAny<byte>()
         };
-        return hireEmployee;
     }
 }
 

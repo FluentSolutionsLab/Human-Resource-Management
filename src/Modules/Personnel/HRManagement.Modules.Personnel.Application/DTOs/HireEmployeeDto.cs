@@ -6,4 +6,6 @@ public class HireEmployeeDto
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
     public string DateOfBirth { get; set; }
+    public byte RoleId { get; set; }
+    public string ManagerId { get; set; }
 }

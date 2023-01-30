@@ -11,6 +11,8 @@ public class HireEmployeeCommand : ICommand<Result<EmployeeDto, List<Error>>>
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
     public string DateOfBirth { get; set; }
+    public byte RoleId { get; set; }
+    public string ReportsToId { get; set; }
 
     public static HireEmployeeCommand MapFromDto(HireEmployeeDto dto)
     {
@@ -19,7 +21,9 @@ public class HireEmployeeCommand : ICommand<Result<EmployeeDto, List<Error>>>
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             EmailAddress = dto.EmailAddress,
-            DateOfBirth = dto.DateOfBirth
+            DateOfBirth = dto.DateOfBirth,
+            RoleId = dto.RoleId,
+            ReportsToId = dto.ManagerId
         };
     }
 }

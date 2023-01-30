@@ -5,6 +5,7 @@ using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Features.Employee;
 using HRManagement.Modules.Personnel.Domain;
 using HRManagement.Modules.Personnel.Domain.Employee;
+using HRManagement.Modules.Personnel.Domain.Role;
 using MediatR;
 using Moq;
 using Shouldly;
@@ -101,12 +102,18 @@ public class UpdateEmployeeCommandHandlerShould
     public async Task UpdateEmployee_WhenEmployeeExists()
     {
         var fixture = SetFixture(out var mockUnitOfWork);
+        var ceoRole = Role.Create("CEO", null).Value;
+        var presidentRole = Role.Create("President", ceoRole).Value;
+        var managerData = new Faker().Person;
+        var manager = BuildFakeEmployee(managerData, ceoRole, null);
         var person = new Faker().Person;
-        var employee = BuildFakeEmployee(person);
+        var employee = BuildFakeEmployee(person, presidentRole, manager);
         var updateEmployee = BuildFakeCommand(person);
         mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(() => employee);
+            .SetupSequence(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(() => employee)
+            .ReturnsAsync(() => manager);
+        mockUnitOfWork.Setup(d => d.Roles.GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
         mockUnitOfWork
             .Setup(d => d.SaveChangesAsync())
             .Callback(() =>
@@ -114,7 +121,7 @@ public class UpdateEmployeeCommandHandlerShould
                 var name = Name.Create($"{updateEmployee.FirstName} Updated", updateEmployee.LastName).Value;
                 var email = EmailAddress.Create(updateEmployee.EmailAddress).Value;
                 var dateOfBirth = DateOfBirth.Create(updateEmployee.DateOfBirth).Value;
-                employee.Update(name, email, dateOfBirth, null);
+                employee.Update(name, email, dateOfBirth, presidentRole, manager);
             });
         var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
@@ -131,13 +138,14 @@ public class UpdateEmployeeCommandHandlerShould
         return fixture;
     }
 
-    private static Employee BuildFakeEmployee(Person person)
+    private static Employee BuildFakeEmployee(Person person, Role role = null, Employee manager = null)
     {
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
-            null).Value;
+            role,
+            manager).Value;
         return employee;
     }
 
@@ -149,7 +157,9 @@ public class UpdateEmployeeCommandHandlerShould
             EmailAddress = person.Email,
             FirstName = person.FirstName,
             LastName = person.LastName,
-            DateOfBirth = person.DateOfBirth.ToString("d")
+            DateOfBirth = person.DateOfBirth.ToString("d"),
+            RoleId = It.IsAny<byte>(),
+            ReportsToId = Guid.NewGuid().ToString()
         };
         return hireEmployee;
     }

@@ -79,6 +79,7 @@ public class HardDeleteEmployeeCommandHandlerShould
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            null, 
             null).Value;
         return employee;
     }
