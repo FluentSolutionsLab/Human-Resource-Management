@@ -2,13 +2,10 @@ using Carter;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .Configure<AppSettings>(builder.Configuration)
-    .AddScoped(sp => sp.GetRequiredService<IOptionsSnapshot<AppSettings>>().Value);
+builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddPersistenceServices();
 builder.Services.AddEndpointsApiExplorer();

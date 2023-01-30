@@ -22,7 +22,7 @@ public class GetEmployeesQueryHandlerShould
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
-            null).Value;
+            null, null).Value;
         mockUnitOfWork
             .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee, bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {employee});

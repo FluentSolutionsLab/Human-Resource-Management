@@ -17,8 +17,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Unit, List<Error>>> Handle(UpdateEmployeeCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<Unit, List<Error>>> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return new List<Error> {DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.EmployeeId)};
@@ -30,8 +29,20 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
         if (errors.Any()) return errors;
 
+        Maybe<Domain.Role.Role> maybeRole = await _unitOfWork.Roles.GetByIdAsync(request.RoleId);
+        if (maybeRole.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Domain.Role.Role), request.RoleId)};
+
+        if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
+            return new List<Error> {DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.ReportsToId)};
+
+        Maybe<Domain.Employee.Employee> maybeManager = await _unitOfWork.Employees.GetByIdAsync(reportsToId);
+        if (maybeManager.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Domain.Employee.Employee), request.ReportsToId)};
+
         var employee = employeeOrNot.Value;
-        employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, null);
+        
+        var employeeUpdate = employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, maybeRole.Value, maybeManager.Value);
+        if (employeeUpdate.IsFailure) return new List<Error>{employeeUpdate.Error};
+        
         _unitOfWork.Employees.Update(employee);
         await _unitOfWork.SaveChangesAsync();
 

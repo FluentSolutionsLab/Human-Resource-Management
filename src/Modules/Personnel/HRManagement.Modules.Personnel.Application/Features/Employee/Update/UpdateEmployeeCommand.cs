@@ -13,6 +13,8 @@ public class UpdateEmployeeCommand : ICommand<Result<Unit, List<Error>>>
     public string LastName { get; set; }
     public string EmailAddress { get; set; }
     public string DateOfBirth { get; set; }
+    public byte RoleId { get; set; }
+    public string ReportsToId { get; set; }
 
     public static UpdateEmployeeCommand MapFromDto(string id, UpdateEmployeeDto dto)
     {
@@ -22,7 +24,9 @@ public class UpdateEmployeeCommand : ICommand<Result<Unit, List<Error>>>
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             EmailAddress = dto.EmailAddress,
-            DateOfBirth = dto.DateOfBirth
+            DateOfBirth = dto.DateOfBirth,
+            RoleId = dto.RoleId,
+            ReportsToId = dto.ManagerId
         };
     }
 }
