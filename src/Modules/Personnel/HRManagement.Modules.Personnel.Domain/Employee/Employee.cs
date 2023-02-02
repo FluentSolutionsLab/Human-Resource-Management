@@ -65,7 +65,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     {
         if (reportsTo == null || role == null) return default;
 
-        var mustReportToIntendedRoleRule = CheckRule(new EmployeeMustReportToIntendedRoleRule(reportsTo.Role.Name, role.ReportsTo.Name));
+        var mustReportToIntendedRoleRule = CheckRule(new ManagerRoleMustComplyWithOrganizationRule(reportsTo.Role.Name, role.ReportsTo.Name));
         return mustReportToIntendedRoleRule.IsFailure ? Error.Deserialize(mustReportToIntendedRoleRule.Error) : default;
     }
 }

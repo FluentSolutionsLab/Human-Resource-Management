@@ -44,8 +44,8 @@ public static class DomainErrors
         return new Error("invalid.operation", "An employee cannot report to another one with the same role.");
     }
 
-    public static Error EmployeeMustReportToIntendedRole()
+    public static Error ManagerRoleMustComplyWithOrganization()
     {
-        return new Error("invalid.operation", "An employee must report to another one with the intended role.");
+        return new Error("invalid.operation", "The manager role does not comply with the organization chart.");
     }
 }

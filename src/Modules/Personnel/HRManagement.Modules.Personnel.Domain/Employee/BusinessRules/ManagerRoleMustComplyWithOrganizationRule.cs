@@ -3,12 +3,12 @@ using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain.Employee;
 
-public class EmployeeMustReportToIntendedRoleRule : IBusinessRule
+public class ManagerRoleMustComplyWithOrganizationRule : IBusinessRule
 {
     private readonly string _expectedManagerRole;
     private readonly string _assignedManagerRole;
 
-    public EmployeeMustReportToIntendedRoleRule(string expectedManagerRole, string assignedManagerRole)
+    public ManagerRoleMustComplyWithOrganizationRule(string expectedManagerRole, string assignedManagerRole)
     {
         _expectedManagerRole = expectedManagerRole;
         _assignedManagerRole = assignedManagerRole;
@@ -19,5 +19,5 @@ public class EmployeeMustReportToIntendedRoleRule : IBusinessRule
         return !string.Equals(_expectedManagerRole, _assignedManagerRole, StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public Error Error => DomainErrors.EmployeeMustReportToIntendedRole();
+    public Error Error => DomainErrors.ManagerRoleMustComplyWithOrganization();
 }
