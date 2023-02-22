@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Personnel.Domain.Employee;
+﻿using Bogus;
+using HRManagement.Modules.Personnel.Domain.Employee;
 using HRManagement.Modules.Personnel.Domain.Role;
 
 namespace HRManagement.Modules.Personnel.Persistence;
@@ -10,44 +11,96 @@ public class DatabaseInitializer
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         
-        var roleCeo = Role.Create("CEO", null).Value;
-        var rolePresident = Role.Create("President", roleCeo).Value;
-        var roleVicePresident = Role.Create("Vice President", rolePresident).Value;
-
-        context.Add(roleCeo);
-        context.Add(rolePresident);
-        context.Add(roleVicePresident);
+        var roles = BuildRoles();
+        context.AddRange(roles.Values.ToList());
         context.SaveChanges();
 
-        var ceo = Employee.Create(
-            Name.Create("John", "Doe").Value, 
-            EmailAddress.Create("john.doe@gmail.com").Value, 
-            DateOfBirth.Create("1972-01-01").Value, 
-            roleCeo, null).Value;
-        var president = Employee.Create(
-            Name.Create("Jane", "Doe").Value, 
-            EmailAddress.Create("jane.doe@gmail.com").Value, 
-            DateOfBirth.Create("1978-09-21").Value, 
-            rolePresident, ceo).Value;
-        var vicePresident1 = Employee.Create(
-            Name.Create("Barthelemy", "Simpson").Value, 
-            EmailAddress.Create("barth.simpson@gmail.com").Value, 
-            DateOfBirth.Create("1982-03-11").Value,
-            roleVicePresident, president).Value;
-        var vicePresident2 = Employee.Create(
-            Name.Create("Donald", "Picsou").Value, 
-            EmailAddress.Create("donald.picsou@gmail.com").Value, 
-            DateOfBirth.Create("1962-11-01").Value, 
-            roleVicePresident, president).Value;
+        var ceo = CreateEmployee(roles["ceo"]);
+        var president = CreateEmployee(roles["president"], ceo);
+        var vicePresident1 = CreateEmployee(roles["vice-president"], president);
+        var vicePresident2 = CreateEmployee(roles["vice-president"], president);
+        var cto = CreateEmployee(roles["cto"], vicePresident1);
+        var itManager = CreateEmployee(roles["it-manager"], cto);
+        var seManager = CreateEmployee(roles["se-manager"], itManager);
+        var architect = CreateEmployee(roles["architect"], itManager);
+
         var employees = new List<Employee>
         {
             ceo,
             president,
             vicePresident1,
-            vicePresident2
+            vicePresident2,
+            cto,
+            itManager,
+            seManager,
+            architect
         };
+
+        var leads = new List<Employee>();
+        for (var i = 0; i < 20; i++) 
+            leads.Add(CreateEmployee(roles["lead-dev"], seManager));
+        employees.AddRange(leads);
+        
+        leads.ForEach(lead =>
+        {
+            employees.Add(CreateEmployee(roles["business-analyst"], seManager));
+            employees.Add(CreateEmployee(roles["business-analyst"], seManager));
+            employees.Add(CreateEmployee(roles["qa-analyst"], seManager));
+            employees.Add(CreateEmployee(roles["qa-analyst"], seManager));
+            employees.Add(CreateEmployee(roles["senior-dev"], lead));
+            employees.Add(CreateEmployee(roles["senior-dev"], lead));
+            employees.Add(CreateEmployee(roles["intermediate-dev"], lead));
+            employees.Add(CreateEmployee(roles["intermediate-dev"], lead));
+            employees.Add(CreateEmployee(roles["junior-dev"], lead));
+            employees.Add(CreateEmployee(roles["junior-dev"], lead));
+        });
 
         context.AddRange(employees);
         context.SaveChanges();
+    }
+
+    private static Employee CreateEmployee(Role role, Employee manager = null)
+    {
+        var person = new Person();
+        return Employee.Create(
+            Name.Create(person.FirstName, person.LastName).Value, 
+            EmailAddress.Create(person.Email).Value, 
+            DateOfBirth.Create(person.DateOfBirth.ToShortDateString()).Value, 
+            role, manager).Value;
+    }
+
+    private static Dictionary<string, Role> BuildRoles()
+    {
+        var ceo = Role.Create("CEO", null).Value;
+        var president = Role.Create("President", ceo).Value;
+        var vicePresident = Role.Create("Vice President", president).Value;
+        var cto = Role.Create("CTO", vicePresident).Value;
+        var itManager = Role.Create("IT Manager", cto).Value;
+        var seManager = Role.Create("Software Engineering Manager", itManager).Value;
+        var architect = Role.Create("Architect", itManager).Value;
+        var leadDev = Role.Create("Lead Software Developer", seManager).Value;
+        var businessAnalyst = Role.Create("Business Analyst", seManager).Value;
+        var qaAnalyst = Role.Create("Quality Assurance Analyst", seManager).Value;
+        var seniorDev = Role.Create("Senior Software Developer", leadDev).Value;
+        var intermediateDev = Role.Create("Intermediate Software Developer", leadDev).Value;
+        var juniorDev = Role.Create("Junior Software Developer", leadDev).Value;
+
+        var roles = new Dictionary<string, Role>
+        {
+            {"ceo", ceo},
+            {"president", president},
+            {"vice-president", vicePresident},
+            {"cto", cto},
+            {"it-manager", itManager},
+            {"se-manager", seManager},
+            {"architect", architect},
+            {"business-analyst", businessAnalyst},
+            {"qa-analyst", qaAnalyst},
+            {"lead-dev", leadDev},
+            {"senior-dev", seniorDev},
+            {"intermediate-dev", intermediateDev},
+            {"junior-dev", juniorDev},
+        };
+        return roles;
     }
 }
