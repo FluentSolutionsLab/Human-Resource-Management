@@ -10,20 +10,29 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Application.UnitTests;
+namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
 
 public class TerminateEmployeeCommandHandlerShould
 {
+    private readonly IFixture _fixture;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly TerminateEmployeeCommandHandler _sut;
+
+    public TerminateEmployeeCommandHandlerShould()
+    {
+        _fixture = new Fixture().Customize(new AutoMoqCustomization());
+        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _sut = _fixture.Create<TerminateEmployeeCommandHandler>();
+    }
+
     [Fact]
     public async Task ReturnNotFoundError_WhenProvidedKeyInvalid()
     {
-        var fixture = SetFixture(out _);
-        var sut = fixture.Create<TerminateEmployeeCommandHandler>();
-        var terminateEmployee = fixture.Create<TerminateEmployeeCommand>();
+        var terminateEmployee = _fixture.Create<TerminateEmployeeCommand>();
         var invalidEmployeeId = new Faker().Random.AlphaNumeric(9);
         terminateEmployee.EmployeeId = invalidEmployeeId;
 
-        var result = await sut.Handle(terminateEmployee, CancellationToken.None);
+        var result = await _sut.Handle(terminateEmployee, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
         result.Error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidEmployeeId));
@@ -32,14 +41,12 @@ public class TerminateEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeNotFound()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var updateEmployee = BuildFakeCommand();
-        mockUnitOfWork
+        _mockUnitOfWork
             .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
-        var sut = fixture.Create<TerminateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(updateEmployee, CancellationToken.None);
+        var result = await _sut.Handle(updateEmployee, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
         result.Error.Code.ShouldBe(DomainErrors.NotFound(nameof(Employee), updateEmployee.EmployeeId).Code);
@@ -48,30 +55,21 @@ public class TerminateEmployeeCommandHandlerShould
     [Fact]
     public async Task TerminateEmployee_WhenEmployeeExists()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var employees = new List<Employee>{BuildFakeEmployee(person)};
         var terminateEmployee = BuildFakeCommand();
-        mockUnitOfWork
+        _mockUnitOfWork
             .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employees.First());
-        mockUnitOfWork
+        _mockUnitOfWork
             .Setup(d => d.SaveChangesAsync());
-        var sut = fixture.Create<TerminateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(terminateEmployee, CancellationToken.None);
+        var result = await _sut.Handle(terminateEmployee, CancellationToken.None);
 
         result.Value.ShouldBe(Unit.Value);
         employees.First().TerminationDate.ShouldNotBeNull();
     }
 
-    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
-    {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
-        return fixture;
-    }
-    
     private static Employee BuildFakeEmployee(Person person)
     {
         var employee = Employee.Create(

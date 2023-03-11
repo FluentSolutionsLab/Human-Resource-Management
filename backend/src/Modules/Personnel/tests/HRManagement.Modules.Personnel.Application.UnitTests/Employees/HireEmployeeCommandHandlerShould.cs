@@ -3,7 +3,6 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.DTOs;
 using HRManagement.Modules.Personnel.Application.Features.Employee;
 using HRManagement.Modules.Personnel.Domain;
 using HRManagement.Modules.Personnel.Domain.Employee;
@@ -12,22 +11,31 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Application.UnitTests;
+namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
+    private readonly IFixture _fixture;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly HireEmployeeCommandHandler _sut;
+
+    public HireEmployeeCommandHandlerShould()
+    {
+        _fixture = new Fixture().Customize(new AutoMoqCustomization());
+        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _sut = _fixture.Create<HireEmployeeCommandHandler>();
+    }
+
     [Theory]
     [ClassData(typeof(InvalidNameOnCreationTestData))]
     public async Task ReturnError_WhenNameInvalid(string firstName, string lastName)
     {
-        var fixture = SetFixture(out _);
         var person = new Faker().Person;
         var command = BuildFakeCommand(person);
         command.FirstName = firstName;
         command.LastName = lastName;
-        var sut = fixture.Create<HireEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBeGreaterThan(0);
         result.Error.All(error => error.Code == DomainErrors.InvalidName(It.IsNotNull<string>()).Code).ShouldBeTrue();
@@ -37,13 +45,11 @@ public class HireEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidEmailOnCreationTestData))]
     public async Task ReturnError_WhenEmailInvalid(string email)
     {
-        var fixture = SetFixture(out _);
         var person = new Faker().Person;
         var command = BuildFakeCommand(person);
         command.EmailAddress = email;
-        var sut = fixture.Create<HireEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBeGreaterThan(0);
         result.Error.All(error => error.Code == DomainErrors.InvalidEmailAddress(It.IsNotNull<string>()).Code).ShouldBeTrue();
@@ -53,13 +59,11 @@ public class HireEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidDateOfBirthTestData))]
     public async Task ReturnError_WhenDateOfBirthInvalid(string dateOfBirth)
     {
-        var fixture = SetFixture(out _);
         var person = new Faker().Person;
         var command = BuildFakeCommand(person);
         command.DateOfBirth = dateOfBirth;
-        var sut = fixture.Create<HireEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
         
         result.Error.Count.ShouldBeGreaterThan(0);
         result.Error.All(error => error.Code == DomainErrors.InvalidDate(It.IsNotNull<string>()).Code || error.Code == DomainErrors.DateOfBirthInFuture().Code).ShouldBeTrue();
@@ -68,14 +72,12 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeAlreadyExists()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
-        mockUnitOfWork
+        _mockUnitOfWork
             .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
             .ReturnsAsync(new List<Employee> {BuildFakeEmployee(person)});
-        var sut = fixture.Create<HireEmployeeCommandHandler>();
 
-        var result = await sut.Handle(BuildFakeCommand(person), CancellationToken.None);
+        var result = await _sut.Handle(BuildFakeCommand(person), CancellationToken.None);
 
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.ResourceAlreadyExists().Code);
@@ -84,22 +86,13 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenManagerIdIsInvalid()
     {
-        var fixture = SetFixture(out var _);
         var person = new Faker().Person;
-        var sut = fixture.Create<HireEmployeeCommandHandler>();
         var hireEmployeeCommand = BuildFakeCommand(person);
         hireEmployeeCommand.ReportsToId = string.Empty;
         
-        var result = await sut.Handle(hireEmployeeCommand, CancellationToken.None);
+        var result = await _sut.Handle(hireEmployeeCommand, CancellationToken.None);
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.NotFound(nameof(Role), hireEmployeeCommand.ReportsToId).Code);
-    }
-    
-    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
-    {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
-        return fixture;
     }
 
     private static Employee BuildFakeEmployee(Person person)
