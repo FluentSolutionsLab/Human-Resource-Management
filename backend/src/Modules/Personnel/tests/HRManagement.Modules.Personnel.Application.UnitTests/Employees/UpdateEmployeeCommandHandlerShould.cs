@@ -11,23 +11,34 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Application.UnitTests;
+namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
 
 public class UpdateEmployeeCommandHandlerShould
 {
+    private readonly IFixture _fixture;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly UpdateEmployeeCommandHandler _sut;
+
+    public UpdateEmployeeCommandHandlerShould()
+    {
+        _fixture = new Fixture().Customize(new AutoMoqCustomization());
+        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _sut = _fixture.Create<UpdateEmployeeCommandHandler>();
+    }
+
     [Theory]
     [ClassData(typeof(InvalidNameOnUpdateTestData))]
     public async Task ReturnError_WhenNameInvalid(string firstName, string lastName)
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        _mockUnitOfWork
+            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.FirstName = firstName;
         command.LastName = lastName;
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBeGreaterThan(0);
         result.Error.All(error => error.Code == DomainErrors.InvalidName(It.IsNotNull<string>()).Code).ShouldBeTrue();;
@@ -37,14 +48,14 @@ public class UpdateEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidEmailOnUpdateTestData))]
     public async Task ReturnError_WhenEmailInvalid(string emailAddress)
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        _mockUnitOfWork
+            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.EmailAddress = emailAddress;
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
     }
@@ -53,14 +64,14 @@ public class UpdateEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidDateOfBirthOnUpdateTestData))]
     public async Task ReturnError_WhenDateOfBirthInvalid(string dateOfBirth)
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Person();
-        mockUnitOfWork.Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>())).ReturnsAsync(BuildFakeEmployee(person));
+        _mockUnitOfWork
+            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.DateOfBirth = dateOfBirth;
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
     }
@@ -68,14 +79,12 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnNotFoundError_WhenProvidedKeyInvalid()
     {
-        var fixture = SetFixture(out _);
         var person = new Person();
         var command = BuildFakeCommand(person);
         var invalidEmployeeId = new Faker().Random.AlphaNumeric(9);
         command.EmployeeId = invalidEmployeeId;
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBe(1);
         result.Error.First().ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidEmployeeId));
@@ -84,15 +93,13 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeNotFound()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var person = new Faker().Person;
         var updateEmployee = BuildFakeCommand(person);
-        mockUnitOfWork
+        _mockUnitOfWork
             .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(updateEmployee, CancellationToken.None);
+        var result = await _sut.Handle(updateEmployee, CancellationToken.None);
 
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.NotFound(nameof(Employee), updateEmployee.EmployeeId).Code);
@@ -101,7 +108,6 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task UpdateEmployee_WhenEmployeeExists()
     {
-        var fixture = SetFixture(out var mockUnitOfWork);
         var ceoRole = Role.Create("CEO", null).Value;
         var presidentRole = Role.Create("President", ceoRole).Value;
         var managerData = new Faker().Person;
@@ -109,12 +115,12 @@ public class UpdateEmployeeCommandHandlerShould
         var person = new Faker().Person;
         var employee = BuildFakeEmployee(person, presidentRole, manager);
         var updateEmployee = BuildFakeCommand(person);
-        mockUnitOfWork
+        _mockUnitOfWork
             .SetupSequence(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employee)
             .ReturnsAsync(() => manager);
-        mockUnitOfWork.Setup(d => d.Roles.GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
-        mockUnitOfWork
+        _mockUnitOfWork.Setup(d => d.Roles.GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
+        _mockUnitOfWork
             .Setup(d => d.SaveChangesAsync())
             .Callback(() =>
             {
@@ -123,19 +129,11 @@ public class UpdateEmployeeCommandHandlerShould
                 var dateOfBirth = DateOfBirth.Create(updateEmployee.DateOfBirth).Value;
                 employee.Update(name, email, dateOfBirth, presidentRole, manager);
             });
-        var sut = fixture.Create<UpdateEmployeeCommandHandler>();
 
-        var result = await sut.Handle(updateEmployee, CancellationToken.None);
+        var result = await _sut.Handle(updateEmployee, CancellationToken.None);
 
         result.Value.ShouldBe(Unit.Value);
         employee.Name.FirstName.ShouldEndWith(" Updated");
-    }
-
-    private static IFixture SetFixture(out Mock<IUnitOfWork> mockUnitOfWork)
-    {
-        var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
-        return fixture;
     }
 
     private static Employee BuildFakeEmployee(Person person, Role role = null, Employee manager = null)
