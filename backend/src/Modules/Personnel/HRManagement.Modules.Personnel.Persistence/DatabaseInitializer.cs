@@ -1,19 +1,20 @@
 ﻿using Bogus;
 using HRManagement.Modules.Personnel.Domain.Employee;
 using HRManagement.Modules.Personnel.Domain.Role;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Modules.Personnel.Persistence;
 
 public class DatabaseInitializer
 {
-    public static void Initialize(PersonnelDbContext context)
+    public static async Task InitializeAsync(PersonnelDbContext context)
     {
-        context.Database.EnsureDeleted();
-        context.Database.EnsureCreated();
+        await context.Database.EnsureDeletedAsync();
+        await context.Database.MigrateAsync();
         
         var roles = BuildRoles();
         context.AddRange(roles.Values.ToList());
-        context.SaveChanges();
+        await context.SaveChangesAsync();
 
         var ceo = CreateEmployee(roles["ceo"]);
         var president = CreateEmployee(roles["president"], ceo);
@@ -56,7 +57,7 @@ public class DatabaseInitializer
         });
 
         context.AddRange(employees);
-        context.SaveChanges();
+        await context.SaveChangesAsync();
     }
 
     private static Employee CreateEmployee(Role role, Employee manager = null)
