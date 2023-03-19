@@ -10,7 +10,7 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
 {
     public void Configure(EntityTypeBuilder<Employee> builder)
     {
-        builder.ToTable("Employee").HasKey(x => x.Id);
+        builder.ToTable("Employee", "PersonnelManagement").HasKey(x => x.Id);
         builder.Property(x => x.Id);
         builder.OwnsOne(x => x.Name, x =>
         {
