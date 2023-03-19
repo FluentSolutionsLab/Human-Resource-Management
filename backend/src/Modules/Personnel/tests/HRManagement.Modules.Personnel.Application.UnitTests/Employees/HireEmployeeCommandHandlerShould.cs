@@ -2,6 +2,7 @@ using System.Linq.Expressions;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Bogus;
+using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.Features.Employee;
 using HRManagement.Modules.Personnel.Domain;
@@ -15,15 +16,14 @@ namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
-    private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly HireEmployeeCommandHandler _sut;
 
     public HireEmployeeCommandHandlerShould()
     {
-        _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
-        _sut = _fixture.Create<HireEmployeeCommandHandler>();
+        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
+        _sut = fixture.Create<HireEmployeeCommandHandler>();
     }
 
     [Theory]
@@ -52,7 +52,9 @@ public class HireEmployeeCommandHandlerShould
         var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBeGreaterThan(0);
-        result.Error.All(error => error.Code == DomainErrors.InvalidEmailAddress(It.IsNotNull<string>()).Code).ShouldBeTrue();
+        result.Error
+            .All(error => error.Code == DomainErrors.InvalidEmailAddress(It.IsNotNull<string>()).Code)
+            .ShouldBeTrue();
     }
 
     [Theory]
@@ -64,9 +66,11 @@ public class HireEmployeeCommandHandlerShould
         command.DateOfBirth = dateOfBirth;
 
         var result = await _sut.Handle(command, CancellationToken.None);
-        
+
         result.Error.Count.ShouldBeGreaterThan(0);
-        result.Error.All(error => error.Code == DomainErrors.InvalidDate(It.IsNotNull<string>()).Code || error.Code == DomainErrors.DateOfBirthInFuture().Code).ShouldBeTrue();
+        result.Error.All(error =>
+            error.Code == DomainErrors.InvalidDate(It.IsNotNull<string>()).Code ||
+            error.Code == DomainErrors.DateOfBirthInFuture().Code).ShouldBeTrue();
     }
 
     [Fact]
@@ -74,8 +78,13 @@ public class HireEmployeeCommandHandlerShould
     {
         var person = new Faker().Person;
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetAsync(It.IsAny<Expression<Func<Employee,bool>>>(), It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(), It.IsNotNull<string>()))
-            .ReturnsAsync(new List<Employee> {BuildFakeEmployee(person)});
+            .Setup(d => d.Employees.GetAsync(
+                It.IsAny<Expression<Func<Employee, bool>>>(),
+                It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(),
+                It.IsNotNull<string>(),
+                It.IsAny<int>(),
+                It.IsAny<int>()))
+            .ReturnsAsync(new PagedList<Employee>(new[] {BuildFakeEmployee(person)}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
 
         var result = await _sut.Handle(BuildFakeCommand(person), CancellationToken.None);
 
@@ -89,7 +98,7 @@ public class HireEmployeeCommandHandlerShould
         var person = new Faker().Person;
         var hireEmployeeCommand = BuildFakeCommand(person);
         hireEmployeeCommand.ReportsToId = string.Empty;
-        
+
         var result = await _sut.Handle(hireEmployeeCommand, CancellationToken.None);
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.NotFound(nameof(Role), hireEmployeeCommand.ReportsToId).Code);
@@ -100,7 +109,7 @@ public class HireEmployeeCommandHandlerShould
         return Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value,
             Role.Create("ceo", null).Value,
             null).Value;
     }
@@ -145,7 +154,7 @@ public class InvalidNameOnCreationTestData : TheoryData<string, string>
     public InvalidNameOnCreationTestData()
     {
         var person = new Faker().Person;
-        
+
         Add(null!, person.LastName);
         Add(string.Empty, person.LastName);
         Add(person.FirstName, null!);

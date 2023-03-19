@@ -1,9 +1,11 @@
 ﻿using Carter;
 using CSharpFunctionalExtensions;
+using HRManagement.Api.Models;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.DTOs;
 using HRManagement.Modules.Personnel.Application.Features.Employee;
 using MediatR;
+using Newtonsoft.Json;
 
 namespace HRManagement.Api.Endpoints;
 
@@ -14,12 +16,17 @@ public class EmployeesManagement : ICarterModule
         const string employees = "/api/employees";
         const string routeContext = "Employees";
 
-        app.MapGet(employees, async (IMediator mediator) =>
+        app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] PaginationParameters pagination) =>
             {
-                var (_, _, value, _) = await mediator.Send(new GetEmployeesQuery());
+                var (_, _, value, _) = await mediator.Send(new GetEmployeesQuery {PageNumber = pagination.PageNumber.Value, PageSize = pagination.PageSize.Value});
+
+                var paginationMetadata = BuildPaginationMetadata(value, pagination, linker);
+                httpContext.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
+
                 return Results.Ok(value);
             })
             .Produces<List<EmployeeDto>>()
+            .WithName("GetEmployees")
             .WithDisplayName(routeContext)
             .WithMetadata();
 
@@ -45,8 +52,7 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPut($"{employees}/{{id}}", async (IMediator mediator, string id, UpdateEmployeeDto updatedEmployee) =>
             {
-                var (isSuccess, _, _, errors) =
-                    await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
+                var (isSuccess, _, _, errors) = await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
                 return isSuccess ? Results.NoContent() : Results.BadRequest(errors);
             })
             .Produces(StatusCodes.Status204NoContent)
@@ -70,5 +76,49 @@ public class EmployeesManagement : ICarterModule
             .Produces(StatusCodes.Status204NoContent)
             .Produces<Error>(StatusCodes.Status404NotFound)
             .WithDisplayName(routeContext);
+    }
+
+    private static object BuildPaginationMetadata(PagedList<EmployeeDto> value, PaginationParameters pagination, LinkGenerator linker)
+    {
+        var previousPageLink = value.HasPrevious
+            ? CreatePageResourceUri("GetEmployees", pagination, ResourceUriType.PreviousPage, linker)
+            : null;
+
+        var nextPageLink = value.HasNext
+            ? CreatePageResourceUri("GetEmployees", pagination, ResourceUriType.NextPage, linker)
+            : null;
+
+        var paginationMetadata = new
+        {
+            totalCount = value.TotalCount,
+            pageSize = value.PageSize,
+            currentPage = value.CurrentPage,
+            totalPages = value.TotalPages,
+            previousPageLink,
+            nextPageLink
+        };
+
+        return paginationMetadata;
+    }
+
+    private static string CreatePageResourceUri(string action, PaginationParameters authorsResourceParameters, ResourceUriType type, LinkGenerator linker)
+    {
+        return type switch
+        {
+            ResourceUriType.PreviousPage => linker.GetPathByName(action,
+                new
+                {
+                    pageNumber = authorsResourceParameters.PageNumber - 1,
+                    pageSize = authorsResourceParameters.PageSize,
+                }),
+            ResourceUriType.NextPage => linker.GetPathByName(action,
+                new
+                {
+                    pageNumber = authorsResourceParameters.PageNumber + 1,
+                    pageSize = authorsResourceParameters.PageSize,
+                }),
+            _ => linker.GetPathByName(action,
+                new {pageNumber = authorsResourceParameters.PageNumber, pageSize = authorsResourceParameters.PageSize,})
+        };
     }
 }
