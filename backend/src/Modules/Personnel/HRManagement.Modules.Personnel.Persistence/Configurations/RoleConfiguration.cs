@@ -8,7 +8,7 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
     public void Configure(EntityTypeBuilder<Role> builder)
     {
-        builder.ToTable("Role").HasKey(x => x.Id);
+        builder.ToTable("Role", "PersonnelManagement").HasKey(x => x.Id);
         builder.Property(x => x.Id).UseIdentityColumn().HasColumnName("Id");
         builder.Property(x => x.Name).HasColumnName("Name");
         builder.HasOne(x => x.ReportsTo).WithMany();
