@@ -5,6 +5,8 @@ using HRManagement.Modules.Personnel.Application.DTOs;
 
 namespace HRManagement.Modules.Personnel.Application.Features.Employee;
 
-public class GetEmployeesQuery : IQuery<Result<List<EmployeeDto>>>
+public class GetEmployeesQuery : IQuery<Result<PagedList<EmployeeDto>>>
 {
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
 }

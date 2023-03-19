@@ -28,12 +28,12 @@ if (app.Environment.IsDevelopment())
         options.DefaultModelsExpandDepth(-1);
         options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{builder.Environment.ApplicationName} v1");
     });
-    using (var serviceScope = app.Services.CreateScope())
-    {
-        var services = serviceScope.ServiceProvider;
-        var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
-        await DatabaseInitializer.InitializeAsync(personnelDbContext);
-    }
+    // using (var serviceScope = app.Services.CreateScope())
+    // {
+    //     var services = serviceScope.ServiceProvider;
+    //     var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
+    //     await DatabaseInitializer.InitializeAsync(personnelDbContext);
+    // }
 }
 
 app.MapCarter();

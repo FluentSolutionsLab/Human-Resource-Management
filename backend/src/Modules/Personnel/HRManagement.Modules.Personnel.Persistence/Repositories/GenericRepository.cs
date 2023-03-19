@@ -24,7 +24,12 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<IReadOnlyList<TEntity>> GetAsync(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+    public async Task<PagedList<TEntity>> GetAsync(
+        Expression<Func<TEntity, bool>> filter = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
+        string includeProperties = "",
+        int pageNumber = 1,
+        int pageSize = 10)
     {
         IQueryable<TEntity> query = _dbSet;
 
@@ -34,9 +39,10 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
         foreach (var property in includeProperties.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
             query = query.Include(property);
 
-        return orderBy != null
-            ? await orderBy(query).ToListAsync()
-            : await query.ToListAsync();
+        if (orderBy != null)
+            query = orderBy(query);
+
+        return await PagedList<TEntity>.CreateAsync(query, pageNumber, pageSize);
     }
 
     public async Task AddAsync(TEntity entity)
