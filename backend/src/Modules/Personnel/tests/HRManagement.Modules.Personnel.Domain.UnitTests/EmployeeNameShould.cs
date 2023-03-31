@@ -1,5 +1,4 @@
 ﻿using Bogus;
-using HRManagement.Modules.Personnel.Domain.Employee;
 using Shouldly;
 using Xunit;
 

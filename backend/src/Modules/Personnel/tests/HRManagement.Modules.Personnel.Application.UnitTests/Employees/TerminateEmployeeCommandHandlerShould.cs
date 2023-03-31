@@ -2,9 +2,8 @@
 using AutoFixture.AutoMoq;
 using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.Features.Employee;
+using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;
-using HRManagement.Modules.Personnel.Domain.Employee;
 using MediatR;
 using Moq;
 using Shouldly;
@@ -66,7 +65,7 @@ public class TerminateEmployeeCommandHandlerShould
 
         var result = await _sut.Handle(terminateEmployee, CancellationToken.None);
 
-        result.Value.ShouldBe(Unit.Value);
+        result.IsSuccess.ShouldBeTrue();
         employees.First().TerminationDate.ShouldNotBeNull();
     }
 

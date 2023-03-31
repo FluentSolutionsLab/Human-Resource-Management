@@ -2,10 +2,8 @@
 using AutoFixture.AutoMoq;
 using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.Features.Employee;
+using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;
-using HRManagement.Modules.Personnel.Domain.Employee;
-using MediatR;
 using Moq;
 using Shouldly;
 using Xunit;
@@ -67,7 +65,7 @@ public class HardDeleteEmployeeCommandHandlerShould
 
         var result = await _sut.Handle(hardDeleteEmployee, CancellationToken.None);
 
-        result.Value.ShouldBe(Unit.Value);
+        result.IsSuccess.ShouldBeTrue();
         employees.Count.ShouldBe(0);
     }
 

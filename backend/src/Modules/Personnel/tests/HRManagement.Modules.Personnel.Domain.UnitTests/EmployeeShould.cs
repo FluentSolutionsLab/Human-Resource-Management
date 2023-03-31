@@ -1,7 +1,6 @@
 using Bogus;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Domain.Employee;
 using Shouldly;
 using Xunit;
 
@@ -13,7 +12,7 @@ public class EmployeeShould
     [ClassData(typeof(NameEmailAddressOrDOBTestData))]
     public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
     {
-        Assert.Throws<ArgumentNullException>(() => Employee.Employee.Create(name, emailAddress, dateOfBirth, null, null));
+        Assert.Throws<ArgumentNullException>(() => Employee.Create(name, emailAddress, dateOfBirth, null, null));
     }    
 
     [Theory]
@@ -30,8 +29,8 @@ public class EmployeeShould
     [Fact]
     public void Fail_OnCreation_IfManagerDoesNotHaveExpectedRole()
     {
-        var ceoRole = Role.Role.Create("CEO", null).Value;
-        var presidentRole = Role.Role.Create("President", ceoRole).Value;
+        var ceoRole = Role.Create("CEO", null).Value;
+        var presidentRole = Role.Create("President", ceoRole).Value;
         var ceo = BuildFakeEmployee(ceoRole).Value;
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
         
@@ -43,8 +42,8 @@ public class EmployeeShould
     [Fact]
     public void Fail_OnUpdate_IfManagerDoesNotHaveExpectedRole()
     {
-        var ceoRole = Role.Role.Create("CEO", null).Value;
-        var presidentRole = Role.Role.Create("President", ceoRole).Value;
+        var ceoRole = Role.Create("CEO", null).Value;
+        var presidentRole = Role.Create("President", ceoRole).Value;
         var ceo = BuildFakeEmployee(ceoRole).Value;
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
         var president2 = BuildFakeEmployee(presidentRole, ceo).Value;
@@ -64,10 +63,10 @@ public class EmployeeShould
         employee.TerminationDate.ShouldNotBeNull();
     }
 
-    private static Result<Employee.Employee, Error> BuildFakeEmployee(Role.Role? role = null, Employee.Employee? manager = null)
+    private static Result<Employee, Error> BuildFakeEmployee(Role? role = null, Employee? manager = null)
     {
         var person = new Faker().Person;
-        var employee = Employee.Employee.Create(
+        var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 

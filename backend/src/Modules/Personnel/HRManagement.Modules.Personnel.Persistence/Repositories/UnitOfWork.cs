@@ -1,4 +1,6 @@
-﻿using HRManagement.Modules.Personnel.Application.Contracts;
+﻿using System;
+using System.Threading.Tasks;
+using HRManagement.Modules.Personnel.Application.Contracts;
 
 namespace HRManagement.Modules.Personnel.Persistence.Repositories;
 

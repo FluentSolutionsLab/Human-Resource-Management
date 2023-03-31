@@ -1,6 +1,8 @@
-﻿using Bogus;
-using HRManagement.Modules.Personnel.Domain.Employee;
-using HRManagement.Modules.Personnel.Domain.Role;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Bogus;
+using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Modules.Personnel.Persistence;

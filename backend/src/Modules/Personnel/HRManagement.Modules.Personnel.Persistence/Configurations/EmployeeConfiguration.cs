@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Personnel.Domain.Employee;
+﻿using System;
+using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

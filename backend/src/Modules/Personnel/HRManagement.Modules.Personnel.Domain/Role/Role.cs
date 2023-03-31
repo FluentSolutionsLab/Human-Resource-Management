@@ -1,8 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Domain.Role.BusinessRules;
 
-namespace HRManagement.Modules.Personnel.Domain.Role;
+namespace HRManagement.Modules.Personnel.Domain;
 
 public class Role : Common.Domain.Models.Entity<byte>
 {

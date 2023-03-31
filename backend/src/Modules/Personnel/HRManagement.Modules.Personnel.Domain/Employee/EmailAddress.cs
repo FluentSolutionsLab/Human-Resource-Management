@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Linq;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
+using HRManagement.Modules.Personnel.Domain.BusinessRules;
 using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
-namespace HRManagement.Modules.Personnel.Domain.Employee;
+namespace HRManagement.Modules.Personnel.Domain;
 
 public class EmailAddress : ValueObject
 {
@@ -16,7 +18,7 @@ public class EmailAddress : ValueObject
         Email = email;
     }
 
-    public string Email { get; } = null!;
+    public string Email { get; }
 
     public static Result<EmailAddress, List<Error>> Create(string email)
     {

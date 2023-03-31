@@ -2,9 +2,8 @@
 using AutoFixture.AutoMoq;
 using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.Features.Employee;
+using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;
-using HRManagement.Modules.Personnel.Domain.Employee;
 using Moq;
 using Shouldly;
 using Xunit;

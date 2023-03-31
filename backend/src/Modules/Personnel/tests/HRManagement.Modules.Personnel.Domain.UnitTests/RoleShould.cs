@@ -9,7 +9,7 @@ public class RoleShould
     [ClassData(typeof(NameNullOrEmptyTestData))]
     public void Fail_OnCreation_IfNameNullOrEmpty(string name)
     {
-        var roleCreation = Role.Role.Create(name, null);
+        var roleCreation = Role.Create(name, null);
 
         roleCreation.Error.ShouldNotBeNull();
     }
@@ -18,7 +18,7 @@ public class RoleShould
     [ClassData(typeof(NameNullOrEmptyTestData))]
     public void Fail_OnUpdate_IfNameNullOrEmpty(string name)
     {
-        var role = Role.Role.Create("name", null).Value;
+        var role = Role.Create("name", null).Value;
 
         var roleUpdate = role.Update(name, null);
 

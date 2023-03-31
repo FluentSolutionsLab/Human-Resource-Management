@@ -1,10 +1,13 @@
-﻿using Carter;
+﻿using System.Collections.Generic;
+using Carter;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.DTOs;
-using HRManagement.Modules.Personnel.Application.Features.Employee;
+using HRManagement.Modules.Personnel.Application.UseCases;
 using MediatR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
 namespace HRManagement.Api.Endpoints;
@@ -13,7 +16,7 @@ public class EmployeesManagement : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        const string employees = "/api/employees";
+        const string employees = "/api/personnel-management/employees";
         const string routeContext = "Employees";
 
         app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] PaginationParameters pagination) =>
@@ -41,7 +44,7 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPost(employees, async (IMediator mediator, HireEmployeeDto newEmployee) =>
             {
-                var (isSuccess, _, employee, errors) = await mediator.Send(HireEmployeeCommand.MapFromDto(newEmployee));
+                var (isSuccess, _, employee, errors) = await mediator.Send(newEmployee.ToHireEmployeeCommand());
                 return isSuccess
                     ? Results.Created($"{employees}/{{id}}", employee)
                     : Results.BadRequest(errors);
@@ -52,8 +55,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPut($"{employees}/{{id}}", async (IMediator mediator, string id, UpdateEmployeeDto updatedEmployee) =>
             {
-                var (isSuccess, _, _, errors) = await mediator.Send(UpdateEmployeeCommand.MapFromDto(id, updatedEmployee));
-                return isSuccess ? Results.NoContent() : Results.BadRequest(errors);
+                var result = await mediator.Send(updatedEmployee.ToUpdateEmployeeCommand(id));
+                return result.IsSuccess ? Results.NoContent() : Results.BadRequest(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<List<Error>>(StatusCodes.Status400BadRequest)
@@ -61,8 +64,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPut($"{employees}/{{id}}/terminate", async (IMediator mediator, string id) =>
             {
-                var (isSuccess, _, _, error) = await mediator.Send(new TerminateEmployeeCommand {EmployeeId = id});
-                return isSuccess ? Results.NoContent() : Results.NotFound(error);
+                var result = await mediator.Send(new TerminateEmployeeCommand {EmployeeId = id});
+                return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<Error>(StatusCodes.Status404NotFound)
@@ -70,8 +73,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapDelete($"{employees}/{{id}}", async (IMediator mediator, string id) =>
             {
-                var (isSuccess, _, _, error) = await mediator.Send(new HardDeleteEmployeeCommand {EmployeeId = id});
-                return isSuccess ? Results.NoContent() : Results.NotFound(error);
+                var result = await mediator.Send(new HardDeleteEmployeeCommand {EmployeeId = id});
+                return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<Error>(StatusCodes.Status404NotFound)

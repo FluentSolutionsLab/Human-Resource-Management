@@ -1,7 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System;
+using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
+using HRManagement.Modules.Personnel.Domain.BusinessRules;
 
-namespace HRManagement.Modules.Personnel.Domain.Employee;
+namespace HRManagement.Modules.Personnel.Domain;
 
 public class Employee : Common.Domain.Models.Entity<Guid>
 {
@@ -9,7 +11,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     {
     }
 
-    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
+    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -20,30 +22,30 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         ReportsTo = reportsTo;
     }
 
-    public Name Name { get; private set; } = null!;
-    public EmailAddress EmailAddress { get; private set; } = null!;
-    public DateOfBirth DateOfBirth { get; private set; } = null!;
+    public Name Name { get; private set; }
+    public EmailAddress EmailAddress { get; private set; }
+    public DateOfBirth DateOfBirth { get; private set; }
     public DateOnly HireDate { get; }
     public DateOnly? TerminationDate { get; private set; }
-    public virtual Role.Role Role { get; private set; }
+    public virtual Role Role { get; private set; }
     public virtual Employee ReportsTo { get; private set; }
 
-    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
+    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
     {
-        if (name == null) throw new ArgumentNullException(nameof(name));
-        if (emailAddress == null) throw new ArgumentNullException(nameof(emailAddress));
-        if (dateOfBirth == null) throw new ArgumentNullException(nameof(dateOfBirth));
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(emailAddress);
+        ArgumentNullException.ThrowIfNull(dateOfBirth);
 
         var error = CheckHierarchyRules(role, reportsTo);
 
         return error != null ? error : new Employee(name, emailAddress, dateOfBirth, role, reportsTo);
     }
 
-    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role.Role role, Employee reportsTo)
+    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
     {
-        if (name == null) throw new ArgumentNullException(nameof(name));
-        if (emailAddress == null) throw new ArgumentNullException(nameof(emailAddress));
-        if (dateOfBirth == null) throw new ArgumentNullException(nameof(dateOfBirth));
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(emailAddress);
+        ArgumentNullException.ThrowIfNull(dateOfBirth);
 
         var error = CheckHierarchyRules(role, reportsTo);
 
@@ -61,7 +63,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         TerminationDate = DateOnly.FromDateTime(DateTime.Now);
     }
     
-    private static Error CheckHierarchyRules(Role.Role role, Employee reportsTo)
+    private static Error CheckHierarchyRules(Role role, Employee reportsTo)
     {
         if (reportsTo == null || role == null) return default;
 
