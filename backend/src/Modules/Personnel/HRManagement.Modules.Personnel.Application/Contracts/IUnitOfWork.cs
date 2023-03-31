@@ -1,4 +1,6 @@
-﻿namespace HRManagement.Modules.Personnel.Application.Contracts;
+﻿using System.Threading.Tasks;
+
+namespace HRManagement.Modules.Personnel.Application.Contracts;
 
 public interface IUnitOfWork
 {

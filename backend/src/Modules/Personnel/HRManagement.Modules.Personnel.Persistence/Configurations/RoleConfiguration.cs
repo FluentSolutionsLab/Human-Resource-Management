@@ -1,4 +1,4 @@
-﻿using HRManagement.Modules.Personnel.Domain.Role;
+﻿using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

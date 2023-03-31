@@ -1,6 +1,6 @@
-﻿using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Domain.Employee;
-using HRManagement.Modules.Personnel.Domain.Role;
+﻿using System;
+using HRManagement.Common.Domain.Models;
+using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;

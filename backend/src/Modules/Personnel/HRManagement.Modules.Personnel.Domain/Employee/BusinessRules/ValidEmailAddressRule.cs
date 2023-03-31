@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using HRManagement.Common.Domain.Contracts;
 using HRManagement.Common.Domain.Models;
 
-namespace HRManagement.Modules.Personnel.Domain.Employee.BusinessRules;
+namespace HRManagement.Modules.Personnel.Domain.BusinessRules;
 
 public class ValidEmailAddressRule : IBusinessRule
 {

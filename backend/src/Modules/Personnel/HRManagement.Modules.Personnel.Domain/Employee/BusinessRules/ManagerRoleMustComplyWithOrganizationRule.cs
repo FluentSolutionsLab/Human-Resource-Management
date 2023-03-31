@@ -1,7 +1,8 @@
-﻿using HRManagement.Common.Domain.Contracts;
+﻿using System;
+using HRManagement.Common.Domain.Contracts;
 using HRManagement.Common.Domain.Models;
 
-namespace HRManagement.Modules.Personnel.Domain.Employee;
+namespace HRManagement.Modules.Personnel.Domain.BusinessRules;
 
 public class ManagerRoleMustComplyWithOrganizationRule : IBusinessRule
 {

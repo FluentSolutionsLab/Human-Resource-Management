@@ -2,10 +2,8 @@
 using AutoFixture.AutoMoq;
 using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.Features.Employee;
+using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;
-using HRManagement.Modules.Personnel.Domain.Employee;
-using HRManagement.Modules.Personnel.Domain.Role;
 using MediatR;
 using Moq;
 using Shouldly;
@@ -15,15 +13,14 @@ namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
 
 public class UpdateEmployeeCommandHandlerShould
 {
-    private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly UpdateEmployeeCommandHandler _sut;
 
     public UpdateEmployeeCommandHandlerShould()
     {
-        _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
-        _sut = _fixture.Create<UpdateEmployeeCommandHandler>();
+        var fixture = new Fixture().Customize(new AutoMoqCustomization());
+        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
+        _sut = fixture.Create<UpdateEmployeeCommandHandler>();
     }
 
     [Theory]
@@ -132,7 +129,7 @@ public class UpdateEmployeeCommandHandlerShould
 
         var result = await _sut.Handle(updateEmployee, CancellationToken.None);
 
-        result.Value.ShouldBe(Unit.Value);
+        result.IsSuccess.ShouldBeTrue();
         employee.Name.FirstName.ShouldEndWith(" Updated");
     }
 

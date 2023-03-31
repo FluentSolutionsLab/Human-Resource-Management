@@ -1,5 +1,6 @@
-﻿using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Domain.Employee;
+﻿using System;
+using HRManagement.Modules.Personnel.Application.Contracts;
+using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Persistence.Repositories;
 

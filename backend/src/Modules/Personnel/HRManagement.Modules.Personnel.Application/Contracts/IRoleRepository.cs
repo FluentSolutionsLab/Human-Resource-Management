@@ -1,4 +1,4 @@
-﻿using HRManagement.Modules.Personnel.Domain.Role;
+﻿using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.Contracts;
 

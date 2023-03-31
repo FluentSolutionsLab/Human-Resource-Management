@@ -1,7 +1,7 @@
 ﻿using HRManagement.Common.Domain.Contracts;
 using HRManagement.Common.Domain.Models;
 
-namespace HRManagement.Modules.Personnel.Domain.Role.BusinessRules;
+namespace HRManagement.Modules.Personnel.Domain;
 
 public class RoleNameCannotBeEmptyOrNull : IBusinessRule
 {
