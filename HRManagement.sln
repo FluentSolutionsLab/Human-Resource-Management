@@ -28,6 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Modules.Person
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Modules.Personnel.Persistence", "src\Modules\HRManagement.Modules.Personnel.Persistence\HRManagement.Modules.Personnel.Persistence.csproj", "{0E9874C1-7FEB-4B29-98F9-CD5609CBA379}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{2B658810-6B7C-4D8F-A97D-C5EAD4DCA4F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Api.IntegrationTests", "src\Tests\HRManagement.Api.IntegrationTests\HRManagement.Api.IntegrationTests.csproj", "{008E0AB9-3337-4589-B364-B587D201013A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +74,10 @@ Global
 		{0E9874C1-7FEB-4B29-98F9-CD5609CBA379}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E9874C1-7FEB-4B29-98F9-CD5609CBA379}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E9874C1-7FEB-4B29-98F9-CD5609CBA379}.Release|Any CPU.Build.0 = Release|Any CPU
+		{008E0AB9-3337-4589-B364-B587D201013A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{008E0AB9-3337-4589-B364-B587D201013A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{008E0AB9-3337-4589-B364-B587D201013A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{008E0AB9-3337-4589-B364-B587D201013A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A} = {F9CC4D5A-8F81-493E-8075-4AB8C96360F2}
@@ -82,5 +90,7 @@ Global
 		{1DD018DC-650D-4084-B926-1C44DDE2F326} = {E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A}
 		{7F8EDFFE-5157-44FC-9BFA-72061A01CAC2} = {E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A}
 		{0E9874C1-7FEB-4B29-98F9-CD5609CBA379} = {E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A}
+		{2B658810-6B7C-4D8F-A97D-C5EAD4DCA4F7} = {6E6ECBF8-30B9-41F5-98E1-AA4B740D6CA2}
+		{008E0AB9-3337-4589-B364-B587D201013A} = {2B658810-6B7C-4D8F-A97D-C5EAD4DCA4F7}
 	EndGlobalSection
 EndGlobal
