@@ -23,7 +23,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        Maybe<Domain.Employee> employee = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+        Maybe<Employee> employee = await _unitOfWork.Employees.GetByIdAsync(employeeId);
         if (employee.HasNoValue)
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 

@@ -2,6 +2,7 @@
 using Carter;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
+using HRManagement.Api.Utils;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.UseCases;
 using MediatR;
@@ -19,23 +20,26 @@ public class EmployeesManagement : ICarterModule
         const string employees = "/api/personnel-management/employees";
         const string routeContext = "Employees";
 
+        const string actionMethod = "GetEmployees";
         app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] PaginationParameters pagination) =>
             {
-                var (_, _, value, _) = await mediator.Send(new GetEmployeesQuery {PageNumber = pagination.PageNumber.Value, PageSize = pagination.PageSize.Value});
+                var query = new GetEmployeesQuery {PageNumber = pagination.PageNumber.Value, PageSize = pagination.PageSize.Value};
+                var result = await mediator.Send(query);
 
-                var paginationMetadata = BuildPaginationMetadata(value, pagination, linker);
+                var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, pagination, actionMethod, linker);
                 httpContext.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
-                return Results.Ok(value);
+                return Results.Ok(result.Value);
             })
             .Produces<List<EmployeeDto>>()
-            .WithName("GetEmployees")
+            .WithName(actionMethod)
             .WithDisplayName(routeContext)
             .WithMetadata();
 
         app.MapGet($"{employees}/{{id}}", async (IMediator mediator, string id) =>
             {
-                var (isSuccess, _, value, error) = await mediator.Send(new GetEmployeeQuery {EmployeeId = id});
+                var query = new GetEmployeeQuery {EmployeeId = id};
+                var (isSuccess, _, value, error) = await mediator.Send(query);
                 return isSuccess ? Results.Ok(value) : Results.NotFound(error);
             })
             .Produces<EmployeeDto>()
@@ -44,7 +48,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPost(employees, async (IMediator mediator, HireEmployeeDto newEmployee) =>
             {
-                var (isSuccess, _, employee, errors) = await mediator.Send(newEmployee.ToHireEmployeeCommand());
+                var command = newEmployee.ToHireEmployeeCommand();
+                var (isSuccess, _, employee, errors) = await mediator.Send(command);
                 return isSuccess
                     ? Results.Created($"{employees}/{{id}}", employee)
                     : Results.BadRequest(errors);
@@ -55,7 +60,8 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPut($"{employees}/{{id}}", async (IMediator mediator, string id, UpdateEmployeeDto updatedEmployee) =>
             {
-                var result = await mediator.Send(updatedEmployee.ToUpdateEmployeeCommand(id));
+                var command = updatedEmployee.ToUpdateEmployeeCommand(id);
+                var result = await mediator.Send(command);
                 return result.IsSuccess ? Results.NoContent() : Results.BadRequest(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
@@ -64,64 +70,22 @@ public class EmployeesManagement : ICarterModule
 
         app.MapPut($"{employees}/{{id}}/terminate", async (IMediator mediator, string id) =>
             {
-                var result = await mediator.Send(new TerminateEmployeeCommand {EmployeeId = id});
+                var command = new TerminateEmployeeCommand {EmployeeId = id};
+                var result = await mediator.Send(command);
                 return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<Error>(StatusCodes.Status404NotFound)
             .WithDisplayName(routeContext);
 
-        app.MapDelete($"{employees}/{{id}}", async (IMediator mediator, string id) =>
+        app.MapDelete($"{employees}/{{id}}/delete", async (IMediator mediator, string id) =>
             {
-                var result = await mediator.Send(new HardDeleteEmployeeCommand {EmployeeId = id});
+                var command = new HardDeleteEmployeeCommand {EmployeeId = id};
+                var result = await mediator.Send(command);
                 return result.IsSuccess ? Results.NoContent() : Results.NotFound(result.Error);
             })
             .Produces(StatusCodes.Status204NoContent)
             .Produces<Error>(StatusCodes.Status404NotFound)
             .WithDisplayName(routeContext);
-    }
-
-    private static object BuildPaginationMetadata(PagedList<EmployeeDto> value, PaginationParameters pagination, LinkGenerator linker)
-    {
-        var previousPageLink = value.HasPrevious
-            ? CreatePageResourceUri("GetEmployees", pagination, ResourceUriType.PreviousPage, linker)
-            : null;
-
-        var nextPageLink = value.HasNext
-            ? CreatePageResourceUri("GetEmployees", pagination, ResourceUriType.NextPage, linker)
-            : null;
-
-        var paginationMetadata = new
-        {
-            totalCount = value.TotalCount,
-            pageSize = value.PageSize,
-            currentPage = value.CurrentPage,
-            totalPages = value.TotalPages,
-            previousPageLink,
-            nextPageLink
-        };
-
-        return paginationMetadata;
-    }
-
-    private static string CreatePageResourceUri(string action, PaginationParameters authorsResourceParameters, ResourceUriType type, LinkGenerator linker)
-    {
-        return type switch
-        {
-            ResourceUriType.PreviousPage => linker.GetPathByName(action,
-                new
-                {
-                    pageNumber = authorsResourceParameters.PageNumber - 1,
-                    pageSize = authorsResourceParameters.PageSize,
-                }),
-            ResourceUriType.NextPage => linker.GetPathByName(action,
-                new
-                {
-                    pageNumber = authorsResourceParameters.PageNumber + 1,
-                    pageSize = authorsResourceParameters.PageSize,
-                }),
-            _ => linker.GetPathByName(action,
-                new {pageNumber = authorsResourceParameters.PageNumber, pageSize = authorsResourceParameters.PageSize,})
-        };
     }
 }
