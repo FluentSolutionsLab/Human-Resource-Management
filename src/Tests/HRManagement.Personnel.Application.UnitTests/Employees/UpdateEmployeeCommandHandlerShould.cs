@@ -4,12 +4,11 @@ using Bogus;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;
-using MediatR;
 using Moq;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
+namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class UpdateEmployeeCommandHandlerShould
 {

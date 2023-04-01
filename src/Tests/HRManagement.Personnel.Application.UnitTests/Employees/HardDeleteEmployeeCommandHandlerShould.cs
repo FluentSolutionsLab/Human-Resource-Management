@@ -8,7 +8,7 @@ using Moq;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Application.UnitTests.Employees;
+namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class HardDeleteEmployeeCommandHandlerShould
 {
