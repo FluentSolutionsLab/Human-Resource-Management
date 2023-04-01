@@ -2,7 +2,7 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Bogus;
-using HRManagement.Common.Domain.Models;
+using HRManagement.Common.Application.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Application.UseCases;
 using HRManagement.Modules.Personnel.Domain;

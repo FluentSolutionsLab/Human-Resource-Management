@@ -1,4 +1,5 @@
 ﻿using System;
+using HRManagement.Common.Pertinence.Repositories;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 

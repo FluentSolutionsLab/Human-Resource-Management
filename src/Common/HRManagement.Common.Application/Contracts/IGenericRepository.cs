@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
+using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
 
-namespace HRManagement.Modules.Personnel.Application.Contracts;
+namespace HRManagement.Common.Application.Contracts;
 
 public interface IGenericRepository<TEntity, TId> where TEntity : Entity<TId> where TId : struct
 {

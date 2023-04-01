@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Handlers;
-using HRManagement.Common.Domain.Models;
+using HRManagement.Common.Application.Contracts;
+using HRManagement.Common.Application.Models;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
