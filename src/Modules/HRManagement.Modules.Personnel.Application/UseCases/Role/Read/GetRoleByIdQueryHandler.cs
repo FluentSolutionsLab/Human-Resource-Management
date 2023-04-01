@@ -1,9 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.Contracts;
+﻿using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;

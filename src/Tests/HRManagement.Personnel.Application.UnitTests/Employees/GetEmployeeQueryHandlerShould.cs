@@ -1,14 +1,4 @@
-﻿using AutoFixture;
-using AutoFixture.AutoMoq;
-using Bogus;
-using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.UseCases;
-using HRManagement.Modules.Personnel.Domain;
-using Moq;
-using Shouldly;
-using Xunit;
-
-namespace HRManagement.Personnel.Application.UnitTests.Employees;
+﻿namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class GetEmployeeQueryHandlerShould
 {
