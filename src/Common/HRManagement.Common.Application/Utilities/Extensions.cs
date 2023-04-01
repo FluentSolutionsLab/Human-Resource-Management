@@ -1,4 +1,4 @@
-﻿namespace HRManagement.Common.Domain.Utilities;
+﻿namespace HRManagement.Common.Application.Utilities;
 
 public static class Extensions
 {
