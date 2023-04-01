@@ -1,4 +1,4 @@
-﻿using HRManagement.Common.Domain.Utilities;
+﻿using HRManagement.Common.Application.Utilities;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
