@@ -1,10 +1,11 @@
 using Bogus;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
+using HRManagement.Modules.Personnel.Domain;
 using Shouldly;
 using Xunit;
 
-namespace HRManagement.Modules.Personnel.Domain.UnitTests;
+namespace HRManagement.Personnel.Domain.UnitTests;
 
 public class EmployeeShould
 {
