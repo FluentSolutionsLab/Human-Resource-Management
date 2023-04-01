@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using CSharpFunctionalExtensions;
+using HRManagement.Common.Application.Handlers;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
