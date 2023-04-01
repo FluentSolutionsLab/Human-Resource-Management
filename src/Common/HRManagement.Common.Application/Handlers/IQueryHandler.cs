@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace HRManagement.Modules.Personnel.Application.Contracts.Handlers;
+namespace HRManagement.Common.Application.Handlers;
 
 public interface IQueryHandler<in TQuery, TResult> : IRequestHandler<TQuery, TResult> where TQuery : IQuery<TResult>
 {

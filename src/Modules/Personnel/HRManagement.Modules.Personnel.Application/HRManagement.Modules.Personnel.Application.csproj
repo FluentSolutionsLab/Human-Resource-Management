@@ -6,11 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Common\HRManagement.Common.Application\HRManagement.Common.Application.csproj" />
         <ProjectReference Include="..\HRManagement.Modules.Personnel.Domain\HRManagement.Modules.Personnel.Domain.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     </ItemGroup>
 
 </Project>

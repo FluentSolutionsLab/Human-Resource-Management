@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{827E5F
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Common.Domain", "src\Common\HRManagement.Common.Domain\HRManagement.Common.Domain.csproj", "{ED1B1205-7003-4782-A9FC-10F0C2547473}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Common.Application", "src\Common\HRManagement.Common.Application\HRManagement.Common.Application.csproj", "{CB8380B8-5987-41A8-A69C-18D1969A56FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +58,10 @@ Global
 		{ED1B1205-7003-4782-A9FC-10F0C2547473}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED1B1205-7003-4782-A9FC-10F0C2547473}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED1B1205-7003-4782-A9FC-10F0C2547473}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB8380B8-5987-41A8-A69C-18D1969A56FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB8380B8-5987-41A8-A69C-18D1969A56FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB8380B8-5987-41A8-A69C-18D1969A56FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB8380B8-5987-41A8-A69C-18D1969A56FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A} = {F9CC4D5A-8F81-493E-8075-4AB8C96360F2}
@@ -66,5 +72,6 @@ Global
 		{FC548DA3-474C-4645-9E0C-E422E489E2DB} = {B4898EC8-A53E-4AA7-85F1-0B6F106D1749}
 		{686F0122-A9D3-46AA-831C-4D4C34DEDAEF} = {E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A}
 		{ED1B1205-7003-4782-A9FC-10F0C2547473} = {827E5FF0-B1F1-4EE2-894A-B777D3F991CF}
+		{CB8380B8-5987-41A8-A69C-18D1969A56FF} = {827E5FF0-B1F1-4EE2-894A-B777D3F991CF}
 	EndGlobalSection
 EndGlobal

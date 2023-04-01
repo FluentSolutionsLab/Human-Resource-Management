@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
+using HRManagement.Common.Application.Handlers;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Application.Contracts.Handlers;
 using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
