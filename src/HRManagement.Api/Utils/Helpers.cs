@@ -1,5 +1,5 @@
 ﻿using HRManagement.Api.Models;
-using HRManagement.Common.Domain.Models;
+using HRManagement.Common.Application.Models;
 using Microsoft.AspNetCore.Routing;
 
 namespace HRManagement.Api.Utils;

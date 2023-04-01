@@ -1,22 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
+using HRManagement.Common.Application.Contracts;
+using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRManagement.Modules.Personnel.Persistence.Repositories;
+namespace HRManagement.Common.Pertinence.Repositories;
 
 public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
     where TEntity : Entity<TId> where TId : struct
 {
-    private readonly PersonnelDbContext _dbContext;
+    private readonly DbContext _dbContext;
     //TODO: Add Caching on Queries, and Resiliency on Commands
 
     private readonly DbSet<TEntity> _dbSet;
 
-    protected GenericRepository(PersonnelDbContext dbContext)
+    protected GenericRepository(DbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = dbContext.Set<TEntity>();
