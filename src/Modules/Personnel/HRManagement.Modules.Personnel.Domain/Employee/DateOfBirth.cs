@@ -38,7 +38,10 @@ public class DateOfBirth : ValueObject
     {
         var actualDateRule = CheckRule(new DateOfBirthMustBeActualDateRule(date));
         if (actualDateRule.IsFailure)
+        {
+            actualDate = default;
             return new List<Error> {Error.Deserialize(actualDateRule.Error)};
+        }
 
         actualDate = DateOnly.FromDateTime(DateTime.Parse(date));
 

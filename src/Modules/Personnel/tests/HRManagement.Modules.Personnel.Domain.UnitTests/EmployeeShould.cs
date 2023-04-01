@@ -63,7 +63,7 @@ public class EmployeeShould
         employee.TerminationDate.ShouldNotBeNull();
     }
 
-    private static Result<Employee, Error> BuildFakeEmployee(Role? role = null, Employee? manager = null)
+    private static Result<Employee, Error> BuildFakeEmployee(Role role = null, Employee manager = null)
     {
         var person = new Faker().Person;
         var employee = Employee.Create(
