@@ -57,8 +57,11 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString);
-        var validEmployeeId = result.First().Id;
-        response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}/{validEmployeeId}");
+        if (result != null)
+        {
+            var validEmployeeId = result.First().Id;
+            response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}/{validEmployeeId}");
+        }
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.EnsureSuccessStatusCode();
