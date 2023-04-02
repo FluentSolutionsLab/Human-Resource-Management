@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/cypherlab/Portfolio/_apis/build/status%2Fgabin-dongmo.Human-Resource-Management?branchName=main&jobName=Job)](https://dev.azure.com/cypherlab/Portfolio/_build/latest?definitionId=10&branchName=main)
+https://dev.azure.com/cypherlab/Portfolio/_apis/build/status%2Fgabin-dongmo.Human-Resource-Management?branchName=main&jobName=Job
 
 # Human Resource Management
 
