@@ -23,7 +23,9 @@ public class EmployeesManagement : ICarterModule
         const string actionMethod = "GetEmployees";
         app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] PaginationParameters pagination) =>
             {
-                var query = new GetEmployeesQuery {PageNumber = pagination.PageNumber.Value, PageSize = pagination.PageSize.Value};
+                var pageNumber = pagination.PageNumber.Value;
+                var pageSize = pagination.PageSize.Value;
+                var query = new GetEmployeesQuery {PageNumber = pageNumber, PageSize = pageSize};
                 var result = await mediator.Send(query);
 
                 var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, pagination, actionMethod, linker);
