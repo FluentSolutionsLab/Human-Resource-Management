@@ -46,3 +46,7 @@ if (app.Environment.IsDevelopment())
 app.MapCarter();
 
 app.Run();
+
+// For integration tests
+public partial class Program
+{ }
