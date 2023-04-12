@@ -13,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddPersistenceServices();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -23,6 +22,9 @@ builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true
 builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
 builder.Services.AddCarter();
 builder.Services.AddSwaggerGen(c => c.TagActionsBy(d => new List<string> {d.ActionDescriptor.DisplayName!}));
+
+// Add modules
+builder.Services.AddModulePersonnelManagement();
 
 var app = builder.Build();
 
@@ -35,12 +37,11 @@ if (app.Environment.IsDevelopment())
         options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
         options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{builder.Environment.ApplicationName} v1");
     });
-    // using (var serviceScope = app.Services.CreateScope())
-    // {
-    //     var services = serviceScope.ServiceProvider;
-    //     var personnelDbContext = services.GetRequiredService<PersonnelDbContext>();
-    //     await DatabaseInitializer.InitializeAsync(personnelDbContext);
-    // }
+    
+    /*
+     * Uncomment when you want to generate new data in Dev environment
+     */
+    // await app.Services.ModulePersonnelManagementDatabaseInitializer();
 }
 
 app.MapCarter();
