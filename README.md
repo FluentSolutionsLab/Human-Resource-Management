@@ -1,5 +1,3 @@
-[![Build Status](https://dev.azure.com/cypherlab/Portfolio/_apis/build/status%2Fgabin-dongmo.Human-Resource-Management?branchName=main)](https://dev.azure.com/cypherlab/Portfolio/_build/latest?definitionId=10&branchName=main)
-
 # Human Resource Management
 
 A project showcasing the use of the monolith modular architecture with domain-driven design to build an API.
