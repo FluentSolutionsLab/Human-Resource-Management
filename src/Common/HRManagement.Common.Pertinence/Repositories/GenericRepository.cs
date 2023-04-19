@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Common.Pertinence.Repositories;
 
-public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
+public abstract class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
     where TEntity : Entity<TId> where TId : struct
 {
     private readonly DbContext _dbContext;
