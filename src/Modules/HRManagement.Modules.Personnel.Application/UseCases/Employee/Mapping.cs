@@ -15,7 +15,8 @@ public static partial class Mapping
             DateOfBirth = employee.DateOfBirth.Date.ToISO8601String(),
             HireDate = employee.HireDate.ToISO8601String(),
             Role = employee.Role?.ToString(),
-            Manager = employee.ReportsTo?.Name.ToString()
+            Manager = employee.Manager?.Name.ToString(),
+            Managed = employee.ManagedEmployees.Select(x => x.Name.ToString()).ToList()
         };
     }
     
