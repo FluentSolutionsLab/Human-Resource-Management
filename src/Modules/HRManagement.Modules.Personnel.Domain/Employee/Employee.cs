@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Domain.BusinessRules;
@@ -7,11 +9,13 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public class Employee : Common.Domain.Models.Entity<Guid>
 {
+    private readonly List<Employee> _managedEmployees = new();
+    
     protected Employee()
     {
     }
 
-    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
+    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee manager)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -19,7 +23,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         DateOfBirth = dateOfBirth;
         HireDate = DateOnly.FromDateTime(DateTime.Now);
         Role = role;
-        ReportsTo = reportsTo;
+        Manager = manager;
     }
 
     public Name Name { get; private set; }
@@ -28,7 +32,8 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     public DateOnly HireDate { get; }
     public DateOnly? TerminationDate { get; private set; }
     public virtual Role Role { get; private set; }
-    public virtual Employee ReportsTo { get; private set; }
+    public virtual Employee Manager { get; private set; }
+    public virtual IReadOnlyList<Employee> ManagedEmployees => _managedEmployees.ToList();
 
     public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
     {
@@ -53,7 +58,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         EmailAddress = emailAddress;
         DateOfBirth = dateOfBirth;
         Role = role;
-        ReportsTo = reportsTo;
+        Manager = reportsTo;
 
         return error != null ? error : this;
     }
@@ -69,5 +74,10 @@ public class Employee : Common.Domain.Models.Entity<Guid>
 
         var mustReportToIntendedRoleRule = CheckRule(new ManagerRoleMustComplyWithOrganizationRule(reportsTo.Role.Name, role.ReportsTo.Name));
         return mustReportToIntendedRoleRule.IsFailure ? Error.Deserialize(mustReportToIntendedRoleRule.Error) : default;
+    }
+
+    public override string ToString()
+    {
+        return Name + " - " + Role.Name;
     }
 }

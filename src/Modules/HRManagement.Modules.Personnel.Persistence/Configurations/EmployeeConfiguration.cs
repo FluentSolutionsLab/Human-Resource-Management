@@ -29,8 +29,9 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
         builder.Property(x => x.TerminationDate).HasColumnName("TerminationDate").HasConversion<DateOnlyConverter, DateOnlyComparer>();
         builder.HasOne(x => x.Role).WithMany().IsRequired();
         builder.Property<byte>("RoleId").HasColumnName("RoleId").IsRequired();
-        builder.HasOne(x => x.ReportsTo).WithMany();
-        builder.Property<Guid?>("ReportsToId").HasColumnName("ReportsToId");
+        builder.HasOne(x => x.Manager).WithMany();
+        builder.Property<Guid?>("ManagerId").HasColumnName("ManagerId");
+        builder.HasMany(x => x.ManagedEmployees).WithOne(x => x.Manager);
     }
 }
 
