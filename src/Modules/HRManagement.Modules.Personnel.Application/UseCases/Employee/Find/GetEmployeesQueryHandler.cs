@@ -12,8 +12,7 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<PagedList<EmployeeDto>>> Handle(GetEmployeesQuery request,
-        CancellationToken cancellationToken)
+    public async Task<Result<PagedList<EmployeeDto>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
     {
         var array = new[] {nameof(Employee.Role), nameof(Employee.Manager), nameof(Employee.ManagedEmployees)};
         var includedProperties = string.Join(',', array);
