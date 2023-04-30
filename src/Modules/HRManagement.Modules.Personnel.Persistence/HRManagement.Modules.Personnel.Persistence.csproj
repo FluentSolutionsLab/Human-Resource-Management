@@ -6,6 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.4" />
         <PackageReference Include="Bogus" Version="34.0.2" />
     </ItemGroup>
 

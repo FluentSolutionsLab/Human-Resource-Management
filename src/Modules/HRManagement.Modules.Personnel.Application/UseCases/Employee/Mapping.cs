@@ -1,4 +1,5 @@
-﻿using HRManagement.Common.Application.Utilities;
+﻿using System;
+using HRManagement.Common.Application.Utilities;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
@@ -15,8 +16,13 @@ public static partial class Mapping
             DateOfBirth = employee.DateOfBirth.Date.ToISO8601String(),
             HireDate = employee.HireDate.ToISO8601String(),
             Role = employee.Role?.ToString(),
-            Manager = employee.Manager?.Name.ToString(),
-            Managed = employee.ManagedEmployees.Select(x => x.Name.ToString()).ToList()
+            Manager = new EmployeeManagerDto
+            {
+                Id = employee.Manager?.Id.ToString(),
+                FirstName = employee.Manager?.Name.FirstName,
+                LastName = employee.Manager?.Name.LastName,
+                Role = employee.Manager?.Role?.ToString()
+            }
         };
     }
     

@@ -6,14 +6,14 @@ namespace HRManagement.Api.Utils;
 
 public static class Helpers
 {
-    public static object BuildPaginationMetadata<TResponseDto>(PagedList<TResponseDto> value, PaginationParameters pagination, string actionMethod, LinkGenerator linker)
+    public static object BuildPaginationMetadata<TResponseDto>(PagedList<TResponseDto> value, FilterParameters filter, string actionMethod, LinkGenerator linker)
     {
         var previousPageLink = value.HasPrevious
-            ? CreatePageResourceUri(actionMethod, pagination, ResourceUriType.PreviousPage, linker)
+            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.PreviousPage, linker)
             : null;
 
         var nextPageLink = value.HasNext
-            ? CreatePageResourceUri(actionMethod, pagination, ResourceUriType.NextPage, linker)
+            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.PreviousPage, linker)
             : null;
 
         var paginationMetadata = new
@@ -28,25 +28,14 @@ public static class Helpers
 
         return paginationMetadata;
     }
-    
-    private static string CreatePageResourceUri(string action, PaginationParameters authorsResourceParameters, ResourceUriType type, LinkGenerator linker)
+
+    private static string CreatePageResourceUri(string action, int pageNumber, int pageSize, ResourceUriType type, LinkGenerator linker)
     {
         return type switch
         {
-            ResourceUriType.PreviousPage => linker.GetPathByName(action,
-                new
-                {
-                    pageNumber = authorsResourceParameters.PageNumber - 1,
-                    pageSize = authorsResourceParameters.PageSize,
-                }),
-            ResourceUriType.NextPage => linker.GetPathByName(action,
-                new
-                {
-                    pageNumber = authorsResourceParameters.PageNumber + 1,
-                    pageSize = authorsResourceParameters.PageSize,
-                }),
-            _ => linker.GetPathByName(action,
-                new {pageNumber = authorsResourceParameters.PageNumber, pageSize = authorsResourceParameters.PageSize,})
+            ResourceUriType.PreviousPage => linker.GetPathByName(action, new {pageNumber = pageNumber - 1, pageSize}),
+            ResourceUriType.NextPage => linker.GetPathByName(action, new {pageNumber = pageNumber + 1, pageSize}),
+            _ => linker.GetPathByName(action, new {pageNumber, pageSize})
         };
     }
 }

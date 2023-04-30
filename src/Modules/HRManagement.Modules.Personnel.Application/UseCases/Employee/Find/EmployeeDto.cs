@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class EmployeeDto
@@ -11,6 +9,5 @@ public class EmployeeDto
     public string DateOfBirth { get; set; }
     public string HireDate { get; set; }
     public string Role { get; set; }
-    public string Manager { get; set; }
-    public List<string> Managed { get; set; }
+    public EmployeeManagerDto Manager { get; set; }
 }
