@@ -4,7 +4,7 @@ using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
+public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeExtendedDto, Error>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -13,7 +13,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<EmployeeDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<EmployeeExtendedDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
@@ -22,6 +22,6 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         if (employee.HasNoValue)
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        return employee.Value.ToResponseDto();
+        return employee.Value.ToResponseExtendedDto();
     }
 }
