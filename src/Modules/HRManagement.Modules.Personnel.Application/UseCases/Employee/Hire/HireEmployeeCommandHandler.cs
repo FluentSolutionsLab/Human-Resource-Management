@@ -26,10 +26,10 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         Maybe<Role> maybeRole = await _unitOfWork.Roles.GetByIdAsync(request.RoleId);
         if (maybeRole.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Role), request.RoleId)};
 
-        Maybe<Domain.Employee> maybeManager = await _unitOfWork.Employees.GetByIdAsync(reportsToId);
+        Maybe<Employee> maybeManager = await _unitOfWork.Employees.GetByIdAsync(reportsToId);
         if (maybeManager.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
-        Expression<Func<Domain.Employee, bool>> existingEmployeeCondition =
+        Expression<Func<Employee, bool>> existingEmployeeCondition =
             e => e.Name.FirstName == request.FirstName
                  && e.Name.LastName == request.LastName
                  && e.DateOfBirth.Date == dateOfBirthCreation.Value.Date;

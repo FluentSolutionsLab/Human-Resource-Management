@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace HRManagement.Api.Endpoints;
+namespace HRManagement.Api.Endpoints.PersonnelManagement;
 
 public class RolesManagement : ICarterModule
 {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Domain.BusinessRules;
 using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
 namespace HRManagement.Modules.Personnel.Domain;
