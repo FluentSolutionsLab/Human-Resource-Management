@@ -37,13 +37,19 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
             cacheKeyBuilder.Append($"&searchQuery={searchQuery}");
         }
 
+        Func<IQueryable<Employee>, IOrderedQueryable<Employee>> orderBy = queryable =>
+            queryable
+                .OrderBy(e => e.Name.LastName)
+                .ThenBy(e => e.Name.FirstName);
+
         var employeeListCacheKey = cacheKeyBuilder.ToString();
         if (!_cache.TryGetValue(employeeListCacheKey, out PagedList<Employee> employees))
         {
             employees = await _unitOfWork.Employees.GetAsync(
                 filter: filter,
                 pageNumber: pageNumber,
-                pageSize: pageSize);
+                pageSize: pageSize,
+                orderBy: orderBy);
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromSeconds(60))
