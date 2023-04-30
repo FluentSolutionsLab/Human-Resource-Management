@@ -23,8 +23,8 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         var pageNumber = request.FilterParameters.PageNumber;
         var pageSize = request.FilterParameters.PageSize;
 
-        var sb = new StringBuilder();
-        sb.Append($"employeeList?pageNumber={pageNumber}&pageSize={pageSize}");
+        var cacheKeyBuilder = new StringBuilder();
+        cacheKeyBuilder.Append($"employeeList?pageNumber={pageNumber}&pageSize={pageSize}");
         
         Expression<Func<Employee, bool>> filter = null;
         if (!string.IsNullOrWhiteSpace(request.FilterParameters.SearchQuery))
@@ -34,10 +34,10 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
                                  || employee.Name.LastName.Contains(searchQuery)
                                  || employee.EmailAddress.Email.Contains(searchQuery)
                                  || employee.Role.Name.Contains(searchQuery);
-            sb.Append($"&searchQuery={searchQuery}");
+            cacheKeyBuilder.Append($"&searchQuery={searchQuery}");
         }
 
-        var employeeListCacheKey = sb.ToString();
+        var employeeListCacheKey = cacheKeyBuilder.ToString();
         if (!_cache.TryGetValue(employeeListCacheKey, out PagedList<Employee> employees))
         {
             employees = await _unitOfWork.Employees.GetAsync(
