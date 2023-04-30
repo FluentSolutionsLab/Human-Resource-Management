@@ -10,7 +10,6 @@ public abstract class GenericRepository<TEntity, TId> : IGenericRepository<TEnti
     where TEntity : Entity<TId> where TId : struct
 {
     private readonly DbContext _dbContext;
-    //TODO: Add Caching on Queries, and Resiliency on Commands
 
     private readonly DbSet<TEntity> _dbSet;
 
