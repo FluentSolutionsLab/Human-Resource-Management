@@ -21,7 +21,7 @@ public class GetEmployeeQueryHandlerShould
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
-            null,
+            Role.Create("CEO", null).Value,
             null).Value;
         _mockUnitOfWork
             .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
