@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, UnitResult<List<Error>>>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMemoryCache _cache;
 
-    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork)
+    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
+        _cache = cache;
     }
 
     public async Task<UnitResult<List<Error>>> Handle(UpdateEmployeeCommand request, CancellationToken cancellationToken)
@@ -42,6 +45,8 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         
         _unitOfWork.Employees.Update(employee);
         await _unitOfWork.SaveChangesAsync();
+        
+        _cache.Remove($"GetEmployeeQuery/{employeeId}");
 
         return UnitResult.Success<List<Error>>();
     }
