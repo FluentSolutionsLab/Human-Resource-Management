@@ -24,8 +24,8 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         var pageSize = request.FilterParameters.PageSize;
 
         var cacheKeyBuilder = new StringBuilder();
-        cacheKeyBuilder.Append($"employeeList?pageNumber={pageNumber}&pageSize={pageSize}");
-        
+        cacheKeyBuilder.Append($"GetEmployeesQuery?pageNumber={pageNumber}&pageSize={pageSize}");
+
         Expression<Func<Employee, bool>> filter = null;
         if (!string.IsNullOrWhiteSpace(request.FilterParameters.SearchQuery))
         {
