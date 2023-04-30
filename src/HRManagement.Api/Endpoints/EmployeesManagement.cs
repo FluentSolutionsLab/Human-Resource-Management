@@ -3,6 +3,7 @@ using Carter;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Models;
 using HRManagement.Api.Utils;
+using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Application.UseCases;
 using MediatR;
@@ -21,14 +22,12 @@ public class EmployeesManagement : ICarterModule
         const string routeContext = "Employees";
 
         const string actionMethod = "GetEmployees";
-        app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] PaginationParameters pagination) =>
+        app.MapGet(employees, async (IMediator mediator, HttpContext httpContext, LinkGenerator linker, [AsParameters] FilterParameters parameters) =>
             {
-                var pageNumber = pagination.PageNumber.Value;
-                var pageSize = pagination.PageSize.Value;
-                var query = new GetEmployeesQuery {PageNumber = pageNumber, PageSize = pageSize};
+                var query = new GetEmployeesQuery {FilterParameters = parameters};
                 var result = await mediator.Send(query);
 
-                var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, pagination, actionMethod, linker);
+                var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, parameters, actionMethod, linker);
                 httpContext.Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
 
                 return Results.Ok(result.Value);

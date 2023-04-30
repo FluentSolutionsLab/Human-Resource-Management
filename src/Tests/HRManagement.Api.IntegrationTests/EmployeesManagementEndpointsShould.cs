@@ -21,24 +21,10 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
     }
     
     [Fact]
-    public async Task SuccessfullyReturnListOfEmployees()
-    {
-        var response = await _httpClient.GetAsync(ApiPersonnelManagementEmployees);
-
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.EnsureSuccessStatusCode();
-        
-        var responseString = await response.Content.ReadAsStringAsync();
-        var result = JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString);
-
-        result.ShouldNotBeNull();
-    }
-
-    [Fact]
     public async Task SuccessfullyReturnPagedListOfEmployees()
     {
         const int pageSize = 20;
-        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}?pageNumber2&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}?pageNumber=2&pageSize={pageSize}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.EnsureSuccessStatusCode();
@@ -53,7 +39,7 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
     [Fact]
     public async Task SuccessfullyReturnSingleEmployee_WhenValidIdProvided()
     {
-        var response = await _httpClient.GetAsync(ApiPersonnelManagementEmployees);
+        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}?pageNumber=2&pageSize=10");
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString);
@@ -71,6 +57,14 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         var employee = JsonConvert.DeserializeObject<EmployeeDto>(responseString);
 
         employee.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task FailToReturnListOfEmployees_WhenPagingParametersNotProvided()
+    {
+        var response = await _httpClient.GetAsync(ApiPersonnelManagementEmployees);
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Fact]

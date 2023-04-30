@@ -24,7 +24,7 @@ public class PersonnelDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(_connectionString);
+        optionsBuilder.UseSqlServer(_connectionString).UseLazyLoadingProxies();
         if (_isDevEnvironment)
         {
             var loggerFactory = LoggerFactory.Create(builder =>
