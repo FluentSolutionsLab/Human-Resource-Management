@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Carter;
 using CSharpFunctionalExtensions;
-using HRManagement.Api.Models;
 using HRManagement.Api.Utils;
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
@@ -12,7 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Newtonsoft.Json;
 
-namespace HRManagement.Api.Endpoints;
+namespace HRManagement.Api.Endpoints.PersonnelManagement;
 
 public class EmployeesManagement : ICarterModule
 {

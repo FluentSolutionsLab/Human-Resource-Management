@@ -1,11 +1,11 @@
-﻿using System;
-using HRManagement.Common.Application.Utilities;
+﻿using HRManagement.Common.Application.Utilities;
+using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public static partial class Mapping
 {
-    public static EmployeeDto ToResponseDto(this Domain.Employee employee)
+    public static EmployeeDto ToResponseDto(this Employee employee)
     {
         return new EmployeeDto
         {
