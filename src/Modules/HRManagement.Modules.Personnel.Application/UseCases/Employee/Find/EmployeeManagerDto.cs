@@ -1,9 +1,11 @@
-﻿namespace HRManagement.Modules.Personnel.Application.UseCases;
+﻿using System.Text.Json.Serialization;
+
+namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class EmployeeManagerDto
 {
-    public string Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Role { get; set; }
+    [JsonPropertyName("id")] public string Id { get; set; }
+    [JsonPropertyName("first_name")] public string FirstName { get; set; }
+    [JsonPropertyName("last_name")] public string LastName { get; set; }
+    [JsonPropertyName("role")] public string Role { get; set; }
 }

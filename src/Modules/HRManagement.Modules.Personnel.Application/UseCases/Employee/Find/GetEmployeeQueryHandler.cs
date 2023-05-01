@@ -5,7 +5,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeExtendedDto, Error>>
+public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
@@ -16,7 +16,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         _cache = cache;
     }
 
-    public async Task<Result<EmployeeExtendedDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
+    public async Task<Result<EmployeeDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
     {
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
@@ -36,6 +36,6 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
             _cache.Set(queryCacheKey, employee, cacheEntryOptions);
         }
         
-        return employee.ToResponseExtendedDto();
+        return employee.ToResponseDto();
     }
 }

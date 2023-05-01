@@ -1,7 +1,9 @@
-﻿namespace HRManagement.Modules.Personnel.Application.UseCases;
+﻿using System.Text.Json.Serialization;
+
+namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class UpdateRoleDto
 {
-    public string Name { get; set; }
-    public byte? ReportsToId { get; set; }
+    [JsonPropertyName("name")] public string Name { get; set; }
+    [JsonPropertyName("manager_role_id")] public byte? ReportsToId { get; set; }
 }
