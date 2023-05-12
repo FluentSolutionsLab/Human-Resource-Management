@@ -1,5 +1,4 @@
-﻿using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Domain;
+﻿using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 

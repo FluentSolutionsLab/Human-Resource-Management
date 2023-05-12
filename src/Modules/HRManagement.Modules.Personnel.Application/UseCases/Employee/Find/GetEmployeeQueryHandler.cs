@@ -1,5 +1,4 @@
 ﻿using System;
-using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.Extensions.Caching.Memory;
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.Extensions.Caching.Memory;
 
