@@ -6,9 +6,9 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployeeCommand, UnitResult<Error>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public TerminateEmployeeCommandHandler(IGenericUnitOfWork unitOfWork)
+    public TerminateEmployeeCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }

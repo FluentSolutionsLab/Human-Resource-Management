@@ -9,10 +9,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<PagedList<EmployeeDto>>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public GetEmployeesQueryHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
+    public GetEmployeesQueryHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;

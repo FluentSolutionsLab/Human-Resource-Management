@@ -1,15 +1,17 @@
-﻿namespace HRManagement.Personnel.Application.UnitTests.Employees;
+﻿using HRManagement.Common.Application.Contracts;
+
+namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class GetEmployeeQueryHandlerShould
 {
     private readonly IFixture _fixture;
-    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly GetEmployeeQueryHandler _sut;
 
     public GetEmployeeQueryHandlerShould()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = _fixture.Freeze<Mock<IGenericUnitOfWork>>();
+        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
         _sut = _fixture.Create<GetEmployeeQueryHandler>();
     }
 

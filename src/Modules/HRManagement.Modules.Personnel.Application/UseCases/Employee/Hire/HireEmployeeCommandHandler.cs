@@ -11,10 +11,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public HireEmployeeCommandHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
+    public HireEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;

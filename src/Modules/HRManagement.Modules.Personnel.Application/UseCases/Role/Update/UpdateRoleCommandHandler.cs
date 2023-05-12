@@ -6,9 +6,9 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitResult<List<Error>>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public UpdateRoleCommandHandler(IGenericUnitOfWork unitOfWork)
+    public UpdateRoleCommandHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }

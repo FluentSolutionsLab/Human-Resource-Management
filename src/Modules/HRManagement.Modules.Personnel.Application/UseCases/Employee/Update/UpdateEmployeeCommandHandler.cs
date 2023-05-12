@@ -8,10 +8,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, UnitResult<List<Error>>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public UpdateEmployeeCommandHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
+    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;
