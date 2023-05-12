@@ -1,5 +1,5 @@
 ﻿using System;
-using HRManagement.Common.Domain.Models;
+using HRManagement.Common.Application.Models;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
