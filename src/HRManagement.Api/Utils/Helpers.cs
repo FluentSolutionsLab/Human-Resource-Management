@@ -13,7 +13,7 @@ public static class Helpers
             : null;
 
         var nextPageLink = value.HasNext
-            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.PreviousPage, linker)
+            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.NextPage, linker)
             : null;
 
         var paginationMetadata = new
