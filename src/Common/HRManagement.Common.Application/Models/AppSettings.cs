@@ -1,4 +1,4 @@
-﻿namespace HRManagement.Common.Domain.Models;
+﻿namespace HRManagement.Common.Application.Models;
 
 public class AppSettings
 {

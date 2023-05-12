@@ -1,3 +1,4 @@
+using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
