@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Carter;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
@@ -13,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -20,8 +19,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
-builder.Services.AddCarter();
-builder.Services.AddSwaggerGen(c => c.TagActionsBy(d => new List<string> {d.ActionDescriptor.DisplayName!}));
 builder.Services.AddMemoryCache();
 
 // Add modules
@@ -45,7 +42,11 @@ if (app.Environment.IsDevelopment())
     // await app.Services.ModulePersonnelManagementDatabaseInitializer();
 }
 
-app.MapCarter();
+app.UseHttpsRedirection();
+
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
 
