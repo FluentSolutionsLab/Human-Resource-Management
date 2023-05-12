@@ -6,14 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Common.Pertinence.Repositories;
 
-public abstract class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
+public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
     where TEntity : Entity<TId> where TId : struct
 {
     private readonly DbContext _dbContext;
 
     private readonly DbSet<TEntity> _dbSet;
 
-    protected GenericRepository(DbContext dbContext)
+    public GenericRepository(DbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = dbContext.Set<TEntity>();

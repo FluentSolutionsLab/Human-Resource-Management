@@ -2,13 +2,13 @@ namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
     private readonly HireEmployeeCommandHandler _sut;
 
     public HireEmployeeCommandHandlerShould()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockUnitOfWork = fixture.Freeze<Mock<IGenericUnitOfWork>>();
         _sut = fixture.Create<HireEmployeeCommandHandler>();
     }
 
@@ -64,7 +64,7 @@ public class HireEmployeeCommandHandlerShould
     {
         var person = new Faker().Person;
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetAsync(
+            .Setup(d => d.GetRepository<Employee, Guid>().GetAsync(
                 It.IsAny<Expression<Func<Employee, bool>>>(),
                 It.IsAny<Func<IQueryable<Employee>, IOrderedQueryable<Employee>>>(),
                 It.IsNotNull<string>(),

@@ -8,10 +8,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, UnitResult<List<Error>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public UpdateEmployeeCommandHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;
@@ -22,20 +22,20 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.EmployeeId)};
 
-        Maybe<Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue)
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), employeeId)};
 
         var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
         if (errors.Any()) return errors;
 
-        Maybe<Role> maybeRole = await _unitOfWork.Roles.GetByIdAsync(request.RoleId);
+        Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
         if (maybeRole.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Role), request.RoleId)};
 
         if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
-        Maybe<Employee> maybeManager = await _unitOfWork.Employees.GetByIdAsync(reportsToId);
+        Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
         if (maybeManager.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
         var employee = employeeOrNot.Value;
@@ -43,7 +43,7 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         var employeeUpdate = employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, maybeRole.Value, maybeManager.Value);
         if (employeeUpdate.IsFailure) return new List<Error>{employeeUpdate.Error};
         
-        _unitOfWork.Employees.Update(employee);
+        _unitOfWork.GetRepository<Employee, Guid>().Update(employee);
         await _unitOfWork.SaveChangesAsync();
         
         _cache.Remove($"GetEmployeeQuery/{employeeId}");

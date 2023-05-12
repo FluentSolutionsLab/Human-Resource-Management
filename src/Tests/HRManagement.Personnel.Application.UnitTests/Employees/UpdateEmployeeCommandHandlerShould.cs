@@ -2,13 +2,13 @@
 
 public class UpdateEmployeeCommandHandlerShould
 {
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
     private readonly UpdateEmployeeCommandHandler _sut;
 
     public UpdateEmployeeCommandHandlerShould()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockUnitOfWork = fixture.Freeze<Mock<IGenericUnitOfWork>>();
         _sut = fixture.Create<UpdateEmployeeCommandHandler>();
     }
 
@@ -18,7 +18,7 @@ public class UpdateEmployeeCommandHandlerShould
     {
         var person = new Person();
         _mockUnitOfWork
-            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(uow => uow.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.FirstName = firstName;
@@ -36,7 +36,7 @@ public class UpdateEmployeeCommandHandlerShould
     {
         var person = new Person();
         _mockUnitOfWork
-            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(uow => uow.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.EmailAddress = emailAddress;
@@ -52,7 +52,7 @@ public class UpdateEmployeeCommandHandlerShould
     {
         var person = new Person();
         _mockUnitOfWork
-            .Setup(uow => uow.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(uow => uow.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(BuildFakeEmployee(person));
         var command = BuildFakeCommand(person);
         command.DateOfBirth = dateOfBirth;
@@ -82,7 +82,7 @@ public class UpdateEmployeeCommandHandlerShould
         var person = new Faker().Person;
         var updateEmployee = BuildFakeCommand(person);
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
 
         var result = await _sut.Handle(updateEmployee, CancellationToken.None);
@@ -102,10 +102,10 @@ public class UpdateEmployeeCommandHandlerShould
         var employee = BuildFakeEmployee(person, presidentRole, manager);
         var updateEmployee = BuildFakeCommand(person);
         _mockUnitOfWork
-            .SetupSequence(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .SetupSequence(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employee)
             .ReturnsAsync(() => manager);
-        _mockUnitOfWork.Setup(d => d.Roles.GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
+        _mockUnitOfWork.Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
         _mockUnitOfWork
             .Setup(d => d.SaveChangesAsync())
             .Callback(() =>
