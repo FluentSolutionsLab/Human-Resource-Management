@@ -1,14 +1,16 @@
-﻿namespace HRManagement.Personnel.Application.UnitTests.Employees;
+﻿using HRManagement.Common.Application.Contracts;
+
+namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class UpdateEmployeeCommandHandlerShould
 {
-    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly UpdateEmployeeCommandHandler _sut;
 
     public UpdateEmployeeCommandHandlerShould()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = fixture.Freeze<Mock<IGenericUnitOfWork>>();
+        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
         _sut = fixture.Create<UpdateEmployeeCommandHandler>();
     }
 

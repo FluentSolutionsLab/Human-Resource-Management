@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Common.Pertinence.Repositories;
-using HRManagement.Modules.Personnel.Application.Contracts;
+using Microsoft.EntityFrameworkCore;
 
-namespace HRManagement.Modules.Personnel.Persistence.Repositories;
+namespace HRManagement.Common.Pertinence.Repositories;
 
-public class GenericUnitOfWork : IGenericUnitOfWork, IDisposable
+public class UnitOfWork : IUnitOfWork, IDisposable
 {
-    private readonly PersonnelDbContext _dbContext;
+    private readonly DbContext _dbContext;
     private bool _disposed;
     private Hashtable _repositories;
 
-    public GenericUnitOfWork(PersonnelDbContext dbContext)
+    public UnitOfWork(DbContext dbContext)
     {
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }

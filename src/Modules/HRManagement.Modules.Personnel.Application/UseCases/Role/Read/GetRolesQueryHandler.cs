@@ -6,9 +6,9 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<List<RoleDto>>>
 {
-    private readonly IGenericUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public GetRolesQueryHandler(IGenericUnitOfWork unitOfWork)
+    public GetRolesQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
