@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Pertinence.Repositories;
 using HRManagement.Modules.Personnel.Application;
-using HRManagement.Modules.Personnel.Application.Contracts;
-using HRManagement.Modules.Personnel.Persistence.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HRManagement.Modules.Personnel.Persistence;

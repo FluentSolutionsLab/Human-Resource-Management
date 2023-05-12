@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Text;
-using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.Extensions.Caching.Memory;
 

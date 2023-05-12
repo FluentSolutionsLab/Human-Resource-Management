@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using HRManagement.Modules.Personnel.Application.Contracts;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.Extensions.Caching.Memory;
 
