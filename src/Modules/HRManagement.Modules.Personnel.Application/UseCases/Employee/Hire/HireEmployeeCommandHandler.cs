@@ -11,10 +11,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public HireEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public HireEmployeeCommandHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;
@@ -28,10 +28,10 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
-        Maybe<Role> maybeRole = await _unitOfWork.Roles.GetByIdAsync(request.RoleId);
+        Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
         if (maybeRole.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Role), request.RoleId)};
 
-        Maybe<Employee> maybeManager = await _unitOfWork.Employees.GetByIdAsync(reportsToId);
+        Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
         if (maybeManager.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
         Expression<Func<Employee, bool>> existingEmployeeCondition =
@@ -39,14 +39,14 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
                  && e.Name.LastName == request.LastName
                  && e.DateOfBirth.Date == dateOfBirthCreation.Value.Date;
 
-        var existingEmployees = await _unitOfWork.Employees.GetAsync(existingEmployeeCondition);
+        var existingEmployees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
         var employeeCreation = Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, maybeRole.Value, maybeManager.Value);
         if (employeeCreation.IsFailure) return new List<Error>{employeeCreation.Error};
 
         var employee = employeeCreation.Value;
-        await _unitOfWork.Employees.AddAsync(employee);
+        await _unitOfWork.GetRepository<Employee, Guid>().AddAsync(employee);
         await _unitOfWork.SaveChangesAsync();
 
         // Clear the memory cache of keys related to the same context

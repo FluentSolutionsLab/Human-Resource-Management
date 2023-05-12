@@ -3,13 +3,13 @@
 public class TerminateEmployeeCommandHandlerShould
 {
     private readonly IFixture _fixture;
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
     private readonly TerminateEmployeeCommandHandler _sut;
 
     public TerminateEmployeeCommandHandlerShould()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockUnitOfWork = _fixture.Freeze<Mock<IGenericUnitOfWork>>();
         _sut = _fixture.Create<TerminateEmployeeCommandHandler>();
     }
 
@@ -31,7 +31,7 @@ public class TerminateEmployeeCommandHandlerShould
     {
         var updateEmployee = BuildFakeCommand();
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
 
         var result = await _sut.Handle(updateEmployee, CancellationToken.None);
@@ -47,7 +47,7 @@ public class TerminateEmployeeCommandHandlerShould
         var employees = new List<Employee>{BuildFakeEmployee(person)};
         var terminateEmployee = BuildFakeCommand();
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employees.First());
         _mockUnitOfWork
             .Setup(d => d.SaveChangesAsync());

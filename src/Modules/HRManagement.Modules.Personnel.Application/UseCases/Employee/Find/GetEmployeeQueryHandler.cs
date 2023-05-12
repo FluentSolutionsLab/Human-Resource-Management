@@ -7,10 +7,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public GetEmployeeQueryHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public GetEmployeeQueryHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;
@@ -24,7 +24,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         var queryCacheKey = $"GetEmployeeQuery/{employeeId}";
         if (!_cache.TryGetValue(queryCacheKey, out Employee employee))
         {
-            employee = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+            employee = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
             if (employee == null)
                 return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 

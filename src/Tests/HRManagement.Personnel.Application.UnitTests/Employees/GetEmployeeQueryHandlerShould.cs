@@ -3,13 +3,13 @@
 public class GetEmployeeQueryHandlerShould
 {
     private readonly IFixture _fixture;
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IGenericUnitOfWork> _mockUnitOfWork;
     private readonly GetEmployeeQueryHandler _sut;
 
     public GetEmployeeQueryHandlerShould()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockUnitOfWork = _fixture.Freeze<Mock<IGenericUnitOfWork>>();
         _sut = _fixture.Create<GetEmployeeQueryHandler>();
     }
 
@@ -24,7 +24,7 @@ public class GetEmployeeQueryHandlerShould
             Role.Create("CEO", null).Value,
             null).Value;
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(employee);
         var getEmployee = _fixture.Create<GetEmployeeQuery>();
         getEmployee.EmployeeId = Guid.NewGuid().ToString();
@@ -52,7 +52,7 @@ public class GetEmployeeQueryHandlerShould
     public async Task ReturnError_WhenEmployeeDoesNotExist()
     {
         _mockUnitOfWork
-            .Setup(d => d.Employees.GetByIdAsync(It.IsAny<Guid>()))!
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))!
             .ReturnsAsync(default(Employee));
 
         var result = await _sut.Handle(_fixture.Create<GetEmployeeQuery>(), CancellationToken.None);

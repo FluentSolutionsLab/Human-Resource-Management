@@ -9,10 +9,10 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<PagedList<EmployeeDto>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
     private readonly IMemoryCache _cache;
 
-    public GetEmployeesQueryHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public GetEmployeesQueryHandler(IGenericUnitOfWork unitOfWork, IMemoryCache cache)
     {
         _unitOfWork = unitOfWork;
         _cache = cache;
@@ -45,7 +45,7 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         var employeeListCacheKey = cacheKeyBuilder.ToString();
         if (!_cache.TryGetValue(employeeListCacheKey, out PagedList<Employee> employees))
         {
-            employees = await _unitOfWork.Employees.GetAsync(
+            employees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(
                 filter: filter,
                 pageNumber: pageNumber,
                 pageSize: pageSize,

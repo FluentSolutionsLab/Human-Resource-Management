@@ -6,9 +6,9 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployeeCommand, UnitResult<Error>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
 
-    public TerminateEmployeeCommandHandler(IUnitOfWork unitOfWork)
+    public TerminateEmployeeCommandHandler(IGenericUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -18,12 +18,12 @@ public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployee
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        Maybe<Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Employee), employeeId);
 
         var employee = employeeOrNot.Value;
         employee.Terminate();
-        _unitOfWork.Employees.Update(employee);
+        _unitOfWork.GetRepository<Employee, Guid>().Update(employee);
         await _unitOfWork.SaveChangesAsync();
 
         return UnitResult.Success<Error>();

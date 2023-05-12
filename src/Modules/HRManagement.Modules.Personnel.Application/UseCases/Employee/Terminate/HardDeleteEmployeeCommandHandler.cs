@@ -6,9 +6,9 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class HardDeleteEmployeeCommandHandler : ICommandHandler<HardDeleteEmployeeCommand, UnitResult<Error>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IGenericUnitOfWork _unitOfWork;
 
-    public HardDeleteEmployeeCommandHandler(IUnitOfWork unitOfWork)
+    public HardDeleteEmployeeCommandHandler(IGenericUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
@@ -18,10 +18,10 @@ public class HardDeleteEmployeeCommandHandler : ICommandHandler<HardDeleteEmploy
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        Maybe<Employee> employeeOrNot = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Employee), employeeId);
 
-        _unitOfWork.Employees.Delete(employeeOrNot.Value);
+        _unitOfWork.GetRepository<Employee, Guid>().Delete(employeeOrNot.Value);
         await _unitOfWork.SaveChangesAsync();
 
         return UnitResult.Success<Error>();

@@ -13,7 +13,7 @@ public static class PersistenceServiceRegistration
     {
         services.AddApplicationServices();
         services.AddDbContext<PersonnelDbContext>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IGenericUnitOfWork, GenericUnitOfWork>();
     }
     
     public static async Task ModulePersonnelManagementDatabaseInitializer(this IServiceProvider provider)
