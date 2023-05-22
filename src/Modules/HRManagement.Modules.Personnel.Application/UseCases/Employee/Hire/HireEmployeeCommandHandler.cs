@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 using HRManagement.Modules.Personnel.Domain;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMemoryCache _cache;
+    private readonly ICacheService _cacheService;
 
-    public HireEmployeeCommandHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public HireEmployeeCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
-        _cache = cache;
+        _cacheService = cacheService;
     }
 
     public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
@@ -49,9 +46,9 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         await _unitOfWork.SaveChangesAsync();
 
         // Clear the memory cache of keys related to the same context
-        var cacheKeys = GetAllKeysList();
+        var cacheKeys = _cacheService.GetAllKeys();
         foreach (var key in cacheKeys.Where(k => k.Contains("GetEmployeesQuery"))) 
-            _cache.Remove(key);
+            _cacheService.Remove(key);
 
         return employee.ToResponseDto();
     }
@@ -74,25 +71,5 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
 
         return errors;
-    }
-    
-    private List<string> GetAllKeysList()
-    {
-        var coherentState = typeof(MemoryCache).GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance);
-        var coherentStateValue = coherentState.GetValue(_cache);
-        var entriesCollection = coherentStateValue.GetType().GetProperty("EntriesCollection", BindingFlags.NonPublic | BindingFlags.Instance);
-        var entriesCollectionValue = entriesCollection.GetValue(coherentStateValue) as ICollection;
-
-        if (entriesCollectionValue == null) return default;
-
-        var keys = new List<string>();
-        foreach (var item in entriesCollectionValue)
-        {
-            var methodInfo = item.GetType().GetProperty("Key");
-            var val = methodInfo.GetValue(item);
-            keys.Add(val.ToString());
-        }
-
-        return keys;
     }
 }

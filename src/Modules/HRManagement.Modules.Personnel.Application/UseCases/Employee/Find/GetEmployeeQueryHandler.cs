@@ -1,18 +1,17 @@
 ﻿using System;
 using HRManagement.Modules.Personnel.Domain;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMemoryCache _cache;
+    private readonly ICacheService _cacheService;
 
-    public GetEmployeeQueryHandler(IUnitOfWork unitOfWork, IMemoryCache cache)
+    public GetEmployeeQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
-        _cache = cache;
+        _cacheService = cacheService;
     }
 
     public async Task<Result<EmployeeDto, Error>> Handle(GetEmployeeQuery request, CancellationToken cancellationToken)
@@ -21,20 +20,16 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
         var queryCacheKey = $"GetEmployeeQuery/{employeeId}";
-        if (!_cache.TryGetValue(queryCacheKey, out Employee employee))
-        {
-            employee = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
-            if (employee == null)
-                return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
+        var employee = _cacheService.Get<Employee>(queryCacheKey);
+        if (employee != null)
+            return employee.ToResponseDto();
 
-            var cacheEntryOptions = new MemoryCacheEntryOptions()
-                .SetSlidingExpiration(TimeSpan.FromSeconds(60))
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(3600))
-                .SetPriority(CacheItemPriority.Normal)
-                .SetSize(1024);
-            _cache.Set(queryCacheKey, employee, cacheEntryOptions);
-        }
-        
+        employee = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
+        if (employee == null)
+            return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
+
+        _cacheService.Set(queryCacheKey, employee);
+
         return employee.ToResponseDto();
     }
 }
