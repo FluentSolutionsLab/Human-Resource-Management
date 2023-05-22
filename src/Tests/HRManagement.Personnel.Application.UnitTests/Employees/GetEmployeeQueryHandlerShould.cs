@@ -6,12 +6,14 @@ public class GetEmployeeQueryHandlerShould
 {
     private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<ICacheService> _mockCacheService;
     private readonly GetEmployeeQueryHandler _sut;
 
     public GetEmployeeQueryHandlerShould()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockCacheService = _fixture.Freeze<Mock<ICacheService>>();
         _sut = _fixture.Create<GetEmployeeQueryHandler>();
     }
 
@@ -25,6 +27,7 @@ public class GetEmployeeQueryHandlerShould
             DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
             Role.Create("CEO", null).Value,
             null).Value;
+        _mockCacheService.Setup(x => x.Get<Employee>(It.IsAny<string>())).Returns((Employee) null);
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(employee);
