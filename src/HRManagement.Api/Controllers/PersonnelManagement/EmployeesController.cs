@@ -58,7 +58,7 @@ public class EmployeesController : ControllerBase
         var command = newEmployee.ToHireEmployeeCommand();
         var (isSuccess, _, employee, errors) = await _mediator.Send(command);
         return isSuccess
-            ? CreatedAtAction(nameof(Find), new {id = employee.Id}, Ok(employee))
+            ? CreatedAtAction(nameof(Find), new {id = employee.Id}, employee)
             : BadRequest(errors);
     }
 

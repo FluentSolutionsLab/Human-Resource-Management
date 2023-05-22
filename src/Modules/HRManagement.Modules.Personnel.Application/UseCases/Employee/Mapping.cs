@@ -56,4 +56,10 @@ public static partial class Mapping
             ReportsToId = dto.ManagerId
         };
     }
+
+    public static PagedList<EmployeeDto> ToResponseDto(this PagedList<Employee> employees)
+    {
+        var dtos = employees.Select(x => x.ToResponseDto()).ToList();
+        return new PagedList<EmployeeDto>(dtos, employees.TotalCount, employees.CurrentPage, employees.PageSize);
+    } 
 }

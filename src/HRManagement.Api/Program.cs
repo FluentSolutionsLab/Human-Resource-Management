@@ -1,5 +1,5 @@
 using HRManagement.Common.Application.Models;
-using HRManagement.Common.Domain.Models;
+using HRManagement.Common.Infrastructure;
 using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +24,7 @@ builder.Services.AddMemoryCache();
 
 // Add modules
 builder.Services.AddModulePersonnelManagement();
+builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
 

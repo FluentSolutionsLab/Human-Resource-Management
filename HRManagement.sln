@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{2B658810-6B7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Api.IntegrationTests", "src\Tests\HRManagement.Api.IntegrationTests\HRManagement.Api.IntegrationTests.csproj", "{008E0AB9-3337-4589-B364-B587D201013A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Common.Infrastructure", "src\Common\HRManagement.Common.Infrastructure\HRManagement.Common.Infrastructure.csproj", "{F2C6B86C-1EBB-4426-94CB-8289D9B983EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,6 +80,10 @@ Global
 		{008E0AB9-3337-4589-B364-B587D201013A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{008E0AB9-3337-4589-B364-B587D201013A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{008E0AB9-3337-4589-B364-B587D201013A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2C6B86C-1EBB-4426-94CB-8289D9B983EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2C6B86C-1EBB-4426-94CB-8289D9B983EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2C6B86C-1EBB-4426-94CB-8289D9B983EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2C6B86C-1EBB-4426-94CB-8289D9B983EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A} = {F9CC4D5A-8F81-493E-8075-4AB8C96360F2}
@@ -92,5 +98,6 @@ Global
 		{0E9874C1-7FEB-4B29-98F9-CD5609CBA379} = {E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A}
 		{2B658810-6B7C-4D8F-A97D-C5EAD4DCA4F7} = {6E6ECBF8-30B9-41F5-98E1-AA4B740D6CA2}
 		{008E0AB9-3337-4589-B364-B587D201013A} = {2B658810-6B7C-4D8F-A97D-C5EAD4DCA4F7}
+		{F2C6B86C-1EBB-4426-94CB-8289D9B983EA} = {827E5FF0-B1F1-4EE2-894A-B777D3F991CF}
 	EndGlobalSection
 EndGlobal
