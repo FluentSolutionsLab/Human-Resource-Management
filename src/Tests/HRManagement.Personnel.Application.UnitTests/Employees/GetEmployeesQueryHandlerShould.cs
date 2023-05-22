@@ -6,12 +6,14 @@ public class GetEmployeesQueryHandlerShould
 {
     private readonly IFixture _fixture;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<ICacheService> _mockCacheService;
     private readonly GetEmployeesQueryHandler _sut;
 
     public GetEmployeesQueryHandlerShould()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _mockUnitOfWork = _fixture.Freeze<Mock<IUnitOfWork>>();
+        _mockCacheService = _fixture.Freeze<Mock<ICacheService>>();
         _sut = _fixture.Create<GetEmployeesQueryHandler>();
     }
 
@@ -19,6 +21,7 @@ public class GetEmployeesQueryHandlerShould
     public async Task ReturnListOfEmployees_WhenCalled()
     {
         var person = new Faker().Person;
+        _mockCacheService.Setup(x => x.Get<PagedList<Employee>>(It.IsAny<string>())).Returns((PagedList<Employee>) null);
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetAsync(
                 It.IsAny<Expression<Func<Employee, bool>>>(),

@@ -10,16 +10,16 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
 builder.Services.Configure<AppSettings>(builder.Configuration);
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = builder.Environment.ApplicationName, Version = "v1" });
+    c.SwaggerDoc("v1", new() { Title = "HR Management API", Version = "v1" });
 });
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
 builder.Services.AddMemoryCache();
 
 // Add modules
@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
     {
         options.DefaultModelsExpandDepth(-1);
         options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", $"{builder.Environment.ApplicationName} v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
     
     /*
@@ -45,9 +45,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

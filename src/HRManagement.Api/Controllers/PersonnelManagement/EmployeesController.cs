@@ -13,10 +13,8 @@ using Newtonsoft.Json;
 
 namespace HRManagement.Api.Controllers.PersonnelManagement;
 
-[ApiController]
-[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 [Route("api/[controller]")]
-public class EmployeesController : ControllerBase
+public class EmployeesController : CommonController
 {
     private readonly IMediator _mediator;
     private readonly LinkGenerator _linker;

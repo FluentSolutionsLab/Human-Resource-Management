@@ -9,10 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HRManagement.Api.Controllers.PersonnelManagement;
 
-[ApiController]
-[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 [Route("api/[controller]")]
-public class RolesController : ControllerBase
+public class RolesController : CommonController
 {
     private readonly IMediator _mediator;
 
