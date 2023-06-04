@@ -62,10 +62,12 @@ public class TerminateEmployeeCommandHandlerShould
 
     private static Employee BuildFakeEmployee(Person person)
     {
+        var hiringDate = new Faker().Date.Past(15);
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             null,
             null).Value;
         return employee;
@@ -75,7 +77,8 @@ public class TerminateEmployeeCommandHandlerShould
     {
         var terminateEmployee = new TerminateEmployeeCommand
         {
-            EmployeeId = Guid.NewGuid().ToString()
+            EmployeeId = Guid.NewGuid().ToString(),
+            TerminationDate = new Faker().Date.Recent().ToString("d")
         };
         return terminateEmployee;
     }

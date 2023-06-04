@@ -18,7 +18,12 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
 
     public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
     {
-        var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
+        var errors = CheckForErrors(
+            request,
+            out var nameCreation,
+            out var emailCreation,
+            out var dateOfBirthCreation,
+            out var hiringDateCreation);
         if (errors.Any()) return errors;
 
         if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
@@ -33,12 +38,18 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         Expression<Func<Employee, bool>> existingEmployeeCondition =
             e => e.Name.FirstName == request.FirstName
                  && e.Name.LastName == request.LastName
-                 && e.DateOfBirth.Date == dateOfBirthCreation.Value.Date;
+                 && e.BirthDate.Date == dateOfBirthCreation.Value.Date;
 
         var existingEmployees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(existingEmployeeCondition);
         if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
-        var employeeCreation = Employee.Create(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, maybeRole.Value, maybeManager.Value);
+        var employeeCreation = Employee.Create(
+            nameCreation.Value,
+            emailCreation.Value,
+            dateOfBirthCreation.Value,
+            hiringDateCreation.Value,
+            maybeRole.Value,
+            maybeManager.Value);
         if (employeeCreation.IsFailure) return new List<Error>{employeeCreation.Error};
 
         var employee = employeeCreation.Value;
@@ -53,11 +64,12 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         return employee.ToResponseDto();
     }
 
-    private List<Error> CheckForErrors(
+    private static List<Error> CheckForErrors(
         HireEmployeeCommand request, 
         out Result<Name, List<Error>> nameCreation, 
         out Result<EmailAddress, List<Error>> emailCreation, 
-        out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
+        out Result<ValueDate, List<Error>> dateOfBirthCreation,
+        out Result<ValueDate, List<Error>> hiringDateCreation)
     {
         var errors = new List<Error>();
 
@@ -67,8 +79,11 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         emailCreation = EmailAddress.Create(request.EmailAddress);
         if (emailCreation.IsFailure) errors.AddRange(emailCreation.Error);
 
-        dateOfBirthCreation = DateOfBirth.Create(request.DateOfBirth);
+        dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
+
+        hiringDateCreation = ValueDate.Create(request.HiringDate);
+        if (hiringDateCreation.IsFailure) errors.AddRange(hiringDateCreation.Error);
 
         return errors;
     }

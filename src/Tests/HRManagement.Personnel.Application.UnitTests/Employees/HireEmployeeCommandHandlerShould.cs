@@ -58,7 +58,7 @@ public class HireEmployeeCommandHandlerShould
         result.Error.Count.ShouldBeGreaterThan(0);
         result.Error.All(error =>
             error.Code == DomainErrors.InvalidDate(It.IsNotNull<string>()).Code ||
-            error.Code == DomainErrors.DateOfBirthInFuture().Code).ShouldBeTrue();
+            error.Code == DomainErrors.DateInFuture().Code).ShouldBeTrue();
     }
 
     [Fact]
@@ -94,10 +94,12 @@ public class HireEmployeeCommandHandlerShould
 
     private static Employee BuildFakeEmployee(Person person)
     {
+        var hiringDate = new Faker().Date.Past(15);
         return Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value,
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             Role.Create("ceo", null).Value,
             null).Value;
     }
@@ -110,6 +112,7 @@ public class HireEmployeeCommandHandlerShould
             FirstName = person.FirstName,
             LastName = person.LastName,
             DateOfBirth = person.DateOfBirth.ToString("d"),
+            HiringDate = new Faker().Date.Recent(60).ToString("d"),
             ReportsToId = It.IsNotNull<Guid>().ToString(),
             RoleId = It.IsAny<byte>()
         };

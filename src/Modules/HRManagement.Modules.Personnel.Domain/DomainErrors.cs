@@ -4,9 +4,9 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public static class DomainErrors
 {
-    public static Error DateOfBirthInFuture()
+    public static Error DateInFuture()
     {
-        return new Error("value.not.valid", "Your date of birth cannot be in the future");
+        return new Error("value.not.valid", "The date cannot be in the future");
     }
 
     public static Error InvalidEmailAddress(string email)

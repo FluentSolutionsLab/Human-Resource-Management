@@ -20,11 +20,13 @@ public class GetEmployeeQueryHandlerShould
     [Fact]
     public async Task ReturnEmployee_WhenEmployeeExists()
     {
+        var hiringDate = new Faker().Date.Past(15);
         var person = new Faker().Person;
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             Role.Create("CEO", null).Value,
             null).Value;
         _mockCacheService.Setup(x => x.Get<Employee>(It.IsAny<string>())).Returns((Employee) null);

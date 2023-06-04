@@ -39,10 +39,12 @@ public class GetEmployeesQueryHandlerShould
     
     private static Employee BuildFakeEmployee(Person person)
     {
+        var hiringDate = new Faker().Date.Past(15);
         return Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value,
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             Role.Create("ceo", null).Value,
             null).Value;
     }

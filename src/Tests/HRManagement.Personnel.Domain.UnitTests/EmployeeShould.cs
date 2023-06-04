@@ -10,20 +10,20 @@ namespace HRManagement.Personnel.Domain.UnitTests;
 public class EmployeeShould
 {
     [Theory]
-    [ClassData(typeof(NameEmailAddressOrDOBTestData))]
-    public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
+    [ClassData(typeof(NameEmailAddressDOBOrHiringDateTestData))]
+    public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate)
     {
-        Assert.Throws<ArgumentNullException>(() => Employee.Create(name, emailAddress, dateOfBirth, null, null));
+        Assert.Throws<ArgumentNullException>(() => Employee.Create(name, emailAddress, birthDate, hiringDate, null, null));
     }    
 
     [Theory]
-    [ClassData(typeof(NameEmailAddressOrDOBTestData))]
-    public void Fail_OnUpdate_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth)
+    [ClassData(typeof(NameEmailAddressDOBOrHiringDateTestData))]
+    public void Fail_OnUpdate_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate)
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
             var employee = BuildFakeEmployee().Value;
-            employee.Update(name, emailAddress, dateOfBirth, null, null);
+            employee.Update(name, emailAddress, birthDate, hiringDate, null, null);
         });
     }
 
@@ -49,7 +49,8 @@ public class EmployeeShould
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
         var president2 = BuildFakeEmployee(presidentRole, ceo).Value;
 
-        var president2Update = president2.Update(president2.Name, president2.EmailAddress, president2.DateOfBirth, presidentRole, president1); 
+        var president2Update = president2.Update(
+            president2.Name, president2.EmailAddress, president2.BirthDate, president2.HireDate, presidentRole, president1); 
         
         president2Update.IsFailure.ShouldBeTrue();
     }
@@ -58,37 +59,42 @@ public class EmployeeShould
     public void SetTerminationDate_OnTermination()
     {
         var employee = BuildFakeEmployee().Value;
+        var terminationDate = ValueDate.Create(new Faker().Date.Recent().ToString("d")).Value;
         
-        employee.Terminate();
+        employee.Terminate(terminationDate);
 
         employee.TerminationDate.ShouldNotBeNull();
     }
 
     private static Result<Employee, Error> BuildFakeEmployee(Role role = null, Employee manager = null)
     {
+        var hiringDate = new Faker().Date.Past(15);
         var person = new Faker().Person;
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             role,
             manager);
         return employee;
     }
 }
 
-public class NameEmailAddressOrDOBTestData : TheoryData<Name, EmailAddress, DateOfBirth>
+public class NameEmailAddressDOBOrHiringDateTestData : TheoryData<Name, EmailAddress, ValueDate, ValueDate>
 {
-    public NameEmailAddressOrDOBTestData()
+    public NameEmailAddressDOBOrHiringDateTestData()
     {
         var person = new Faker().Person;
         var name = Name.Create(person.FirstName, person.LastName).Value;
         var emailAddress = EmailAddress.Create(person.Email).Value;
-        var dateOfBirth = DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value;
+        var dateOfBirth = ValueDate.Create(person.DateOfBirth.ToString("d")).Value;
+        var hiringDate = ValueDate.Create(new Faker().Date.Past(15).ToString("d")).Value;
 
-        Add(null!, null!, null!);        
-        Add(name, null!, null!);        
-        Add(null!, emailAddress, null!);        
-        Add(null!, null!, dateOfBirth);        
+        Add(null!, null!, null!, null!);
+        Add(name, null!, null!, null!);
+        Add(null!, emailAddress, null!, null!);
+        Add(null!, null!, dateOfBirth, null!);
+        Add(null!, null!, null!, hiringDate);
     }
 }

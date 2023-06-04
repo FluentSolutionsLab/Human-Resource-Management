@@ -23,8 +23,8 @@ public static partial class Mapping
             FirstName = employee.Name.FirstName,
             LastName = employee.Name.LastName,
             EmailAddress = employee.EmailAddress.Email,
-            DateOfBirth = employee.DateOfBirth.Date.ToISO8601String(),
-            HireDate = employee.HireDate.ToISO8601String(),
+            DateOfBirth = employee.BirthDate.Date.ToISO8601String(),
+            HireDate = employee.HireDate.Date.ToISO8601String(),
             Role = employee.Role.ToString(),
             Manager = manager
         };

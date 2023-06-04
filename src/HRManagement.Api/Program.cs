@@ -38,9 +38,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
     
-    /*
-     * Uncomment when you want to generate new data in Dev environment
-     */
+    // Uncomment when you want to generate new data in Dev environment
     // await app.Services.ModulePersonnelManagementDatabaseInitializer();
 }
 

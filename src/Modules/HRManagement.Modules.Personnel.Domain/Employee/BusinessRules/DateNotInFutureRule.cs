@@ -4,11 +4,11 @@ using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain;
 
-public class DateOfBirthNotInFutureRule : IBusinessRule
+public class DateNotInFutureRule : IBusinessRule
 {
     private readonly DateOnly _date;
 
-    public DateOfBirthNotInFutureRule(DateOnly date)
+    public DateNotInFutureRule(DateOnly date)
     {
         _date = date;
     }
@@ -18,5 +18,5 @@ public class DateOfBirthNotInFutureRule : IBusinessRule
         return _date > DateOnly.FromDateTime(DateTime.Now);
     }
 
-    public Error Error => DomainErrors.DateOfBirthInFuture();
+    public Error Error => DomainErrors.DateInFuture();
 }
