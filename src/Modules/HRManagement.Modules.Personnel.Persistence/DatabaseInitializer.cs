@@ -64,12 +64,15 @@ public class DatabaseInitializer
 
     private static Employee CreateEmployee(Role role, Employee manager = null)
     {
+        var hiringDate = new Faker().Date.Past(15);
         var person = new Person();
         return Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value, 
             EmailAddress.Create(person.Email).Value, 
-            DateOfBirth.Create(person.DateOfBirth.ToShortDateString()).Value, 
-            role, manager).Value;
+            ValueDate.Create(person.DateOfBirth.ToShortDateString()).Value, 
+            ValueDate.Create(hiringDate.ToString("d")).Value,
+            role,
+            manager).Value;
     }
 
     private static Dictionary<string, Role> BuildRoles()

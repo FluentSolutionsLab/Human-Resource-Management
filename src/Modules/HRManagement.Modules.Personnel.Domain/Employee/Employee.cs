@@ -14,57 +14,62 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     {
     }
 
-    private Employee(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee manager)
+    private Employee(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee manager)
     {
         Id = Guid.NewGuid();
         Name = name;
         EmailAddress = emailAddress;
-        DateOfBirth = dateOfBirth;
-        HireDate = DateOnly.FromDateTime(DateTime.Now);
+        BirthDate = birthDate;
+        HireDate = hiringDate;
         Role = role;
         Manager = manager;
     }
 
     public Name Name { get; private set; }
     public EmailAddress EmailAddress { get; private set; }
-    public DateOfBirth DateOfBirth { get; private set; }
-    public DateOnly HireDate { get; }
-    public DateOnly? TerminationDate { get; private set; }
+    public ValueDate BirthDate { get; private set; }
+    public ValueDate HireDate { get; private set; }
+    public ValueDate TerminationDate { get; private set; }
     public virtual Role Role { get; private set; }
     public virtual Employee Manager { get; private set; }
     public virtual IReadOnlyList<Employee> ManagedEmployees => _managedEmployees.ToList();
 
-    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
+    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
-        ArgumentNullException.ThrowIfNull(dateOfBirth);
+        ArgumentNullException.ThrowIfNull(birthDate);
+        ArgumentNullException.ThrowIfNull(hiringDate);
 
         var error = CheckHierarchyRules(role, reportsTo);
 
-        return error != null ? error : new Employee(name, emailAddress, dateOfBirth, role, reportsTo);
+        return error != null ? error : new Employee(name, emailAddress, birthDate, hiringDate, role, reportsTo);
     }
 
-    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, DateOfBirth dateOfBirth, Role role, Employee reportsTo)
+    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
-        ArgumentNullException.ThrowIfNull(dateOfBirth);
+        ArgumentNullException.ThrowIfNull(birthDate);
+        ArgumentNullException.ThrowIfNull(hiringDate);
 
         var error = CheckHierarchyRules(role, reportsTo);
 
         Name = name;
         EmailAddress = emailAddress;
-        DateOfBirth = dateOfBirth;
+        BirthDate = birthDate;
+        HireDate = hiringDate;
         Role = role;
         Manager = reportsTo;
 
         return error != null ? error : this;
     }
 
-    public void Terminate()
+    public void Terminate(ValueDate terminationDate)
     {
-        TerminationDate = DateOnly.FromDateTime(DateTime.Now);
+        ArgumentNullException.ThrowIfNull(terminationDate);
+
+        TerminationDate = terminationDate;
     }
     
     private static Error CheckHierarchyRules(Role role, Employee reportsTo)

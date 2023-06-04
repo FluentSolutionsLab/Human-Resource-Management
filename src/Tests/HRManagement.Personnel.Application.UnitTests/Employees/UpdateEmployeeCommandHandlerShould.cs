@@ -114,8 +114,9 @@ public class UpdateEmployeeCommandHandlerShould
             {
                 var name = Name.Create($"{updateEmployee.FirstName} Updated", updateEmployee.LastName).Value;
                 var email = EmailAddress.Create(updateEmployee.EmailAddress).Value;
-                var dateOfBirth = DateOfBirth.Create(updateEmployee.DateOfBirth).Value;
-                employee.Update(name, email, dateOfBirth, presidentRole, manager);
+                var dateOfBirth = ValueDate.Create(updateEmployee.DateOfBirth).Value;
+                var hiringDate = ValueDate.Create(updateEmployee.HiringDate).Value;
+                employee.Update(name, email, dateOfBirth, hiringDate, presidentRole, manager);
             });
 
         var result = await _sut.Handle(updateEmployee, CancellationToken.None);
@@ -126,10 +127,12 @@ public class UpdateEmployeeCommandHandlerShould
 
     private static Employee BuildFakeEmployee(Person person, Role role = null, Employee manager = null)
     {
+        var hiringDate = new Faker().Date.Past(15);
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             role,
             manager).Value;
         return employee;
@@ -144,6 +147,7 @@ public class UpdateEmployeeCommandHandlerShould
             FirstName = person.FirstName,
             LastName = person.LastName,
             DateOfBirth = person.DateOfBirth.ToString("d"),
+            HiringDate = new Faker().Date.Past(15).ToString("d"),
             RoleId = It.IsAny<byte>(),
             ReportsToId = Guid.NewGuid().ToString()
         };

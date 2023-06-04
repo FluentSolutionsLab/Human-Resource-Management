@@ -24,7 +24,12 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         if (employeeOrNot.HasNoValue)
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), employeeId)};
 
-        var errors = CheckForErrors(request, out var nameCreation, out var emailCreation, out var dateOfBirthCreation);
+        var errors = CheckForErrors(
+            request,
+            out var nameCreation,
+            out var emailCreation,
+            out var dateOfBirthCreation,
+            out var hiringDateCreation);
         if (errors.Any()) return errors;
 
         Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
@@ -38,7 +43,13 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
 
         var employee = employeeOrNot.Value;
         
-        var employeeUpdate = employee.Update(nameCreation.Value, emailCreation.Value, dateOfBirthCreation.Value, maybeRole.Value, maybeManager.Value);
+        var employeeUpdate = employee.Update(
+            nameCreation.Value,
+            emailCreation.Value,
+            dateOfBirthCreation.Value,
+            hiringDateCreation.Value,
+            maybeRole.Value,
+            maybeManager.Value);
         if (employeeUpdate.IsFailure) return new List<Error>{employeeUpdate.Error};
         
         _unitOfWork.GetRepository<Employee, Guid>().Update(employee);
@@ -49,7 +60,13 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         return UnitResult.Success<List<Error>>();
     }
 
-    private List<Error> CheckForErrors(UpdateEmployeeCommand request, out Result<Name, List<Error>> nameCreation, out Result<EmailAddress, List<Error>> emailCreation, out Result<DateOfBirth, List<Error>> dateOfBirthCreation)
+    private List<Error> CheckForErrors(
+        UpdateEmployeeCommand request,
+        out Result<Name, List<Error>> nameCreation,
+        out Result<EmailAddress, List<Error>> emailCreation,
+        out Result<ValueDate, List<Error>> dateOfBirthCreation,
+        out Result<ValueDate, List<Error>> hiringDateCreation
+        )
     {
         var errors = new List<Error>();
 
@@ -59,8 +76,11 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
         emailCreation = EmailAddress.Create(request.EmailAddress);
         if (emailCreation.IsFailure) errors.AddRange(emailCreation.Error);
 
-        dateOfBirthCreation = DateOfBirth.Create(request.DateOfBirth);
+        dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
         if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
+
+        hiringDateCreation = ValueDate.Create(request.HiringDate);
+        if (hiringDateCreation.IsFailure) errors.AddRange(hiringDateCreation.Error);
 
         return errors;
     }

@@ -4,11 +4,11 @@ using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain;
 
-public class DateOfBirthMustBeActualDateRule : IBusinessRule
+public class DateMustBeValidRule : IBusinessRule
 {
     private readonly string _date;
 
-    public DateOfBirthMustBeActualDateRule(string date)
+    public DateMustBeValidRule(string date)
     {
         _date = date;
     }

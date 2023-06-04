@@ -7,25 +7,25 @@ using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
 
 namespace HRManagement.Modules.Personnel.Domain;
 
-public class DateOfBirth : ValueObject
+public class ValueDate : ValueObject
 {
-    protected DateOfBirth()
+    protected ValueDate()
     {
     }
 
-    private DateOfBirth(DateOnly date)
+    private ValueDate(DateOnly date)
     {
         Date = date;
     }
 
     public DateOnly Date { get; }
 
-    public static Result<DateOfBirth, List<Error>> Create(string date)
+    public static Result<ValueDate, List<Error>> Create(string date)
     {
         var errors = ValidateBusinessRules(date, out var actualDate);
         if (errors.Any()) return errors;
 
-        return new DateOfBirth(actualDate);
+        return new ValueDate(actualDate);
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
@@ -35,7 +35,7 @@ public class DateOfBirth : ValueObject
 
     private static List<Error> ValidateBusinessRules(string date, out DateOnly actualDate)
     {
-        var actualDateRule = CheckRule(new DateOfBirthMustBeActualDateRule(date));
+        var actualDateRule = CheckRule(new DateMustBeValidRule(date));
         if (actualDateRule.IsFailure)
         {
             actualDate = default;
@@ -44,7 +44,7 @@ public class DateOfBirth : ValueObject
 
         actualDate = DateOnly.FromDateTime(DateTime.Parse(date));
 
-        var rule = CheckRule(new DateOfBirthNotInFutureRule(actualDate));
+        var rule = CheckRule(new DateNotInFutureRule(actualDate));
         return rule.IsFailure ? new List<Error> {Error.Deserialize(rule.Error)} : new List<Error>();
     }
 }

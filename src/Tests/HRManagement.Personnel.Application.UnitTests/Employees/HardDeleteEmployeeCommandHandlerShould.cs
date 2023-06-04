@@ -63,10 +63,12 @@ public class HardDeleteEmployeeCommandHandlerShould
 
     private static Employee BuildFakeEmployee(Person person)
     {
+        var hiringDate = new Faker().Date.Past(15);
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            DateOfBirth.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
+            ValueDate.Create(hiringDate.ToString("d")).Value,
             null, 
             null).Value;
         return employee;
