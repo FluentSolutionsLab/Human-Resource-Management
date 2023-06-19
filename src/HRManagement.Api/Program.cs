@@ -9,9 +9,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-builder.Configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
-builder.Services.Configure<AppSettings>(builder.Configuration);
+configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
+
+builder.Services.Configure<AppSettings>(configuration);
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -38,8 +40,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
     
-    // Uncomment when you want to generate new data in Dev environment
-    // await app.Services.ModulePersonnelManagementDatabaseInitializer();
+    await app.Services.DatabaseInitializer(configuration);
 }
 
 app.UseHttpsRedirection();

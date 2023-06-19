@@ -2,8 +2,13 @@
 
 public class AppSettings
 {
-    public ConnectionStrings ConnectionStrings { get; set; } = null!;
+    public Database Database { get; set; } = null!;
     public bool IsDevEnvironment { get; set; }
+}
+
+public class Database
+{
+    public ConnectionStrings ConnectionStrings { get; set; }
 }
 
 public class ConnectionStrings
