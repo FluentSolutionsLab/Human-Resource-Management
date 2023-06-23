@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Modules.Personnel.Persistence;
 
-public class DatabaseInitializer
+public static class DatabaseInitializer
 {
     public static async Task InitializeAsync(PersonnelDbContext context)
     {
