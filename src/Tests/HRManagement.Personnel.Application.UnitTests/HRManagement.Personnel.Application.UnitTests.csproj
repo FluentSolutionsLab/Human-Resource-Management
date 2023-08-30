@@ -24,4 +24,5 @@
       <ProjectReference Include="..\..\Modules\HRManagement.Modules.Personnel.Application\HRManagement.Modules.Personnel.Application.csproj" />
     </ItemGroup>
 
+
 </Project>

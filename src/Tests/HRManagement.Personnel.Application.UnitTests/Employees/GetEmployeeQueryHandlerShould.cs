@@ -1,4 +1,5 @@
 ﻿using HRManagement.Common.Application.Contracts;
+using HRManagement.Personnel.Application.UnitTests.Builders;
 
 namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
@@ -20,26 +21,18 @@ public class GetEmployeeQueryHandlerShould
     [Fact]
     public async Task ReturnEmployee_WhenEmployeeExists()
     {
-        var hiringDate = new Faker().Date.Past(15);
-        var person = new Faker().Person;
-        var employee = Employee.Create(
-            Name.Create(person.FirstName, person.LastName).Value,
-            EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
-            ValueDate.Create(hiringDate.ToString("d")).Value,
-            Role.Create("CEO", null).Value,
-            null).Value;
+        var fakeEmployee = new EmployeeBuilder().WithFixture().Build();
         _mockCacheService.Setup(x => x.Get<Employee>(It.IsAny<string>())).Returns((Employee) null);
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
-            .ReturnsAsync(employee);
+            .ReturnsAsync(fakeEmployee);
         var getEmployee = _fixture.Create<GetEmployeeQuery>();
         getEmployee.EmployeeId = Guid.NewGuid().ToString();
 
         var result = await _sut.Handle(getEmployee, CancellationToken.None);
 
         result.Value.ShouldNotBeNull();
-        result.Value.FirstName.ShouldBe(person.FirstName);
+        result.Value.FirstName.ShouldBe(fakeEmployee.Name.FirstName);
     }
 
     [Fact]
@@ -54,7 +47,7 @@ public class GetEmployeeQueryHandlerShould
         result.Error.ShouldNotBeNull();
         result.Error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidEmployeeId));
     }
-    
+
     [Fact]
     public async Task ReturnError_WhenEmployeeDoesNotExist()
     {

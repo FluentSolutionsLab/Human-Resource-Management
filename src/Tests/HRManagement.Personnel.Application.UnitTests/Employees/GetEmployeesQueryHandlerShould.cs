@@ -1,4 +1,5 @@
 ﻿using HRManagement.Common.Application.Contracts;
+using HRManagement.Personnel.Application.UnitTests.Builders;
 
 namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
@@ -20,8 +21,8 @@ public class GetEmployeesQueryHandlerShould
     [Fact]
     public async Task ReturnListOfEmployees_WhenCalled()
     {
-        var person = new Faker().Person;
         _mockCacheService.Setup(x => x.Get<PagedList<Employee>>(It.IsAny<string>())).Returns((PagedList<Employee>) null);
+        var fakeEmployee = new EmployeeBuilder().WithFixture().Build();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetAsync(
                 It.IsAny<Expression<Func<Employee, bool>>>(),
@@ -29,24 +30,11 @@ public class GetEmployeesQueryHandlerShould
                 It.IsNotNull<string>(),
                 It.IsAny<int>(),
                 It.IsAny<int>()))
-            .ReturnsAsync(new PagedList<Employee>(new[] {BuildFakeEmployee(person)}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            .ReturnsAsync(new PagedList<Employee>(new[] {fakeEmployee}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
 
         var result = await _sut.Handle(_fixture.Create<GetEmployeesQuery>(), CancellationToken.None);
 
         result.Value.ShouldNotBeNull();
-        result.Value.First().FirstName.ShouldBe(person.FirstName);
+        result.Value.First().FirstName.ShouldBe(fakeEmployee.Name.FirstName);
     }
-    
-    private static Employee BuildFakeEmployee(Person person)
-    {
-        var hiringDate = new Faker().Date.Past(15);
-        return Employee.Create(
-            Name.Create(person.FirstName, person.LastName).Value,
-            EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
-            ValueDate.Create(hiringDate.ToString("d")).Value,
-            Role.Create("ceo", null).Value,
-            null).Value;
-    }
-
 }

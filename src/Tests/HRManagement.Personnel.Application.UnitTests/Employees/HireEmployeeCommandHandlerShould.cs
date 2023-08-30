@@ -1,4 +1,6 @@
+using System.Globalization;
 using HRManagement.Common.Application.Contracts;
+using HRManagement.Personnel.Application.UnitTests.Builders;
 
 namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
@@ -18,10 +20,11 @@ public class HireEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidNameOnCreationTestData))]
     public async Task ReturnError_WhenNameInvalid(string firstName, string lastName)
     {
-        var person = new Faker().Person;
-        var command = BuildFakeCommand(person);
-        command.FirstName = firstName;
-        command.LastName = lastName;
+        var command = new HireEmployeeCommandBuilder()
+            .WithFixture()
+            .WithFirstName(firstName)
+            .WithLastName(lastName)
+            .Build();
 
         var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -33,9 +36,7 @@ public class HireEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidEmailOnCreationTestData))]
     public async Task ReturnError_WhenEmailInvalid(string email)
     {
-        var person = new Faker().Person;
-        var command = BuildFakeCommand(person);
-        command.EmailAddress = email;
+        var command = new HireEmployeeCommandBuilder().WithFixture().WithEmailAddress(email).Build();
 
         var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -49,9 +50,7 @@ public class HireEmployeeCommandHandlerShould
     [ClassData(typeof(InvalidDateOfBirthTestData))]
     public async Task ReturnError_WhenDateOfBirthInvalid(string dateOfBirth)
     {
-        var person = new Faker().Person;
-        var command = BuildFakeCommand(person);
-        command.DateOfBirth = dateOfBirth;
+        var command = new HireEmployeeCommandBuilder().WithFixture().WithDateOfBirth(dateOfBirth).Build();
 
         var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -64,7 +63,7 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenEmployeeAlreadyExists()
     {
-        var person = new Faker().Person;
+        var employee = new EmployeeBuilder().WithFixture().Build();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetAsync(
                 It.IsAny<Expression<Func<Employee, bool>>>(),
@@ -72,9 +71,16 @@ public class HireEmployeeCommandHandlerShould
                 It.IsNotNull<string>(),
                 It.IsAny<int>(),
                 It.IsAny<int>()))
-            .ReturnsAsync(new PagedList<Employee>(new[] {BuildFakeEmployee(person)}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+            .ReturnsAsync(new PagedList<Employee>(new[] {employee}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
+        var command = new HireEmployeeCommandBuilder()
+            .WithFixture()
+            .WithEmailAddress(employee.EmailAddress.Email)
+            .WithFirstName(employee.Name.FirstName)
+            .WithDateOfBirth(employee.BirthDate.Date.ToString())
+            .WithLastName(employee.Name.LastName)
+            .Build();
 
-        var result = await _sut.Handle(BuildFakeCommand(person), CancellationToken.None);
+        var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.ResourceAlreadyExists().Code);
@@ -83,39 +89,14 @@ public class HireEmployeeCommandHandlerShould
     [Fact]
     public async Task ReturnError_WhenManagerIdIsInvalid()
     {
-        var person = new Faker().Person;
-        var hireEmployeeCommand = BuildFakeCommand(person);
-        hireEmployeeCommand.ReportsToId = string.Empty;
+        var hireEmployeeCommand = new HireEmployeeCommandBuilder()
+            .WithFixture()
+            .WithManagerId(string.Empty)
+            .Build();
 
         var result = await _sut.Handle(hireEmployeeCommand, CancellationToken.None);
         result.Error.Count.ShouldBe(1);
         result.Error.First().Code.ShouldBe(DomainErrors.NotFound(nameof(Role), hireEmployeeCommand.ReportsToId).Code);
-    }
-
-    private static Employee BuildFakeEmployee(Person person)
-    {
-        var hiringDate = new Faker().Date.Past(15);
-        return Employee.Create(
-            Name.Create(person.FirstName, person.LastName).Value,
-            EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
-            ValueDate.Create(hiringDate.ToString("d")).Value,
-            Role.Create("ceo", null).Value,
-            null).Value;
-    }
-
-    private static HireEmployeeCommand BuildFakeCommand(Person person)
-    {
-        return new HireEmployeeCommand
-        {
-            EmailAddress = person.Email,
-            FirstName = person.FirstName,
-            LastName = person.LastName,
-            DateOfBirth = person.DateOfBirth.ToString("d"),
-            HiringDate = new Faker().Date.Recent(60).ToString("d"),
-            ReportsToId = It.IsNotNull<Guid>().ToString(),
-            RoleId = It.IsAny<byte>()
-        };
     }
 }
 
@@ -126,7 +107,7 @@ public class InvalidDateOfBirthTestData : TheoryData<string>
         Add(null!);
         Add(string.Empty);
         Add(new Faker().Random.AlphaNumeric(9));
-        Add(DateTime.Now.AddDays(1).ToString());
+        Add(DateTime.Now.AddDays(1).ToString(CultureInfo.CurrentCulture));
     }
 }
 
