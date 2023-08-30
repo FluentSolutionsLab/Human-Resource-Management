@@ -1,4 +1,5 @@
 ﻿using HRManagement.Common.Application.Contracts;
+using HRManagement.Personnel.Application.UnitTests.Builders;
 
 namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
@@ -27,11 +28,11 @@ public class HardDeleteEmployeeCommandHandlerShould
         result.Error.ShouldNotBeNull();
         result.Error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidEmployeeId));
     }
-    
+
     [Fact]
     public async Task ReturnError_WhenEmployeeNotFound()
     {
-        var hardDeleteEmployee = BuildFakeCommand();
+        var hardDeleteEmployee = BuildDeleteCommand();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => null!);
@@ -45,9 +46,8 @@ public class HardDeleteEmployeeCommandHandlerShould
     [Fact]
     public async Task HardDeleteEmployee_WhenEmployeeExists()
     {
-        var person = new Faker().Person;
-        var employees = new List<Employee>{BuildFakeEmployee(person)};
-        var hardDeleteEmployee = BuildFakeCommand();
+        var employees = new List<Employee> {new EmployeeBuilder().WithFixture().Build()};
+        var hardDeleteEmployee = BuildDeleteCommand();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employees.First());
@@ -60,26 +60,13 @@ public class HardDeleteEmployeeCommandHandlerShould
         result.IsSuccess.ShouldBeTrue();
         employees.Count.ShouldBe(0);
     }
-
-    private static Employee BuildFakeEmployee(Person person)
+    
+    private HardDeleteEmployeeCommand BuildDeleteCommand()
     {
-        var hiringDate = new Faker().Date.Past(15);
-        var employee = Employee.Create(
-            Name.Create(person.FirstName, person.LastName).Value,
-            EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
-            ValueDate.Create(hiringDate.ToString("d")).Value,
-            null, 
-            null).Value;
-        return employee;
-    }
-
-    private static HardDeleteEmployeeCommand BuildFakeCommand()
-    {
-        var hireEmployee = new HardDeleteEmployeeCommand
+        return new HardDeleteEmployeeCommand
         {
             EmployeeId = Guid.NewGuid().ToString()
-        };
-        return hireEmployee;
+        }; 
     }
+
 }
