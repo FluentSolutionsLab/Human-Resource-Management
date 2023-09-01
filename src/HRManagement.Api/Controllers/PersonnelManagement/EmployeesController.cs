@@ -70,7 +70,7 @@ public class EmployeesController : CommonController
         return result.IsSuccess ? NoContent() : BadRequest(result.Error);
     }
 
-    [HttpPut("{id}/terminate")]
+    [HttpPatch("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Terminate(string id)
