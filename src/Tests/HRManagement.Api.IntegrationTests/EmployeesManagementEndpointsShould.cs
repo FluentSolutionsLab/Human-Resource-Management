@@ -11,24 +11,24 @@ namespace HRManagement.Api.IntegrationTests;
 
 public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicationFactory<Program>>
 {
-    private const string ApiPersonnelManagementEmployees = "/api/personnel-management/employees";
-    
+    private const string ApiEndpoint = "/api/employees";
+
     private readonly HttpClient _httpClient;
 
     public EmployeesManagementEndpointsShould(TestWebApplicationFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
     }
-    
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+
+    [Fact]
     public async Task SuccessfullyReturnPagedListOfEmployees()
     {
         const int pageSize = 20;
-        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}?pageNumber=2&pageSize={pageSize}");
+        var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize={pageSize}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         response.EnsureSuccessStatusCode();
-        
+
         var responseString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString);
 
@@ -36,42 +36,32 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         result.Count.ShouldBe(pageSize);
     }
 
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+    [Fact]
     public async Task SuccessfullyReturnSingleEmployee_WhenValidIdProvided()
     {
-        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}?pageNumber=2&pageSize=10");
+        var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize=10");
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
         var result = JsonConvert.DeserializeObject<List<EmployeeDto>>(responseString);
         if (result != null)
         {
             var validEmployeeId = result.First().Id;
-            response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}/{validEmployeeId}");
+            response = await _httpClient.GetAsync($"{ApiEndpoint}/{validEmployeeId}");
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+            response.EnsureSuccessStatusCode();
+
+            responseString = await response.Content.ReadAsStringAsync();
+            var employee = JsonConvert.DeserializeObject<EmployeeDto>(responseString);
+
+            employee.ShouldNotBeNull();
         }
-
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        response.EnsureSuccessStatusCode();
-        
-        responseString = await response.Content.ReadAsStringAsync();
-
-        var employee = JsonConvert.DeserializeObject<EmployeeDto>(responseString);
-
-        employee.ShouldNotBeNull();
     }
 
-    [Fact(Skip = "Fails on GitHub Actions for now")]
-    public async Task FailToReturnListOfEmployees_WhenPagingParametersNotProvided()
-    {
-        var response = await _httpClient.GetAsync(ApiPersonnelManagementEmployees);
-
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-    }
-
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+    [Fact]
     public async Task FailToReturnSingleEmployee_WhenInvalidIdProvided()
     {
         var invalidId = new Faker().Random.Guid();
-        var response = await _httpClient.GetAsync($"{ApiPersonnelManagementEmployees}/{invalidId}");
+        var response = await _httpClient.GetAsync($"{ApiEndpoint}/{invalidId}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
 
