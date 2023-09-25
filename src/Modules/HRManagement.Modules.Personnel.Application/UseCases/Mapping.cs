@@ -61,8 +61,8 @@ public static class Mapping
     {
         var dtos = employees.Select(x => x.ToResponseDto()).ToList();
         return new PagedList<EmployeeDto>(dtos, employees.TotalCount, employees.CurrentPage, employees.PageSize);
-    } 
-    
+    }
+
     public static CreateRoleCommand ToCreateRoleCommand(this CreateRoleDto dto)
     {
         return new CreateRoleCommand
@@ -81,7 +81,7 @@ public static class Mapping
             ReportsTo = role.ReportsTo?.Name
         };
     }
-    
+
     public static UpdateRoleCommand ToUpdateRoleCommand(this UpdateRoleDto dto, byte id)
     {
         return new UpdateRoleCommand

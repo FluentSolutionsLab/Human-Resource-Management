@@ -13,7 +13,7 @@ public static class DatabaseInitializer
     {
         await context.Database.EnsureDeletedAsync();
         await context.Database.MigrateAsync();
-        
+
         var roles = BuildRoles();
         context.AddRange(roles.Values.ToList());
         await context.SaveChangesAsync();
@@ -40,10 +40,10 @@ public static class DatabaseInitializer
         };
 
         var leads = new List<Employee>();
-        for (var i = 0; i < 20; i++) 
+        for (var i = 0; i < 20; i++)
             leads.Add(CreateEmployee(roles["lead-dev"], seManager));
         employees.AddRange(leads);
-        
+
         leads.ForEach(lead =>
         {
             employees.Add(CreateEmployee(roles["business-analyst"], seManager));
@@ -67,9 +67,9 @@ public static class DatabaseInitializer
         var hiringDate = new Faker().Date.Past(15);
         var person = new Person();
         return Employee.Create(
-            Name.Create(person.FirstName, person.LastName).Value, 
-            EmailAddress.Create(person.Email).Value, 
-            ValueDate.Create(person.DateOfBirth.ToShortDateString()).Value, 
+            Name.Create(person.FirstName, person.LastName).Value,
+            EmailAddress.Create(person.Email).Value,
+            ValueDate.Create(person.DateOfBirth.ToShortDateString()).Value,
             ValueDate.Create(hiringDate.ToString("d")).Value,
             role,
             manager).Value;
@@ -105,7 +105,7 @@ public static class DatabaseInitializer
             {"lead-dev", leadDev},
             {"senior-dev", seniorDev},
             {"intermediate-dev", intermediateDev},
-            {"junior-dev", juniorDev},
+            {"junior-dev", juniorDev}
         };
         return roles;
     }

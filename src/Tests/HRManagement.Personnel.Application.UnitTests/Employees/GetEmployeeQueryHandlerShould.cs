@@ -6,8 +6,8 @@ namespace HRManagement.Personnel.Application.UnitTests.Employees;
 public class GetEmployeeQueryHandlerShould
 {
     private readonly IFixture _fixture;
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<ICacheService> _mockCacheService;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly GetEmployeeQueryHandler _sut;
 
     public GetEmployeeQueryHandlerShould()

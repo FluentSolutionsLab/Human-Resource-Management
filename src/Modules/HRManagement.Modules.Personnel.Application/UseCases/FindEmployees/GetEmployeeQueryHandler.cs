@@ -5,8 +5,8 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _cacheService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public GetEmployeeQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {

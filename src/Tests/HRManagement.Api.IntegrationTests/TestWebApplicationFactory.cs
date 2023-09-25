@@ -13,12 +13,10 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
     {
         builder.ConfigureServices(services =>
         {
-            var descriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<PersonnelDbContext>));
+            var descriptor =
+                services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<PersonnelDbContext>));
 
-            if (descriptor != null)
-            {
-                services.Remove(descriptor);
-            }
+            if (descriptor != null) services.Remove(descriptor);
 
             services.AddDbContext<PersonnelDbContext>(options =>
             {

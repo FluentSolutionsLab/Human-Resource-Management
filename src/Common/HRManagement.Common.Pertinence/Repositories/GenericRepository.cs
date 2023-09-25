@@ -26,7 +26,7 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
 
     public async Task<PagedList<TEntity>> GetAsync(
         Expression<Func<TEntity, bool>> filter = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, 
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         string includeProperties = "",
         int pageNumber = 1,
         int pageSize = 10)

@@ -18,8 +18,9 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         if (role == null) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.Id)};
 
         var rolesWithSaneName = await _unitOfWork.GetRepository<Role, byte>().GetAsync(x => x.Name == request.Name);
-        if (rolesWithSaneName.Any(r => r.Id != request.Id)) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
-        
+        if (rolesWithSaneName.Any(r => r.Id != request.Id))
+            return new List<Error> {DomainErrors.ResourceAlreadyExists()};
+
         Role reportsTo = null;
         if (request.ReportsToId.HasValue)
         {

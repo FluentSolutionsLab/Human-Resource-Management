@@ -7,8 +7,8 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<PagedList<EmployeeDto>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _cacheService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public GetEmployeesQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {
@@ -16,17 +16,15 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         _cacheService = cacheService;
     }
 
-    public async Task<Result<PagedList<EmployeeDto>>> Handle(GetEmployeesQuery request, CancellationToken cancellationToken)
+    public async Task<Result<PagedList<EmployeeDto>>> Handle(GetEmployeesQuery request,
+        CancellationToken cancellationToken)
     {
         var cacheKeyBuilder = BuildCacheKey(request, out var filter, out var orderBy);
         var employeeListCacheKey = cacheKeyBuilder.ToString();
         var employees = _cacheService.Get<PagedList<Employee>>(employeeListCacheKey);
-        if (employees != null)
-        {
-            return employees.ToResponseDto();
-        }
+        if (employees != null) return employees.ToResponseDto();
         employees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(
-            filter: filter,
+            filter,
             pageNumber: request.FilterParameters.PageNumber,
             pageSize: request.FilterParameters.PageSize,
             orderBy: orderBy);
@@ -36,8 +34,8 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
     }
 
     private static StringBuilder BuildCacheKey(
-        GetEmployeesQuery request, 
-        out Expression<Func<Employee, bool>> filter, 
+        GetEmployeesQuery request,
+        out Expression<Func<Employee, bool>> filter,
         out Func<IQueryable<Employee>, IOrderedQueryable<Employee>> orderBy)
     {
         var pageNumber = request.FilterParameters.PageNumber;

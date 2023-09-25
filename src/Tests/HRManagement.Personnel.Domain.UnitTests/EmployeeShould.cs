@@ -11,14 +11,17 @@ public class EmployeeShould
 {
     [Theory]
     [ClassData(typeof(NameEmailAddressDOBOrHiringDateTestData))]
-    public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate)
+    public void Fail_OnCreation_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress,
+        ValueDate birthDate, ValueDate hiringDate)
     {
-        Assert.Throws<ArgumentNullException>(() => Employee.Create(name, emailAddress, birthDate, hiringDate, null, null));
-    }    
+        Assert.Throws<ArgumentNullException>(() =>
+            Employee.Create(name, emailAddress, birthDate, hiringDate, null, null));
+    }
 
     [Theory]
     [ClassData(typeof(NameEmailAddressDOBOrHiringDateTestData))]
-    public void Fail_OnUpdate_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate)
+    public void Fail_OnUpdate_IfNameEmailAddressOrDOBMissing(Name name, EmailAddress emailAddress, ValueDate birthDate,
+        ValueDate hiringDate)
     {
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -34,9 +37,9 @@ public class EmployeeShould
         var presidentRole = Role.Create("President", ceoRole).Value;
         var ceo = BuildFakeEmployee(ceoRole).Value;
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
-        
+
         var president2Creation = BuildFakeEmployee(presidentRole, president1);
-        
+
         president2Creation.IsFailure.ShouldBeTrue();
     }
 
@@ -50,8 +53,9 @@ public class EmployeeShould
         var president2 = BuildFakeEmployee(presidentRole, ceo).Value;
 
         var president2Update = president2.Update(
-            president2.Name, president2.EmailAddress, president2.BirthDate, president2.HireDate, presidentRole, president1); 
-        
+            president2.Name, president2.EmailAddress, president2.BirthDate, president2.HireDate, presidentRole,
+            president1);
+
         president2Update.IsFailure.ShouldBeTrue();
     }
 
@@ -60,7 +64,7 @@ public class EmployeeShould
     {
         var employee = BuildFakeEmployee().Value;
         var terminationDate = ValueDate.Create(new Faker().Date.Recent().ToString("d")).Value;
-        
+
         employee.Terminate(terminationDate);
 
         employee.TerminationDate.ShouldNotBeNull();
@@ -73,7 +77,7 @@ public class EmployeeShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
             ValueDate.Create(hiringDate.ToString("d")).Value,
             role,
             manager);

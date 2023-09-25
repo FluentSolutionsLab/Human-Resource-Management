@@ -9,12 +9,13 @@ namespace HRManagement.Modules.Personnel.Domain;
 public class Employee : Common.Domain.Models.Entity<Guid>
 {
     private readonly List<Employee> _managedEmployees = new();
-    
+
     protected Employee()
     {
     }
 
-    private Employee(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee manager)
+    private Employee(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role,
+        Employee manager)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -34,7 +35,8 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     public virtual Employee Manager { get; private set; }
     public virtual IReadOnlyList<Employee> ManagedEmployees => _managedEmployees.ToList();
 
-    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee reportsTo)
+    public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, ValueDate birthDate,
+        ValueDate hiringDate, Role role, Employee reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
@@ -46,7 +48,8 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         return error != null ? error : new Employee(name, emailAddress, birthDate, hiringDate, role, reportsTo);
     }
 
-    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role, Employee reportsTo)
+    public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, ValueDate birthDate,
+        ValueDate hiringDate, Role role, Employee reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
@@ -71,12 +74,13 @@ public class Employee : Common.Domain.Models.Entity<Guid>
 
         TerminationDate = terminationDate;
     }
-    
+
     private static Error CheckHierarchyRules(Role role, Employee reportsTo)
     {
         if (reportsTo == null || role == null) return default;
 
-        var mustReportToIntendedRoleRule = CheckRule(new ManagerRoleMustComplyWithOrganizationRule(reportsTo.Role.Name, role.ReportsTo.Name));
+        var mustReportToIntendedRoleRule =
+            CheckRule(new ManagerRoleMustComplyWithOrganizationRule(reportsTo.Role.Name, role.ReportsTo.Name));
         return mustReportToIntendedRoleRule.IsFailure ? Error.Deserialize(mustReportToIntendedRoleRule.Error) : default;
     }
 

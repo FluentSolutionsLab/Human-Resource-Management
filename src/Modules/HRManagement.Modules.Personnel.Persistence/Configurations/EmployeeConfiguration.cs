@@ -19,31 +19,34 @@ public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
             x.Property(xx => xx.LastName).HasColumnName("LastName");
         }).Navigation(x => x.Name).IsRequired();
         builder
-            .OwnsOne(x => x.EmailAddress, x =>
-            {
-                x.Property(xx => xx.Email).HasColumnName("Email");
-            })
+            .OwnsOne(x => x.EmailAddress, x => { x.Property(xx => xx.Email).HasColumnName("Email"); })
             .Navigation(x => x.EmailAddress)
             .IsRequired();
         builder
-            .OwnsOne(x => x.BirthDate, x =>
-            {
-                x.Property(xx => xx.Date).HasColumnName("DateOfBirth").HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
-            })
+            .OwnsOne(x => x.BirthDate,
+                x =>
+                {
+                    x.Property(xx => xx.Date).HasColumnName("DateOfBirth")
+                        .HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
+                })
             .Navigation(x => x.BirthDate)
             .IsRequired();
         builder
-            .OwnsOne(x => x.HireDate, x =>
-            {
-                x.Property(xx => xx.Date).HasColumnName("HireDate").HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
-            })
+            .OwnsOne(x => x.HireDate,
+                x =>
+                {
+                    x.Property(xx => xx.Date).HasColumnName("HireDate")
+                        .HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
+                })
             .Navigation(x => x.HireDate)
             .IsRequired();
         builder
-            .OwnsOne(x => x.TerminationDate, x =>
-            {
-                x.Property(xx => xx.Date).HasColumnName("TerminationDate").HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
-            })
+            .OwnsOne(x => x.TerminationDate,
+                x =>
+                {
+                    x.Property(xx => xx.Date).HasColumnName("TerminationDate")
+                        .HasConversion<DateOnlyConverter, DateOnlyComparer>().HasColumnType("date");
+                })
             .Navigation(x => x.TerminationDate);
         builder.HasOne(x => x.Role).WithMany().IsRequired();
         builder.Property<byte>("RoleId").HasColumnName("RoleId").IsRequired();

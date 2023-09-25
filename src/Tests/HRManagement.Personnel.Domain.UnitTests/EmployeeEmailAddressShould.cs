@@ -12,7 +12,7 @@ public class EmployeeEmailAddressShould
     public void Fail_OnCreation_IfInvalid(string emailAddress)
     {
         var emailCreation = EmailAddress.Create(emailAddress);
-        
+
         emailCreation.Error.Count.ShouldBeGreaterThan(0);
     }
 }

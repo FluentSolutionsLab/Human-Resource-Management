@@ -37,5 +37,8 @@ public class Role : Common.Domain.Models.Entity<byte>
         return this;
     }
 
-    public override string ToString() => Name;
+    public override string ToString()
+    {
+        return Name;
+    }
 }

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -19,7 +21,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "HR Management API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "HR Management API", Version = "v1"});
 });
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Services.AddMemoryCache();
@@ -36,10 +38,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(options =>
     {
         options.DefaultModelsExpandDepth(-1);
-        options.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
+        options.DocExpansion(DocExpansion.None);
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
-    
+
     await app.Services.DatabaseInitializer(configuration);
 }
 
@@ -51,4 +53,5 @@ app.Run();
 
 // For integration tests
 public partial class Program
-{ }
+{
+}

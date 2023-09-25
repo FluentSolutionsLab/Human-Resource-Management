@@ -6,8 +6,8 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public class ManagerRoleMustComplyWithOrganizationRule : IBusinessRule
 {
-    private readonly string _expectedManagerRole;
     private readonly string _assignedManagerRole;
+    private readonly string _expectedManagerRole;
 
     public ManagerRoleMustComplyWithOrganizationRule(string expectedManagerRole, string assignedManagerRole)
     {

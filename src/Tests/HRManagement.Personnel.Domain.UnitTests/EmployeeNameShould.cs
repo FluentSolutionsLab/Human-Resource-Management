@@ -12,7 +12,7 @@ public class EmployeeNameShould
     public void Fail_OnCreation_IfFirstAndLastNameInvalid(string firstName, string lastName)
     {
         var nameCreation = Name.Create(firstName, lastName);
-        
+
         nameCreation.Error.Count.ShouldBeGreaterThan(0);
     }
 }

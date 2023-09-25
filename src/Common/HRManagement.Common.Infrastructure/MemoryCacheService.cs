@@ -7,8 +7,8 @@ namespace HRManagement.Common.Infrastructure;
 
 public class MemoryCacheService : ICacheService
 {
-    private readonly IMemoryCache _memoryCache;
     private readonly MemoryCacheEntryOptions _cacheEntryOptions;
+    private readonly IMemoryCache _memoryCache;
 
     public MemoryCacheService(IMemoryCache memoryCache)
     {
@@ -37,9 +37,11 @@ public class MemoryCacheService : ICacheService
 
     public List<string> GetAllKeys()
     {
-        var coherentState = typeof(MemoryCache).GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance);
+        var coherentState =
+            typeof(MemoryCache).GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance);
         var coherentStateValue = coherentState.GetValue(_memoryCache);
-        var entriesCollection = coherentStateValue.GetType().GetProperty("EntriesCollection", BindingFlags.NonPublic | BindingFlags.Instance);
+        var entriesCollection = coherentStateValue.GetType()
+            .GetProperty("EntriesCollection", BindingFlags.NonPublic | BindingFlags.Instance);
         var entriesCollectionValue = entriesCollection.GetValue(coherentStateValue) as ICollection;
 
         if (entriesCollectionValue == null) return default;

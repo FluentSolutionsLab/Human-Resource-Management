@@ -15,7 +15,8 @@ public class PersonnelDbContext : DbContext
 
     public PersonnelDbContext(IOptions<AppSettings> settings, IConfiguration configuration)
     {
-        _connectionString = settings.Value.Database.ConnectionStrings.PersonnelManagement ?? throw new ArgumentNullException(nameof(settings));
+        _connectionString = settings.Value.Database.ConnectionStrings.PersonnelManagement ??
+                            throw new ArgumentNullException(nameof(settings));
         _isDevEnvironment = configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == "Development";
     }
 
