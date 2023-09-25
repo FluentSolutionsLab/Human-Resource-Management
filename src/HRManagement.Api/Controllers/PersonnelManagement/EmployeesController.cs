@@ -16,8 +16,8 @@ namespace HRManagement.Api.Controllers.PersonnelManagement;
 [Route("api/[controller]")]
 public class EmployeesController : CommonController
 {
-    private readonly IMediator _mediator;
     private readonly LinkGenerator _linker;
+    private readonly IMediator _mediator;
 
     public EmployeesController(IMediator mediator, LinkGenerator linker)
     {
@@ -31,10 +31,10 @@ public class EmployeesController : CommonController
     {
         var request = new GetEmployeesQuery {FilterParameters = parameters};
         var result = await _mediator.Send(request);
-        
+
         var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, parameters, "FindAll", _linker);
         Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
-        
+
         return Ok(result.Value);
     }
 

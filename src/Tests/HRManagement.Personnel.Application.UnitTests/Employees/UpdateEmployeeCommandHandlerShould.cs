@@ -29,7 +29,8 @@ public class UpdateEmployeeCommandHandlerShould
         var result = await _sut.Handle(command, CancellationToken.None);
 
         result.Error.Count.ShouldBeGreaterThan(0);
-        result.Error.All(error => error.Code == DomainErrors.InvalidName(It.IsNotNull<string>()).Code).ShouldBeTrue();;
+        result.Error.All(error => error.Code == DomainErrors.InvalidName(It.IsNotNull<string>()).Code).ShouldBeTrue();
+        ;
     }
 
     [Theory]
@@ -99,7 +100,7 @@ public class UpdateEmployeeCommandHandlerShould
         var ceoRole = Role.Create("CEO", null).Value;
         var presidentRole = Role.Create("President", ceoRole).Value;
         var managerData = new Faker().Person;
-        var manager = BuildFakeEmployee(managerData, ceoRole, null);
+        var manager = BuildFakeEmployee(managerData, ceoRole);
         var person = new Faker().Person;
         var employee = BuildFakeEmployee(person, presidentRole, manager);
         var updateEmployee = BuildFakeCommand(person);
@@ -107,7 +108,8 @@ public class UpdateEmployeeCommandHandlerShould
             .SetupSequence(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
             .ReturnsAsync(() => employee)
             .ReturnsAsync(() => manager);
-        _mockUnitOfWork.Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(It.IsAny<byte>())).ReturnsAsync(() => presidentRole);
+        _mockUnitOfWork.Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(It.IsAny<byte>()))
+            .ReturnsAsync(() => presidentRole);
         _mockUnitOfWork
             .Setup(d => d.SaveChangesAsync())
             .Callback(() =>
@@ -131,7 +133,7 @@ public class UpdateEmployeeCommandHandlerShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
             ValueDate.Create(hiringDate.ToString("d")).Value,
             role,
             manager).Value;

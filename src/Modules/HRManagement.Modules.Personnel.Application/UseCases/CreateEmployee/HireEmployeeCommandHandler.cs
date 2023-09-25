@@ -7,8 +7,8 @@ namespace HRManagement.Modules.Personnel.Application.UseCases;
 
 public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _cacheService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public HireEmployeeCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {
@@ -16,7 +16,8 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         _cacheService = cacheService;
     }
 
-    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request, CancellationToken cancellationToken)
+    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request,
+        CancellationToken cancellationToken)
     {
         var errors = CheckForErrors(
             request,
@@ -30,10 +31,11 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
             return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
         Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
-        if (maybeRole.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Role), request.RoleId)};
+        if (maybeRole.HasNoValue) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.RoleId)};
 
         Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
-        if (maybeManager.HasNoValue) return new List<Error>{DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
+        if (maybeManager.HasNoValue)
+            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
 
         Expression<Func<Employee, bool>> existingEmployeeCondition =
             e => e.Name.FirstName == request.FirstName
@@ -50,7 +52,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
             hiringDateCreation.Value,
             maybeRole.Value,
             maybeManager.Value);
-        if (employeeCreation.IsFailure) return new List<Error>{employeeCreation.Error};
+        if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
 
         var employee = employeeCreation.Value;
         await _unitOfWork.GetRepository<Employee, Guid>().AddAsync(employee);
@@ -58,16 +60,16 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
 
         // Clear the memory cache of keys related to the same context
         var cacheKeys = _cacheService.GetAllKeys();
-        foreach (var key in cacheKeys.Where(k => k.Contains("GetEmployeesQuery"))) 
+        foreach (var key in cacheKeys.Where(k => k.Contains("GetEmployeesQuery")))
             _cacheService.Remove(key);
 
         return employee.ToResponseDto();
     }
 
     private static List<Error> CheckForErrors(
-        HireEmployeeCommand request, 
-        out Result<Name, List<Error>> nameCreation, 
-        out Result<EmailAddress, List<Error>> emailCreation, 
+        HireEmployeeCommand request,
+        out Result<Name, List<Error>> nameCreation,
+        out Result<EmailAddress, List<Error>> emailCreation,
         out Result<ValueDate, List<Error>> dateOfBirthCreation,
         out Result<ValueDate, List<Error>> hiringDateCreation)
     {

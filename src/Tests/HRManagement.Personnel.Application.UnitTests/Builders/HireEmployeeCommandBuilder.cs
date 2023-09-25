@@ -2,8 +2,8 @@
 
 public class HireEmployeeCommandBuilder
 {
-    private readonly Person _fakePerson = new Faker().Person;
     private readonly HireEmployeeCommand _command = new();
+    private readonly Person _fakePerson = new Faker().Person;
 
     public HireEmployeeCommandBuilder WithEmailAddress(string email)
     {

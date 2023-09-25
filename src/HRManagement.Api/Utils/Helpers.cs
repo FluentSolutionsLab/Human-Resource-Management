@@ -6,10 +6,12 @@ namespace HRManagement.Api.Utils;
 
 public static class Helpers
 {
-    public static object BuildPaginationMetadata<TResponseDto>(PagedList<TResponseDto> value, FilterParameters filter, string actionMethod, LinkGenerator linker)
+    public static object BuildPaginationMetadata<TResponseDto>(PagedList<TResponseDto> value, FilterParameters filter,
+        string actionMethod, LinkGenerator linker)
     {
         var previousPageLink = value.HasPrevious
-            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.PreviousPage, linker)
+            ? CreatePageResourceUri(actionMethod, filter.PageNumber, filter.PageSize, ResourceUriType.PreviousPage,
+                linker)
             : null;
 
         var nextPageLink = value.HasNext
@@ -29,7 +31,8 @@ public static class Helpers
         return paginationMetadata;
     }
 
-    private static string CreatePageResourceUri(string action, int pageNumber, int pageSize, ResourceUriType type, LinkGenerator linker)
+    private static string CreatePageResourceUri(string action, int pageNumber, int pageSize, ResourceUriType type,
+        LinkGenerator linker)
     {
         return type switch
         {

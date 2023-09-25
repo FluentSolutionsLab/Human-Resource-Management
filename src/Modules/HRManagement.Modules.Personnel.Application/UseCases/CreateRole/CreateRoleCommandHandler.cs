@@ -12,9 +12,11 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<RoleDto, List<Error>>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<Result<RoleDto, List<Error>>> Handle(CreateRoleCommand request,
+        CancellationToken cancellationToken)
     {
-        var rolesWithSaneName = await _unitOfWork.GetRepository<Role, byte>().GetAsync(role => role.Name == request.Name);
+        var rolesWithSaneName =
+            await _unitOfWork.GetRepository<Role, byte>().GetAsync(role => role.Name == request.Name);
         if (rolesWithSaneName.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
         Role reportsTo = null;

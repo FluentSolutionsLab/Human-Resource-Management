@@ -3,7 +3,7 @@
 public class EmployeeBuilder
 {
     private readonly Person _fakePerson = new Faker().Person;
-    private Employee _employee = null;
+    private Employee _employee;
 
     public EmployeeBuilder WithFixture()
     {
@@ -18,5 +18,8 @@ public class EmployeeBuilder
         return this;
     }
 
-    public Employee Build() => _employee;
+    public Employee Build()
+    {
+        return _employee;
+    }
 }

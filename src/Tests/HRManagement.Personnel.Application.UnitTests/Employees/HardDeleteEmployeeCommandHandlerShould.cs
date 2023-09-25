@@ -60,13 +60,12 @@ public class HardDeleteEmployeeCommandHandlerShould
         result.IsSuccess.ShouldBeTrue();
         employees.Count.ShouldBe(0);
     }
-    
+
     private HardDeleteEmployeeCommand BuildDeleteCommand()
     {
         return new HardDeleteEmployeeCommand
         {
             EmployeeId = Guid.NewGuid().ToString()
-        }; 
+        };
     }
-
 }

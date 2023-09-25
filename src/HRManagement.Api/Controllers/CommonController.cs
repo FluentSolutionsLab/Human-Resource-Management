@@ -9,5 +9,4 @@ namespace HRManagement.Api.Controllers;
 [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 public class CommonController : ControllerBase
 {
-    
 }

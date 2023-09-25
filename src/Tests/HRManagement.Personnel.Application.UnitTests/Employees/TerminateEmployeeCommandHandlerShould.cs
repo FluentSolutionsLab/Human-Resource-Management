@@ -46,7 +46,7 @@ public class TerminateEmployeeCommandHandlerShould
     public async Task TerminateEmployee_WhenEmployeeExists()
     {
         var person = new Faker().Person;
-        var employees = new List<Employee>{BuildFakeEmployee(person)};
+        var employees = new List<Employee> {BuildFakeEmployee(person)};
         var terminateEmployee = BuildFakeCommand();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
@@ -66,7 +66,7 @@ public class TerminateEmployeeCommandHandlerShould
         var employee = Employee.Create(
             Name.Create(person.FirstName, person.LastName).Value,
             EmailAddress.Create(person.Email).Value,
-            ValueDate.Create(person.DateOfBirth.ToString("d")).Value, 
+            ValueDate.Create(person.DateOfBirth.ToString("d")).Value,
             ValueDate.Create(hiringDate.ToString("d")).Value,
             null,
             null).Value;

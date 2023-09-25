@@ -6,13 +6,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.4" />
-        <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.4"/>
+        <PackageReference Include="Bogus" Version="34.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Common\HRManagement.Common.Pertinence\HRManagement.Common.Pertinence.csproj" />
-      <ProjectReference Include="..\HRManagement.Modules.Personnel.Application\HRManagement.Modules.Personnel.Application.csproj" />
+        <ProjectReference Include="..\..\Common\HRManagement.Common.Pertinence\HRManagement.Common.Pertinence.csproj"/>
+        <ProjectReference Include="..\HRManagement.Modules.Personnel.Application\HRManagement.Modules.Personnel.Application.csproj"/>
     </ItemGroup>
 
 </Project>

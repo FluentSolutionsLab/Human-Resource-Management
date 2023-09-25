@@ -3,8 +3,8 @@
 public class FilterParameters
 {
     private const int MaxPageSize = 20;
-    private int _pageSize = 10;
     private int _pageNumber = 1;
+    private int _pageSize = 10;
 
     public int PageNumber
     {
@@ -22,12 +22,12 @@ public class FilterParameters
 
     private int ComputePageNumber(int value)
     {
-        return value  < 0 ? _pageNumber : value;
+        return value < 0 ? _pageNumber : value;
     }
 
     private int ComputePageSize(int value)
     {
-        if (value  < 0)
+        if (value < 0)
             return _pageSize;
         return value > MaxPageSize ? MaxPageSize : value;
     }

@@ -6,17 +6,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Carter" Version="6.1.1" />
+        <PackageReference Include="Carter" Version="6.1.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Common\HRManagement.Common.Infrastructure\HRManagement.Common.Infrastructure.csproj" />
-      <ProjectReference Include="..\Modules\HRManagement.Modules.Personnel.Persistence\HRManagement.Modules.Personnel.Persistence.csproj" />
+        <ProjectReference Include="..\Common\HRManagement.Common.Infrastructure\HRManagement.Common.Infrastructure.csproj"/>
+        <ProjectReference Include="..\Modules\HRManagement.Modules.Personnel.Persistence\HRManagement.Modules.Personnel.Persistence.csproj"/>
     </ItemGroup>
 
 </Project>
