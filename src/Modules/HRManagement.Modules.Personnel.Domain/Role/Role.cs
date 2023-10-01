@@ -9,7 +9,7 @@ public class Role : Common.Domain.Models.Entity<byte>
     {
     }
 
-    public Role(string name, Role reportsTo)
+    private Role(string name, Role reportsTo)
     {
         Name = name;
         ReportsTo = reportsTo;
@@ -40,5 +40,11 @@ public class Role : Common.Domain.Models.Entity<byte>
     public override string ToString()
     {
         return Name;
+    }
+
+    // USED ONLY FOR INTEGRATION TEST
+    public void SetId(byte id)
+    {
+        Id = id;
     }
 }

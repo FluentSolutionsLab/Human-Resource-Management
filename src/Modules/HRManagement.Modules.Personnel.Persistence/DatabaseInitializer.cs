@@ -11,10 +11,14 @@ public static class DatabaseInitializer
 {
     public static async Task InitializeAsync(PersonnelDbContext context)
     {
-        await context.Database.EnsureDeletedAsync();
-        await context.Database.MigrateAsync();
+        if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+        {
+            await context.Database.EnsureDeletedAsync();
+            await context.Database.MigrateAsync();
+        }
 
-        var roles = BuildRoles();
+        var isInMemoryDb = context.Database.ProviderName.Contains("InMemory");
+        var roles = BuildRoles(isInMemoryDb);
         context.AddRange(roles.Values.ToList());
         await context.SaveChangesAsync();
 
@@ -75,7 +79,7 @@ public static class DatabaseInitializer
             manager).Value;
     }
 
-    private static Dictionary<string, Role> BuildRoles()
+    private static Dictionary<string, Role> BuildRoles(bool isInMemoryDb)
     {
         var ceo = Role.Create("CEO", null).Value;
         var president = Role.Create("President", ceo).Value;
@@ -107,6 +111,16 @@ public static class DatabaseInitializer
             {"intermediate-dev", intermediateDev},
             {"junior-dev", juniorDev}
         };
+
+        if (isInMemoryDb)
+        {
+            byte index = 1;
+            foreach (var role in roles.Values)
+            {
+                role.SetId(index++);
+            }
+        }
+
         return roles;
     }
 }

@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Personnel.Persistence;
+﻿using HRManagement.Modules.Personnel.Domain;
+using HRManagement.Modules.Personnel.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,8 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             services.AddDbContext<PersonnelDbContext>(options =>
             {
                 options.UseInMemoryDatabase("PersonnelDbContextInMemoryTest");
+                options.UseLazyLoadingProxies();
+                options.EnableSensitiveDataLogging();
             });
 
             var sp = services.BuildServiceProvider();
