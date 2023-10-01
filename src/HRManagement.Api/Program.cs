@@ -24,7 +24,7 @@ builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true
 builder.Services.AddMemoryCache();
 
 // Add modules
-builder.Services.AddModulePersonnelManagement();
+builder.Services.AddModulePersonnelManagement(env.IsDevelopment());
 builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();
