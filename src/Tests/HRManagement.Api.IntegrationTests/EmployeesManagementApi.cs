@@ -9,19 +9,19 @@ using Xunit;
 
 namespace HRManagement.Api.IntegrationTests;
 
-public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicationFactory<Program>>
+public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory<Program>>
 {
     private const string ApiEndpoint = "/api/employees";
 
     private readonly HttpClient _httpClient;
 
-    public EmployeesManagementEndpointsShould(TestWebApplicationFactory<Program> factory)
+    public EmployeesManagementApi(TestWebApplicationFactory<Program> factory)
     {
         _httpClient = factory.CreateClient();
     }
 
-    [Fact]
-    public async Task SuccessfullyReturnPagedListOfEmployees()
+    [Fact(DisplayName = "Successfully returns paged list of employees, when matches found.")]
+    public async Task Get_Success()
     {
         const int pageSize = 20;
         var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize={pageSize}");
@@ -36,8 +36,8 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         result.Count.ShouldBe(pageSize);
     }
 
-    [Fact]
-    public async Task SuccessfullyReturnSingleEmployee_WhenValidIdProvided()
+    [Fact(DisplayName = "Successfully returns single employee, when ID provided is valid and a match is found")]
+    public async Task Get_ValidIdProvided_Success()
     {
         var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize=10");
         response.EnsureSuccessStatusCode();
@@ -57,8 +57,23 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         }
     }
 
-    [Fact]
-    public async Task FailToReturnSingleEmployee_WhenInvalidIdProvided()
+    [Fact(DisplayName = "Fails to return single employee, when ID provided is not valid")]
+    public async Task Get_InvalidIdProvided_Failure()
+    {
+        var invalidId = new Faker().Random.Guid();
+        var response = await _httpClient.GetAsync($"{ApiEndpoint}/{invalidId}");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+
+        var responseString = await response.Content.ReadAsStringAsync();
+        var error = JsonConvert.DeserializeObject<Error>(responseString);
+
+        error.ShouldNotBeNull();
+        error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidId));
+    }
+
+    [Fact(DisplayName = "Fails to return single employee, when no match found")]
+    public async Task Get_NoMatchFound_Empty()
     {
         var invalidId = new Faker().Random.Guid();
         var response = await _httpClient.GetAsync($"{ApiEndpoint}/{invalidId}");
