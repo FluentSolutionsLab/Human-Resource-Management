@@ -4,7 +4,6 @@ using HRManagement.Modules.Personnel.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
@@ -12,10 +11,8 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
-
-configuration.AddEnvironmentVariables("ASPNETCORE_ENVIRONMENT");
-
-builder.Services.Configure<AppSettings>(configuration);
+var env = builder.Environment;
+builder.Services.AddOptions<AppSettings>().Bind(configuration).ValidateDataAnnotations();
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -42,7 +39,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
 
-    await app.Services.DatabaseInitializer(configuration);
+    await app.Services.DatabaseInitializer(env.IsDevelopment());
 }
 
 app.UseHttpsRedirection();
