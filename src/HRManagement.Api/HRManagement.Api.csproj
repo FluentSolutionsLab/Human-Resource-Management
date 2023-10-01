@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
+        <UserSecretsId>acf7b268-f0f7-4ce3-9404-609cf34f682c</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
