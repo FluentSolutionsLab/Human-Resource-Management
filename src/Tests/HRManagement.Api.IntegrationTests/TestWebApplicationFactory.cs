@@ -1,5 +1,4 @@
-﻿using HRManagement.Modules.Personnel.Domain;
-using HRManagement.Modules.Personnel.Persistence;
+﻿using HRManagement.Modules.Personnel.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
