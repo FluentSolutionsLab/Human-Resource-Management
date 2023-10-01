@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using HRManagement.Common.Application.Contracts;
+using HRManagement.Common.Application.Models;
 using HRManagement.Common.Pertinence.Repositories;
 using HRManagement.Modules.Personnel.Application;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace HRManagement.Modules.Personnel.Persistence;
 
@@ -16,28 +17,26 @@ public static class PersistenceServiceRegistration
         services.AddDbContext<PersonnelDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>(provider =>
         {
-            var personnelDbContext = ResolveDbContext(provider);
+            var personnelDbContext = ResolveService<PersonnelDbContext>(provider);
             return new UnitOfWork(personnelDbContext);
         });
     }
 
-    public static async Task DatabaseInitializer(this IServiceProvider provider, IConfiguration configuration)
+    public static async Task DatabaseInitializer(this IServiceProvider provider, bool isDevelopment)
     {
-        var isDevEnvironment = configuration.GetValue<string>("ASPNETCORE_ENVIRONMENT") == "Development";
-        var enableDbGeneration = configuration.GetValue<bool>("Database:EnableDbGeneration");
+        var resetDbOnStart = ResolveService<IOptions<AppSettings>>(provider).Value.Database.ResetDbOnStart;
 
-        if (isDevEnvironment && enableDbGeneration)
+        if (isDevelopment && resetDbOnStart)
         {
-            var personnelDbContext = ResolveDbContext(provider);
+            var personnelDbContext = ResolveService<PersonnelDbContext>(provider);
             await Persistence.DatabaseInitializer.InitializeAsync(personnelDbContext);
         }
     }
 
-    private static PersonnelDbContext ResolveDbContext(IServiceProvider provider)
+    private static T ResolveService<T>(IServiceProvider provider)
     {
         var serviceScope = provider.CreateScope();
         var services = serviceScope.ServiceProvider;
-        var referenceDbContext = services.GetRequiredService<PersonnelDbContext>();
-        return referenceDbContext;
+        return services.GetRequiredService<T>();
     }
 }
