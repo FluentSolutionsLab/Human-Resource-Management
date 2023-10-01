@@ -20,7 +20,7 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         _httpClient = factory.CreateClient();
     }
 
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+    [Fact]
     public async Task SuccessfullyReturnPagedListOfEmployees()
     {
         const int pageSize = 20;
@@ -36,7 +36,7 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         result.Count.ShouldBe(pageSize);
     }
 
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+    [Fact]
     public async Task SuccessfullyReturnSingleEmployee_WhenValidIdProvided()
     {
         var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize=10");
@@ -57,7 +57,7 @@ public class EmployeesManagementEndpointsShould : IClassFixture<TestWebApplicati
         }
     }
 
-    [Fact(Skip = "Fails on GitHub Actions for now")]
+    [Fact]
     public async Task FailToReturnSingleEmployee_WhenInvalidIdProvided()
     {
         var invalidId = new Faker().Random.Guid();
