@@ -36,7 +36,7 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
 
             try
             {
-                Task.FromResult(() => DatabaseInitializer.InitializeAsync(context));
+                DatabaseInitializer.InitializeAsync(context);
             }
             catch (Exception ex)
             {
