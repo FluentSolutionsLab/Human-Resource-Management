@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Pertinence.Repositories;
