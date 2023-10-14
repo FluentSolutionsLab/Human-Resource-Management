@@ -24,6 +24,14 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
         return await _dbSet.FindAsync(id);
     }
 
+    public Task<TEntity> GetByIdAsync(TId id, string includeProperties)
+    {
+        IQueryable<TEntity> query = _dbSet;
+        foreach (var property in includeProperties.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
+            query = query.Include(property);
+        return query.FirstOrDefaultAsync(x => x.Id.Equals(id));
+    }
+
     public async Task<PagedList<TEntity>> GetAsync(
         Expression<Func<TEntity, bool>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,

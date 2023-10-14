@@ -24,7 +24,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
         if (employee != null)
             return employee.ToResponseDto();
 
-        employee = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
+        employee = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId, includeProperties: "Role,Manager,Manager.Role");
         if (employee == null)
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 

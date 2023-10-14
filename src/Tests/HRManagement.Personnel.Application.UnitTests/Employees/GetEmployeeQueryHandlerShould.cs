@@ -24,7 +24,7 @@ public class GetEmployeeQueryHandlerShould
         var fakeEmployee = new EmployeeBuilder().WithFixture().Build();
         _mockCacheService.Setup(x => x.Get<Employee>(It.IsAny<string>())).Returns((Employee) null);
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>(), "Role,Manager,Manager.Role"))
             .ReturnsAsync(fakeEmployee);
         var getEmployee = _fixture.Create<GetEmployeeQuery>();
         getEmployee.EmployeeId = Guid.NewGuid().ToString();
