@@ -20,7 +20,7 @@ public static class PersistenceServiceRegistration
         {
             var connectionString = ResolveService<IOptions<AppSettings>>(services.BuildServiceProvider()).Value.Database
                 .ConnectionStrings.PersonnelManagement;
-            options.UseSqlServer(connectionString).UseLazyLoadingProxies();
+            options.UseSqlServer(connectionString);
             if (isDevelopment)
             {
                 var loggerFactory = LoggerFactory.Create(builder =>

@@ -27,7 +27,8 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
             filter,
             pageNumber: request.FilterParameters.PageNumber,
             pageSize: request.FilterParameters.PageSize,
-            orderBy: orderBy);
+            orderBy: orderBy,
+            includeProperties: "Role,Manager,Manager.Role");
         _cacheService.Set(employeeListCacheKey, employees);
 
         return employees.ToResponseDto();

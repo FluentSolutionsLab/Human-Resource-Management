@@ -21,7 +21,6 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             services.AddDbContext<PersonnelDbContext>(options =>
             {
                 options.UseInMemoryDatabase("PersonnelDbContextInMemoryTest");
-                options.UseLazyLoadingProxies();
                 options.EnableSensitiveDataLogging();
             });
 
