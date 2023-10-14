@@ -40,14 +40,14 @@ public static class PersistenceServiceRegistration
         });
     }
 
-    public static async Task DatabaseInitializer(this IServiceProvider provider, bool isDevelopment)
+    public static void DatabaseInitializer(this IServiceProvider provider, bool isDevelopment)
     {
         var resetDbOnStart = ResolveService<IOptions<AppSettings>>(provider).Value.Database.ResetDbOnStart;
 
         if (isDevelopment && resetDbOnStart)
         {
             var personnelDbContext = ResolveService<PersonnelDbContext>(provider);
-            await Persistence.DatabaseInitializer.InitializeAsync(personnelDbContext);
+            Persistence.DatabaseInitializer.Initialize(personnelDbContext);
         }
     }
 

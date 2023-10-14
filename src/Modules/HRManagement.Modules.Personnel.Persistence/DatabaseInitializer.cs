@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Bogus;
 using HRManagement.Modules.Personnel.Domain;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +8,22 @@ namespace HRManagement.Modules.Personnel.Persistence;
 
 public static class DatabaseInitializer
 {
-    public static async Task InitializeAsync(PersonnelDbContext context)
+    public static void Initialize(PersonnelDbContext context)
     {
-        if (context.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+        var isInMemoryDb = context.Database.ProviderName.Contains("InMemory");
+
+        if (!isInMemoryDb)
         {
-            await context.Database.EnsureDeletedAsync();
-            await context.Database.MigrateAsync();
+            context.Database.EnsureDeleted();
+            context.Database.Migrate();
         }
 
-        var isInMemoryDb = context.Database.ProviderName.Contains("InMemory");
         var roles = BuildRoles(isInMemoryDb);
-        context.AddRange(roles.Values.ToList());
-        await context.SaveChangesAsync();
+        if ((isInMemoryDb && !context.Roles.Any()) || !isInMemoryDb)
+        {
+            context.AddRange(roles.Values.ToList());
+            context.SaveChanges();
+        }
 
         var ceo = CreateEmployee(roles["ceo"]);
         var president = CreateEmployee(roles["president"], ceo);
@@ -62,8 +65,11 @@ public static class DatabaseInitializer
             employees.Add(CreateEmployee(roles["junior-dev"], lead));
         });
 
-        context.AddRange(employees);
-        await context.SaveChangesAsync();
+        if ((isInMemoryDb && !context.Employees.Any()) || !isInMemoryDb)
+        {
+            context.AddRange(employees);
+            context.SaveChangesAsync();
+        }
     }
 
     private static Employee CreateEmployee(Role role, Employee manager = null)
