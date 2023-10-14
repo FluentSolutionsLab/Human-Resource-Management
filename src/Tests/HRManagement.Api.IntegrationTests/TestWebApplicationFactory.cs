@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace HRManagement.Api.IntegrationTests;
 
-public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
+public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
     protected override IHost CreateHost(IHostBuilder builder)
     {
@@ -30,13 +30,13 @@ public class TestWebApplicationFactory<TProgram> : WebApplicationFactory<TProgra
             using var scope = sp.CreateScope();
             var scopedServices = scope.ServiceProvider;
             var context = scopedServices.GetRequiredService<PersonnelDbContext>();
-            var logger = scopedServices.GetRequiredService<ILogger<WebApplicationFactory<TProgram>>>();
+            var logger = scopedServices.GetRequiredService<ILogger<WebApplicationFactory<Program>>>();
 
             context.Database.EnsureCreated();
 
             try
             {
-                Task.FromResult(() => DatabaseInitializer.InitializeAsync(context));
+                DatabaseInitializer.Initialize(context);
             }
             catch (Exception ex)
             {

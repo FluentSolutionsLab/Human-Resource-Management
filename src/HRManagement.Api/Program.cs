@@ -39,7 +39,7 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1/swagger.json", "HR Management API v1");
     });
 
-    await app.Services.DatabaseInitializer(env.IsDevelopment());
+    app.Services.DatabaseInitializer(env.IsDevelopment());
 }
 
 app.UseHttpsRedirection();

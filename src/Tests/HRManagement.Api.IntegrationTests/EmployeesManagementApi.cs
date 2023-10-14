@@ -9,13 +9,13 @@ using Xunit;
 
 namespace HRManagement.Api.IntegrationTests;
 
-public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory<Program>>
+public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory>
 {
     private const string ApiEndpoint = "/api/employees";
 
     private readonly HttpClient _httpClient;
 
-    public EmployeesManagementApi(TestWebApplicationFactory<Program> factory)
+    public EmployeesManagementApi(TestWebApplicationFactory factory)
     {
         _httpClient = factory.CreateClient();
     }
