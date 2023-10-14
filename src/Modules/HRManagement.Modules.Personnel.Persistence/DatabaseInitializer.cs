@@ -121,10 +121,7 @@ public static class DatabaseInitializer
         if (isInMemoryDb)
         {
             byte index = 1;
-            foreach (var role in roles.Values)
-            {
-                role.SetId(index++);
-            }
+            foreach (var role in roles.Values) role.SetId(index++);
         }
 
         return roles;
