@@ -7,7 +7,7 @@ namespace HRManagement.Common.Application.Contracts;
 public interface IGenericRepository<TEntity, TId> where TEntity : Entity<TId> where TId : struct
 {
     Task<TEntity> GetByIdAsync(TId id);
-    Task<TEntity> GetByIdAsync(TId id, string includeProperties = "");
+    Task<TEntity> GetByIdAsync(TId id, string includeProperties);
 
     Task<PagedList<TEntity>> GetAsync(
         Expression<Func<TEntity, bool>> filter = null,
