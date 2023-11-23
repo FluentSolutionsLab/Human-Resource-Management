@@ -25,7 +25,7 @@ public class ValueDate : ValueObject
     {
         return dateOrNothing
             .ToResult(DomainErrors.NullOrEmptyName(nameof(field)))
-            .Map(date => date.Trim())
+            .Tap(date => date.Trim())
             .Ensure(date => date != string.Empty, DomainErrors.NullOrEmptyName(nameof(field)))
             .Ensure(date =>
             {

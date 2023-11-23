@@ -29,7 +29,7 @@ public class EmailAddress : ValueObject
     {
         return emailOrNothing
             .ToResult(DomainErrors.NullOrEmptyName(nameof(Email)))
-            .Map(email => email.Trim())
+            .Tap(email => email.Trim())
             .Ensure(email => email != string.Empty, DomainErrors.NullOrEmptyName(nameof(Email)))
             .Ensure(email =>
             {

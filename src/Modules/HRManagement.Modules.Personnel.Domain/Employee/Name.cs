@@ -43,7 +43,7 @@ public class Name : ValueObject
         var currentName = string.Empty;
         return name
             .ToResult(DomainErrors.NullOrEmptyName(fieldName))
-            .Map(x => x.Trim())
+            .Tap(x => x.Trim())
             .Ensure(x => x != string.Empty, DomainErrors.NullOrEmptyName(fieldName))
             .Ensure(x =>
             {
