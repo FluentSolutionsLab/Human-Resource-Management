@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
+
 namespace HRManagement.Common.Domain.Models;
 
-public sealed class Error
+public sealed class Error : ICombine
 {
     private const string Separator = "||";
 
@@ -29,5 +31,10 @@ public sealed class Error
             throw new Exception($"Invalid error serialization: '{serialized}'");
 
         return new Error(data[0], data[1]);
+    }
+
+    public ICombine Combine(ICombine value)
+    {
+        return value;
     }
 }

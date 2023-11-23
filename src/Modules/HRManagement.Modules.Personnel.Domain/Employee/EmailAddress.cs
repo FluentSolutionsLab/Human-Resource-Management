@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
@@ -8,6 +8,12 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public class EmailAddress : ValueObject
 {
+    private static readonly Regex EmailRegex =
+        new("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+    private static string _email;
+
     protected EmailAddress()
     {
     }
@@ -19,29 +25,22 @@ public class EmailAddress : ValueObject
 
     public string Email { get; }
 
-    public static Result<EmailAddress, List<Error>> Create(string email)
+    public static Result<EmailAddress, Error> Create(Maybe<string> emailOrNothing)
     {
-        var errors = ValidateBusinessRules(email);
-        if (errors.Any()) return errors;
-
-        return new EmailAddress(email);
+        return emailOrNothing
+            .ToResult(DomainErrors.NullOrEmptyName(nameof(Email)))
+            .Map(email => email.Trim())
+            .Ensure(email => email != string.Empty, DomainErrors.NullOrEmptyName(nameof(Email)))
+            .Ensure(email =>
+            {
+                _email = email;
+                return EmailRegex.IsMatch(email);
+            }, DomainErrors.InvalidEmailAddress(_email))
+            .Map(email => new EmailAddress(email));
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Email;
-    }
-
-    private static List<Error> ValidateBusinessRules(string email)
-    {
-        var errors = new List<Error>();
-        var notNullOrEmptyRule = CheckRule(new NotNullOrEmptyEmailAddressRule(email, nameof(Email)));
-        if (notNullOrEmptyRule.IsFailure)
-            errors.Add(Error.Deserialize(notNullOrEmptyRule.Error));
-
-        var validEmailRule = CheckRule(new ValidEmailAddressRule(email));
-        if (validEmailRule.IsFailure)
-            errors.Add(Error.Deserialize(validEmailRule.Error));
-        return errors;
     }
 }

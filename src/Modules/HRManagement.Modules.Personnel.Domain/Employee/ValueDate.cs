@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
@@ -9,6 +8,8 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public class ValueDate : ValueObject
 {
+    private static string _date;
+
     protected ValueDate()
     {
     }
@@ -20,31 +21,24 @@ public class ValueDate : ValueObject
 
     public DateOnly Date { get; }
 
-    public static Result<ValueDate, List<Error>> Create(string date)
+    public static Result<ValueDate, Error> Create(Maybe<string> dateOrNothing, string field = null)
     {
-        var errors = ValidateBusinessRules(date, out var actualDate);
-        if (errors.Any()) return errors;
-
-        return new ValueDate(actualDate);
+        return dateOrNothing
+            .ToResult(DomainErrors.NullOrEmptyName(nameof(field)))
+            .Map(date => date.Trim())
+            .Ensure(date => date != string.Empty, DomainErrors.NullOrEmptyName(nameof(field)))
+            .Ensure(date =>
+            {
+                _date = date;
+                return DateTime.TryParse(_date, out _);
+            }, DomainErrors.InvalidDate(_date))
+            .Ensure(date => DateOnly.FromDateTime(DateTime.Parse(date)) <= DateOnly.FromDateTime(DateTime.Now),
+                DomainErrors.DateInFuture())
+            .Map(date => new ValueDate(DateOnly.FromDateTime(DateTime.Parse(date))));
     }
 
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Date;
-    }
-
-    private static List<Error> ValidateBusinessRules(string date, out DateOnly actualDate)
-    {
-        var actualDateRule = CheckRule(new DateMustBeValidRule(date));
-        if (actualDateRule.IsFailure)
-        {
-            actualDate = default;
-            return new List<Error> {Error.Deserialize(actualDateRule.Error)};
-        }
-
-        actualDate = DateOnly.FromDateTime(DateTime.Parse(date));
-
-        var rule = CheckRule(new DateNotInFutureRule(actualDate));
-        return rule.IsFailure ? new List<Error> {Error.Deserialize(rule.Error)} : new List<Error>();
     }
 }
