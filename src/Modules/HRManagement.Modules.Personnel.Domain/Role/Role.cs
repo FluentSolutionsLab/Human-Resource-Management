@@ -18,23 +18,28 @@ public class Role : Common.Domain.Models.Entity<byte>
     public string Name { get; private set; }
     public virtual Role ReportsTo { get; private set; }
 
-    public static Result<Role, Error> Create(string name, Role reportsTo)
+    public static Result<Role, Error> Create(Maybe<string> roleNameOrNothing, Role reportsTo)
     {
-        var ruleCheck = CheckRule(new RoleNameCannotBeEmptyOrNull(name));
-        if (ruleCheck.IsFailure) return Error.Deserialize(ruleCheck.Error);
-
-        return new Role(name, reportsTo);
+        return roleNameOrNothing
+            .ToResult(DomainErrors.InvalidName(nameof(Name)))
+            .Map(roleName => roleName.Trim())
+            .Ensure(roleName => roleName != string.Empty, DomainErrors.InvalidName(nameof(Name)))
+            .Map(roleName => new Role(roleName, reportsTo));
     }
 
-    public Result<Role, Error> Update(string name, Role reportsTo)
+    public Result<Role, Error> Update(Maybe<string> roleNameOrNothing, Role reportsTo)
     {
-        var ruleCheck = CheckRule(new RoleNameCannotBeEmptyOrNull(name));
-        if (ruleCheck.IsFailure) return Error.Deserialize(ruleCheck.Error);
+        var result = roleNameOrNothing
+            .ToResult(DomainErrors.InvalidName(nameof(Name)))
+            .Map(roleName => roleName.Trim())
+            .Ensure(roleName => roleName != string.Empty, DomainErrors.InvalidName(nameof(Name)))
+            .Tap(roleName =>
+            {
+                Name = roleName;
+                ReportsTo = reportsTo;
+            });
 
-        Name = name;
-        ReportsTo = reportsTo;
-
-        return this;
+        return result.IsSuccess ? this : result.Error;
     }
 
     public override string ToString()

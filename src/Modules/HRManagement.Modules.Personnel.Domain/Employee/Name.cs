@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
+using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
@@ -8,6 +8,9 @@ namespace HRManagement.Modules.Personnel.Domain;
 
 public class Name : ValueObject
 {
+    private static readonly Regex NameRegex =
+        new("^[a-z ,.'-]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
     protected Name()
     {
     }
@@ -21,12 +24,32 @@ public class Name : ValueObject
     public string FirstName { get; }
     public string LastName { get; }
 
-    public static Result<Name, List<Error>> Create(string firstName, string lastName)
+    public static Result<Name, Error> Create(Maybe<string> firstNameOrNoting, Maybe<string> lastNameOrNothing)
     {
-        var errors = ValidateBusinessRules(firstName, lastName);
-        if (errors.Any()) return errors;
+        var firstNameResult = ValidateValue(firstNameOrNoting, nameof(FirstName));
+        var lastNameResult = ValidateValue(lastNameOrNothing, nameof(LastName));
 
-        return new Name(firstName, lastName);
+        var result = Result
+            .Combine(firstNameResult, lastNameResult);
+
+        if (result.IsFailure)
+            return result.Error;
+
+        return new Name(firstNameOrNoting.Value, lastNameOrNothing.Value);
+    }
+
+    private static Result<string, Error> ValidateValue(Maybe<string> name, string fieldName)
+    {
+        var currentName = string.Empty;
+        return name
+            .ToResult(DomainErrors.NullOrEmptyName(fieldName))
+            .Map(x => x.Trim())
+            .Ensure(x => x != string.Empty, DomainErrors.NullOrEmptyName(fieldName))
+            .Ensure(x =>
+            {
+                currentName = x;
+                return NameRegex.IsMatch(x);
+            }, DomainErrors.InvalidName(currentName));
     }
 
     public override string ToString()
@@ -38,24 +61,5 @@ public class Name : ValueObject
     {
         yield return FirstName;
         yield return LastName;
-    }
-
-    private static List<Error> ValidateBusinessRules(string firstName, string lastName)
-    {
-        var errors = new List<Error>();
-
-        var firstNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(firstName, nameof(FirstName)));
-        if (firstNameNullOrEmptyRule.IsFailure) errors.Add(Error.Deserialize(firstNameNullOrEmptyRule.Error));
-
-        var lastNameNullOrEmptyRule = CheckRule(new NotNullOrEmptyNameRule(lastName, nameof(LastName)));
-        if (lastNameNullOrEmptyRule.IsFailure) errors.Add(Error.Deserialize(lastNameNullOrEmptyRule.Error));
-
-        var firstNameRule = CheckRule(new ValidNameRule(firstName));
-        if (firstNameRule.IsFailure) errors.Add(Error.Deserialize(firstNameRule.Error));
-
-        var lastNameRule = CheckRule(new ValidNameRule(lastName));
-        if (lastNameRule.IsFailure) errors.Add(Error.Deserialize(lastNameRule.Error));
-
-        return errors;
     }
 }

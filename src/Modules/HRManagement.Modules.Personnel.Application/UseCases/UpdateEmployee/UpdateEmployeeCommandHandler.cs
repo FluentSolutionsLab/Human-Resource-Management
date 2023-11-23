@@ -64,25 +64,25 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
 
     private List<Error> CheckForErrors(
         UpdateEmployeeCommand request,
-        out Result<Name, List<Error>> nameCreation,
-        out Result<EmailAddress, List<Error>> emailCreation,
-        out Result<ValueDate, List<Error>> dateOfBirthCreation,
-        out Result<ValueDate, List<Error>> hiringDateCreation
+        out Result<Name, Error> nameCreation,
+        out Result<EmailAddress, Error> emailCreation,
+        out Result<ValueDate, Error> dateOfBirthCreation,
+        out Result<ValueDate, Error> hiringDateCreation
     )
     {
         var errors = new List<Error>();
 
         nameCreation = Name.Create(request.FirstName, request.LastName);
-        if (nameCreation.IsFailure) errors.AddRange(nameCreation.Error);
+        if (nameCreation.IsFailure) errors.Add(nameCreation.Error);
 
         emailCreation = EmailAddress.Create(request.EmailAddress);
-        if (emailCreation.IsFailure) errors.AddRange(emailCreation.Error);
+        if (emailCreation.IsFailure) errors.Add(emailCreation.Error);
 
         dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
-        if (dateOfBirthCreation.IsFailure) errors.AddRange(dateOfBirthCreation.Error);
+        if (dateOfBirthCreation.IsFailure) errors.Add(dateOfBirthCreation.Error);
 
         hiringDateCreation = ValueDate.Create(request.HiringDate);
-        if (hiringDateCreation.IsFailure) errors.AddRange(hiringDateCreation.Error);
+        if (hiringDateCreation.IsFailure) errors.Add(hiringDateCreation.Error);
 
         return errors;
     }

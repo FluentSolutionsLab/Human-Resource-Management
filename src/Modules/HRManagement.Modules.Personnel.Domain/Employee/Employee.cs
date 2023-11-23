@@ -75,13 +75,16 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         TerminationDate = terminationDate;
     }
 
-    private static Error CheckHierarchyRules(Role role, Employee reportsTo)
+    private static Error CheckHierarchyRules(Maybe<Role> roleOrNothing, Maybe<Employee> reportsToOrNothing)
     {
-        if (reportsTo == null || role == null) return default;
+        if (reportsToOrNothing.HasNoValue || roleOrNothing.HasNoValue) return default;
 
-        var mustReportToIntendedRoleRule =
-            CheckRule(new ManagerRoleMustComplyWithOrganizationRule(reportsTo.Role.Name, role.ReportsTo.Name));
-        return mustReportToIntendedRoleRule.IsFailure ? Error.Deserialize(mustReportToIntendedRoleRule.Error) : default;
+        var expectedManagerRole = reportsToOrNothing.Value;
+        var assignedManagerRole = roleOrNothing.Value;
+        return !string.Equals(expectedManagerRole.Role.Name, assignedManagerRole.ReportsTo.Name,
+            StringComparison.InvariantCultureIgnoreCase)
+            ? DomainErrors.ManagerRoleMustComplyWithOrganization()
+            : default;
     }
 
     public override string ToString()

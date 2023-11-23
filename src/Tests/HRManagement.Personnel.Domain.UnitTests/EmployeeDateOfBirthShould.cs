@@ -7,11 +7,23 @@ namespace HRManagement.Personnel.Domain.UnitTests;
 
 public class EmployeeDateOfBirthShould
 {
-    [Fact]
-    public void Fail_OnCreation_IfDateInFuture()
+    [Theory]
+    [ClassData(typeof(EmployeeDateOfBirthInvalidTestData))]
+    public void Fail_OnCreation_IfDateInvalid(string date)
     {
-        var dateCreation = ValueDate.Create(new Faker().Date.FutureDateOnly().ToString());
+        var dateCreation = ValueDate.Create(date);
 
-        dateCreation.Error.Count.ShouldBeGreaterThan(0);
+        dateCreation.Error.ShouldNotBeNull();
+    }
+}
+
+public class EmployeeDateOfBirthInvalidTestData : TheoryData<string>
+{
+    public EmployeeDateOfBirthInvalidTestData()
+    {
+        Add(null);
+        Add(string.Empty);
+        Add(new Faker().Random.AlphaNumeric(9));
+        Add(new Faker().Date.FutureDateOnly().ToString());
     }
 }
