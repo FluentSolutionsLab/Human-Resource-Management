@@ -13,7 +13,7 @@ public class EmployeeNameShould
     {
         var nameCreation = Name.Create(firstName, lastName);
 
-        nameCreation.Error.Count.ShouldBeGreaterThan(0);
+        nameCreation.Error.ShouldNotBeNull();
     }
 }
 
@@ -24,10 +24,10 @@ public class NameNotAllowsInvalidFirstAndLatNameTestData : TheoryData<string, st
         var randomAlphaNumeric = new Faker().Random.AlphaNumeric(9);
         var validFirstName = new Faker().Person.FirstName;
         var validLastName = new Faker().Person.LastName;
-        Add(null!, null!);
-        Add(null!, validLastName);
+        Add(null, null);
+        Add(null, validLastName);
         Add(string.Empty, validLastName);
-        Add(validFirstName, null!);
+        Add(validFirstName, null);
         Add(validFirstName, string.Empty);
         Add(validFirstName, randomAlphaNumeric);
         Add(randomAlphaNumeric, validLastName);
