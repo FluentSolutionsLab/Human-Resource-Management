@@ -16,7 +16,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         CancellationToken cancellationToken)
     {
         var rolesWithSaneName =
-            await _unitOfWork.GetRepository<Role, byte>().GetAsync(role => role.Name == request.Name);
+            await _unitOfWork.GetRepository<Role, byte>().GetAsync(role => role.Name.Value == request.Name);
         if (rolesWithSaneName.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
         Role reportsTo = null;
@@ -27,7 +27,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
                 return new List<Error> {DomainErrors.NotFound(nameof(Role), request.ReportsToId)};
         }
 
-        var roleCreation = Role.Create(request.Name, reportsTo);
+        var roleCreation = Role.Create(RoleName.Create(request.Name).Value, reportsTo);
         if (roleCreation.IsFailure) return new List<Error> {roleCreation.Error};
 
         var role = roleCreation.Value;

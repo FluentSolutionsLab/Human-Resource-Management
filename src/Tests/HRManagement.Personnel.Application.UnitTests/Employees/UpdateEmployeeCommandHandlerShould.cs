@@ -97,8 +97,8 @@ public class UpdateEmployeeCommandHandlerShould
     [Fact]
     public async Task UpdateEmployee_WhenEmployeeExists()
     {
-        var ceoRole = Role.Create("CEO", null).Value;
-        var presidentRole = Role.Create("President", ceoRole).Value;
+        var ceoRole = Role.Create(RoleName.Create("CEO").Value, null).Value;
+        var presidentRole = Role.Create(RoleName.Create("President").Value, ceoRole).Value;
         var managerData = new Faker().Person;
         var manager = BuildFakeEmployee(managerData, ceoRole);
         var person = new Faker().Person;

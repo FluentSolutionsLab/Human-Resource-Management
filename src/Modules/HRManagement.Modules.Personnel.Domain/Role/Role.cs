@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System;
+using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 
 namespace HRManagement.Modules.Personnel.Domain;
@@ -9,42 +10,33 @@ public class Role : Common.Domain.Models.Entity<byte>
     {
     }
 
-    private Role(string name, Role reportsTo)
+    private Role(RoleName name, Role reportsTo)
     {
         Name = name;
         ReportsTo = reportsTo;
     }
 
-    public string Name { get; private set; }
+    public RoleName Name { get; private set; }
     public virtual Role ReportsTo { get; private set; }
 
-    public static Result<Role, Error> Create(Maybe<string> roleNameOrNothing, Role reportsTo)
+    public static Result<Role, Error> Create(Maybe<RoleName> roleNameOrNothing, Maybe<Role> reportsTo)
     {
-        return roleNameOrNothing
-            .ToResult(DomainErrors.InvalidName(nameof(Name)))
-            .Map(roleName => roleName.Trim())
-            .Ensure(roleName => roleName != string.Empty, DomainErrors.InvalidName(nameof(Name)))
-            .Map(roleName => new Role(roleName, reportsTo));
+        if (roleNameOrNothing.HasNoValue) throw new ArgumentNullException();
+
+        return new Role(roleNameOrNothing.Value, reportsTo.HasValue ? reportsTo.Value : null);
     }
 
-    public Result<Role, Error> Update(Maybe<string> roleNameOrNothing, Role reportsTo)
+    public void Update(Maybe<RoleName> roleNameOrNothing, Maybe<Role> reportsTo)
     {
-        var result = roleNameOrNothing
-            .ToResult(DomainErrors.InvalidName(nameof(Name)))
-            .Map(roleName => roleName.Trim())
-            .Ensure(roleName => roleName != string.Empty, DomainErrors.InvalidName(nameof(Name)))
-            .Tap(roleName =>
-            {
-                Name = roleName;
-                ReportsTo = reportsTo;
-            });
+        if (roleNameOrNothing.HasNoValue) throw new ArgumentNullException();
 
-        return result.IsSuccess ? this : result.Error;
+        Name = roleNameOrNothing.Value;
+        ReportsTo = reportsTo.HasValue ? reportsTo.Value : null;
     }
 
     public override string ToString()
     {
-        return Name;
+        return Name.Value;
     }
 
     // USED ONLY FOR INTEGRATION TEST

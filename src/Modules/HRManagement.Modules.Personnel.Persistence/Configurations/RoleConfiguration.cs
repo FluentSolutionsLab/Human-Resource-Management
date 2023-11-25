@@ -10,7 +10,9 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
     {
         builder.ToTable("Role", "PersonnelManagement").HasKey(x => x.Id);
         builder.Property(x => x.Id).UseIdentityColumn().HasColumnName("Id");
-        builder.Property(x => x.Name).HasColumnName("Name");
+        builder.OwnsOne(x => x.Name, x => { x.Property(xx => xx.Value).HasColumnName("Name"); })
+            .Navigation(x => x.Name)
+            .IsRequired();
         builder.HasOne(x => x.ReportsTo).WithMany();
         builder.Property<byte?>("ReportsToId").HasColumnName("ReportsToId");
     }

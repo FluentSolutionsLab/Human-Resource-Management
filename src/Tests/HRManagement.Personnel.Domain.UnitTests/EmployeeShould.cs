@@ -33,8 +33,8 @@ public class EmployeeShould
     [Fact]
     public void Fail_OnCreation_IfManagerDoesNotHaveExpectedRole()
     {
-        var ceoRole = Role.Create("CEO", null).Value;
-        var presidentRole = Role.Create("President", ceoRole).Value;
+        var ceoRole = Role.Create(RoleName.Create("CEO").Value, null).Value;
+        var presidentRole = Role.Create(RoleName.Create("President").Value, ceoRole).Value;
         var ceo = BuildFakeEmployee(ceoRole).Value;
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
 
@@ -46,8 +46,8 @@ public class EmployeeShould
     [Fact]
     public void Fail_OnUpdate_IfManagerDoesNotHaveExpectedRole()
     {
-        var ceoRole = Role.Create("CEO", null).Value;
-        var presidentRole = Role.Create("President", ceoRole).Value;
+        var ceoRole = Role.Create(RoleName.Create("CEO").Value, null).Value;
+        var presidentRole = Role.Create(RoleName.Create("President").Value, ceoRole).Value;
         var ceo = BuildFakeEmployee(ceoRole).Value;
         var president1 = BuildFakeEmployee(presidentRole, ceo).Value;
         var president2 = BuildFakeEmployee(presidentRole, ceo).Value;

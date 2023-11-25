@@ -51,7 +51,7 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
             filter = employee => employee.Name.FirstName.Contains(searchQuery)
                                  || employee.Name.LastName.Contains(searchQuery)
                                  || employee.EmailAddress.Email.Contains(searchQuery)
-                                 || employee.Role.Name.Contains(searchQuery);
+                                 || employee.Role.Name.Value.Contains(searchQuery);
             cacheKeyBuilder.Append($"&searchQuery={searchQuery}");
         }
 
