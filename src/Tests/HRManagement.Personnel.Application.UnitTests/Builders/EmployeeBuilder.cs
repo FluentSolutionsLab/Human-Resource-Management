@@ -13,7 +13,7 @@ public class EmployeeBuilder
             EmailAddress.Create(_fakePerson.Email).Value,
             ValueDate.Create(_fakePerson.DateOfBirth.ToString("d")).Value,
             ValueDate.Create(hiringDate.ToString("d")).Value,
-            Role.Create("ceo", null).Value,
+            Role.Create(RoleName.Create("ceo").Value, null).Value,
             null).Value;
         return this;
     }

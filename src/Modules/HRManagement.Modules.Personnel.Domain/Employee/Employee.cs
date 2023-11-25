@@ -81,7 +81,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
 
         var expectedManagerRole = reportsToOrNothing.Value;
         var assignedManagerRole = roleOrNothing.Value;
-        return !string.Equals(expectedManagerRole.Role.Name, assignedManagerRole.ReportsTo.Name,
+        return !string.Equals(expectedManagerRole.Role.Name.Value, assignedManagerRole.ReportsTo.Name.Value,
             StringComparison.InvariantCultureIgnoreCase)
             ? DomainErrors.ManagerRoleMustComplyWithOrganization()
             : default;

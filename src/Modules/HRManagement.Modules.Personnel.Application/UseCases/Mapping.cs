@@ -77,8 +77,8 @@ public static class Mapping
         return new RoleDto
         {
             Id = role.Id,
-            Name = role.Name,
-            ReportsTo = role.ReportsTo?.Name
+            Name = role.Name.Value,
+            ReportsTo = role.ReportsTo?.Name.Value
         };
     }
 
