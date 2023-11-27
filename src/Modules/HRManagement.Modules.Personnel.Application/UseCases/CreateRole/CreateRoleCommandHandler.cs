@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Personnel.Domain;
+﻿using System.Collections.Generic;
+using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
@@ -29,7 +30,14 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
                 var role = result.Value;
                 await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
                 await _unitOfWork.SaveChangesAsync();
-            }).Map(result => result.Value.ToResponseDto());
+            })
+            .Tap(_ =>
+            {
+                foreach (var key in _cacheService.GetAllKeys()
+                             .Where(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
+                    _cacheService.Remove(key);
+            })
+            .Map(result => result.Value.ToResponseDto());
     }
 
     private static Result<ValidRequest, Error> ValidateRequest(CreateRoleCommand request)

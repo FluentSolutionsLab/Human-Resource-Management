@@ -9,18 +9,18 @@ using Xunit;
 
 namespace HRManagement.Api.IntegrationTests;
 
-public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory>
+public class EmployeesManagementApiShould : IClassFixture<TestWebApplicationFactory>
 {
     private const string ApiEndpoint = "/api/employees";
 
     private readonly HttpClient _httpClient;
 
-    public EmployeesManagementApi(TestWebApplicationFactory factory)
+    public EmployeesManagementApiShould(TestWebApplicationFactory factory)
     {
         _httpClient = factory.CreateClient();
     }
 
-    [Fact(DisplayName = "Successfully returns paged list of employees, when matches found.")]
+    [Fact(DisplayName = "Successfully return paged list of employees, when matches found.")]
     public async Task Get_Success()
     {
         const int pageSize = 20;
@@ -36,7 +36,7 @@ public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory>
         result.Count.ShouldBe(pageSize);
     }
 
-    [Fact(DisplayName = "Successfully returns single employee, when ID provided is valid and a match is found")]
+    [Fact(DisplayName = "Successfully return single employee, when ID provided is valid and a match is found")]
     public async Task Get_ValidIdProvided_Success()
     {
         var response = await _httpClient.GetAsync($"{ApiEndpoint}?pageNumber=2&pageSize=10");
@@ -57,7 +57,7 @@ public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory>
         }
     }
 
-    [Fact(DisplayName = "Fails to return single employee, when ID provided is not valid")]
+    [Fact(DisplayName = "Fail to return single employee, when ID provided is not valid")]
     public async Task Get_InvalidIdProvided_Failure()
     {
         var invalidId = new Faker().Random.Guid();
@@ -72,7 +72,7 @@ public class EmployeesManagementApi : IClassFixture<TestWebApplicationFactory>
         error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), invalidId));
     }
 
-    [Fact(DisplayName = "Fails to return single employee, when no match found")]
+    [Fact(DisplayName = "Fail to return single employee, when no match found")]
     public async Task Get_NoMatchFound_Empty()
     {
         var invalidId = new Faker().Random.Guid();
