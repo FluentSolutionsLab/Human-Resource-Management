@@ -43,10 +43,10 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
 
     private async Task<bool> CheckIfNameIsUnique(RoleName name)
     {
-        var nameIsUniqueCheck = await _unitOfWork.GetRepository<Role, byte>()
+        var nameIsNotUniqueCheck = await _unitOfWork.GetRepository<Role, byte>()
             .HasMatches(role => role.Name.Value == name.Value);
 
-        return nameIsUniqueCheck.IsFailure;
+        return nameIsNotUniqueCheck.IsFailure;
     }
 
     private async Task<bool> CheckIfManagerRoleExists(ValidRequest request)
