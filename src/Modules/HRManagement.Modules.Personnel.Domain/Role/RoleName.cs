@@ -23,7 +23,7 @@ public class RoleName : ValueObject
         return nameOrNothing
             .ToResult(DomainErrors.InvalidName(nameof(Value)))
             .Map(roleName => roleName.Trim())
-            .Ensure(roleName => roleName != string.Empty, DomainErrors.InvalidName(nameof(Value)))
+            .Ensure(roleName => roleName != string.Empty, DomainErrors.NullOrEmptyName("Role Name"))
             .Map(roleName => new RoleName(roleName));
     }
 

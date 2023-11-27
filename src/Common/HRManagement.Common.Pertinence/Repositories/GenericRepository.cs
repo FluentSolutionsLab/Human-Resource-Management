@@ -1,13 +1,13 @@
 ﻿using System.Linq.Expressions;
+using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Application.Models;
-using HRManagement.Common.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Common.Pertinence.Repositories;
 
 public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
-    where TEntity : Entity<TId> where TId : struct
+    where TEntity : Domain.Models.Entity<TId> where TId : struct
 {
     private readonly DbContext _dbContext;
 
@@ -19,17 +19,22 @@ public class GenericRepository<TEntity, TId> : IGenericRepository<TEntity, TId>
         _dbSet = dbContext.Set<TEntity>();
     }
 
-    public async Task<TEntity> GetByIdAsync(TId id)
+    public async Task<Maybe<TEntity>> GetByIdAsync(TId id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public Task<TEntity> GetByIdAsync(TId id, string includeProperties)
+    public async Task<Maybe<TEntity>> GetByIdAsync(TId id, string includeProperties)
     {
         IQueryable<TEntity> query = _dbSet;
         foreach (var property in includeProperties.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries))
             query = query.Include(property);
-        return query.FirstOrDefaultAsync(x => x.Id.Equals(id));
+        return await query.FirstOrDefaultAsync(x => x.Id.Equals(id));
+    }
+
+    public async Task<Result<bool>> HasMatches(Expression<Func<TEntity, bool>> predicate)
+    {
+        return await _dbSet.AnyAsync(predicate) ? Result.Success(true) : Result.Failure<bool>("No match found.");
     }
 
     public async Task<PagedList<TEntity>> GetAsync(

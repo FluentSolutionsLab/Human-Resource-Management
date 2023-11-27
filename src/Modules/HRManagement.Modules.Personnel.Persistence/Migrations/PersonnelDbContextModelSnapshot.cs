@@ -84,24 +84,7 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.EmailAddress", "EmailAddress", b1 =>
-                        {
-                            b1.Property<Guid>("EmployeeId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("Email")
-                                .HasColumnType("nvarchar(max)")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("EmployeeId");
-
-                            b1.ToTable("Employee", "PersonnelManagement");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmployeeId");
-                        });
-
-                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.ValueDate", "BirthDate", b1 =>
+                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Employee.BirthDate#HRManagement.Modules.Personnel.Domain.ValueDate", "BirthDate", b1 =>
                         {
                             b1.Property<Guid>("EmployeeId")
                                 .HasColumnType("uniqueidentifier");
@@ -118,7 +101,24 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                                 .HasForeignKey("EmployeeId");
                         });
 
-                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.ValueDate", "HireDate", b1 =>
+                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Employee.EmailAddress#HRManagement.Modules.Personnel.Domain.EmailAddress", "EmailAddress", b1 =>
+                        {
+                            b1.Property<Guid>("EmployeeId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("Email")
+                                .HasColumnType("nvarchar(max)")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("EmployeeId");
+
+                            b1.ToTable("Employee", "PersonnelManagement");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeId");
+                        });
+
+                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Employee.HireDate#HRManagement.Modules.Personnel.Domain.ValueDate", "HireDate", b1 =>
                         {
                             b1.Property<Guid>("EmployeeId")
                                 .HasColumnType("uniqueidentifier");
@@ -135,24 +135,7 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                                 .HasForeignKey("EmployeeId");
                         });
 
-                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.ValueDate", "TerminationDate", b1 =>
-                        {
-                            b1.Property<Guid>("EmployeeId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<DateTime>("Date")
-                                .HasColumnType("date")
-                                .HasColumnName("TerminationDate");
-
-                            b1.HasKey("EmployeeId");
-
-                            b1.ToTable("Employee", "PersonnelManagement");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmployeeId");
-                        });
-
-                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Name", "Name", b1 =>
+                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Employee.Name#HRManagement.Modules.Personnel.Domain.Name", "Name", b1 =>
                         {
                             b1.Property<Guid>("EmployeeId")
                                 .HasColumnType("uniqueidentifier");
@@ -164,6 +147,23 @@ namespace HRManagement.Modules.Personnel.Persistence.Migrations
                             b1.Property<string>("LastName")
                                 .HasColumnType("nvarchar(max)")
                                 .HasColumnName("LastName");
+
+                            b1.HasKey("EmployeeId");
+
+                            b1.ToTable("Employee", "PersonnelManagement");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeId");
+                        });
+
+                    b.OwnsOne("HRManagement.Modules.Personnel.Domain.Employee.TerminationDate#HRManagement.Modules.Personnel.Domain.ValueDate", "TerminationDate", b1 =>
+                        {
+                            b1.Property<Guid>("EmployeeId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<DateTime>("Date")
+                                .HasColumnType("date")
+                                .HasColumnName("TerminationDate");
 
                             b1.HasKey("EmployeeId");
 
