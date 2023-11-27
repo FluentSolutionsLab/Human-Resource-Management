@@ -81,6 +81,9 @@ public class HireEmployeeCommandHandlerShould
                 It.IsAny<int>()))
             .ReturnsAsync(new PagedList<Employee>(new[] {employee}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
         _mockUnitOfWork
+            .Setup(d => d.GetRepository<Employee, Guid>().GetByIdAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(employee);
+        _mockUnitOfWork
             .Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(command.RoleId))
             .ReturnsAsync(Role.Create(RoleName.Create("role").Value, Maybe<Role>.None).Value);
 

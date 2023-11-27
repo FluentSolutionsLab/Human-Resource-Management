@@ -32,6 +32,8 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
 
         Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
         if (maybeRole.HasNoValue) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.RoleId)};
+        
+        //TODO: Need to deal with CEO case
 
         Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
         if (maybeManager.HasNoValue)
