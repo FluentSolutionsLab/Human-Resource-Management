@@ -21,9 +21,9 @@ public class RolesController : CommonController
 
     [HttpGet]
     [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> Find()
+    public async Task<IActionResult> Find([FromQuery] int pageSize = 50)
     {
-        var query = new GetRolesQuery();
+        var query = new GetRolesQuery{PageSize = pageSize};
         var (_, _, value, _) = await _mediator.Send(query);
         return Ok(value);
     }
