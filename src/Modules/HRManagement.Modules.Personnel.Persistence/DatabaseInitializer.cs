@@ -8,6 +8,44 @@ namespace HRManagement.Modules.Personnel.Persistence;
 
 public static class DatabaseInitializer
 {
+    public static Dictionary<string, Role> SeedDataRoles
+    {
+        get
+        {
+            var ceo = Role.Create(RoleName.Create("CEO").Value, null).Value;
+            var president = Role.Create(RoleName.Create("President").Value, ceo).Value;
+            var vicePresident = Role.Create(RoleName.Create("Vice President").Value, president).Value;
+            var cto = Role.Create(RoleName.Create("CTO").Value, vicePresident).Value;
+            var itManager = Role.Create(RoleName.Create("IT Manager").Value, cto).Value;
+            var seManager = Role.Create(RoleName.Create("Software Engineering Manager").Value, itManager).Value;
+            var architect = Role.Create(RoleName.Create("Architect").Value, itManager).Value;
+            var leadDev = Role.Create(RoleName.Create("Lead Software Developer").Value, seManager).Value;
+            var businessAnalyst = Role.Create(RoleName.Create("Business Analyst").Value, seManager).Value;
+            var qaAnalyst = Role.Create(RoleName.Create("Quality Assurance Analyst").Value, seManager).Value;
+            var seniorDev = Role.Create(RoleName.Create("Senior Software Developer").Value, leadDev).Value;
+            var intermediateDev = Role.Create(RoleName.Create("Intermediate Software Developer").Value, leadDev).Value;
+            var juniorDev = Role.Create(RoleName.Create("Junior Software Developer").Value, leadDev).Value;
+
+            var roles = new Dictionary<string, Role>
+            {
+                {"ceo", ceo},
+                {"president", president},
+                {"vice-president", vicePresident},
+                {"cto", cto},
+                {"it-manager", itManager},
+                {"se-manager", seManager},
+                {"architect", architect},
+                {"business-analyst", businessAnalyst},
+                {"qa-analyst", qaAnalyst},
+                {"lead-dev", leadDev},
+                {"senior-dev", seniorDev},
+                {"intermediate-dev", intermediateDev},
+                {"junior-dev", juniorDev}
+            };
+            return roles;
+        }
+    }
+
     public static void Initialize(PersonnelDbContext context)
     {
         var isInMemoryDb = context.Database.ProviderName.Contains("InMemory");
@@ -87,36 +125,7 @@ public static class DatabaseInitializer
 
     private static Dictionary<string, Role> BuildRoles(bool isInMemoryDb)
     {
-        var ceo = Role.Create(RoleName.Create("CEO").Value, null).Value;
-        var president = Role.Create(RoleName.Create("President").Value, ceo).Value;
-        var vicePresident = Role.Create(RoleName.Create("Vice President").Value, president).Value;
-        var cto = Role.Create(RoleName.Create("CTO").Value, vicePresident).Value;
-        var itManager = Role.Create(RoleName.Create("IT Manager").Value, cto).Value;
-        var seManager = Role.Create(RoleName.Create("Software Engineering Manager").Value, itManager).Value;
-        var architect = Role.Create(RoleName.Create("Architect").Value, itManager).Value;
-        var leadDev = Role.Create(RoleName.Create("Lead Software Developer").Value, seManager).Value;
-        var businessAnalyst = Role.Create(RoleName.Create("Business Analyst").Value, seManager).Value;
-        var qaAnalyst = Role.Create(RoleName.Create("Quality Assurance Analyst").Value, seManager).Value;
-        var seniorDev = Role.Create(RoleName.Create("Senior Software Developer").Value, leadDev).Value;
-        var intermediateDev = Role.Create(RoleName.Create("Intermediate Software Developer").Value, leadDev).Value;
-        var juniorDev = Role.Create(RoleName.Create("Junior Software Developer").Value, leadDev).Value;
-
-        var roles = new Dictionary<string, Role>
-        {
-            {"ceo", ceo},
-            {"president", president},
-            {"vice-president", vicePresident},
-            {"cto", cto},
-            {"it-manager", itManager},
-            {"se-manager", seManager},
-            {"architect", architect},
-            {"business-analyst", businessAnalyst},
-            {"qa-analyst", qaAnalyst},
-            {"lead-dev", leadDev},
-            {"senior-dev", seniorDev},
-            {"intermediate-dev", intermediateDev},
-            {"junior-dev", juniorDev}
-        };
+        var roles = SeedDataRoles;
 
         if (isInMemoryDb)
         {

@@ -1,39 +1,95 @@
-﻿using System.Collections.Generic;
-using HRManagement.Modules.Personnel.Domain;
+﻿using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Result<RoleDto, List<Error>>>
+public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Result<RoleDto, Error>>
 {
+    private readonly ICacheService _cacheService;
     private readonly IUnitOfWork _unitOfWork;
 
-    public CreateRoleCommandHandler(IUnitOfWork unitOfWork)
+    public CreateRoleCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {
         _unitOfWork = unitOfWork;
+        _cacheService = cacheService;
     }
 
-    public async Task<Result<RoleDto, List<Error>>> Handle(CreateRoleCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<RoleDto, Error>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
-        var rolesWithSaneName =
-            await _unitOfWork.GetRepository<Role, byte>().GetAsync(role => role.Name.Value == request.Name);
-        if (rolesWithSaneName.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
+        return await ValidateRequest(request)
+            .Ensure(async validRequest => await CheckIfNameIsUnique(validRequest.Name),
+                DomainErrors.ResourceAlreadyExists())
+            .Ensure(async validRequest => await CheckIfManagerRoleExists(validRequest),
+                DomainErrors.NotFound(nameof(Role), request.ReportsToId))
+            .Map(validRequest => GetManagerRole(validRequest))
+            .Ensure(async validRequest => await CheckIfRoleIsHierarchyTop(validRequest.ManagerRoleId),
+                DomainErrors.ResourceAlreadyExists())
+            .Map(validRequest => Role.Create(validRequest.Name, validRequest.ManagerRoleOrNothing))
+            .Tap(async result =>
+            {
+                var role = result.Value;
+                await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
+                await _unitOfWork.SaveChangesAsync();
+            }).Map(result => result.Value.ToResponseDto());
+    }
 
-        Role reportsTo = null;
-        if (request.ReportsToId.HasValue)
+    private static Result<ValidRequest, Error> ValidateRequest(CreateRoleCommand request)
+    {
+        var result = RoleName.Create(request.Name);
+        return result.IsSuccess
+            ? Result.Success<ValidRequest, Error>(new ValidRequest
+                {Name = result.Value, ManagerRoleId = request.ReportsToId})
+            : Result.Failure<ValidRequest, Error>(result.Error);
+    }
+
+    private async Task<bool> CheckIfNameIsUnique(RoleName name)
+    {
+        var nameIsUniqueCheck = await _unitOfWork.GetRepository<Role, byte>()
+            .HasMatches(role => role.Name.Value == name.Value);
+
+        return nameIsUniqueCheck.IsFailure;
+    }
+
+    private async Task<bool> CheckIfManagerRoleExists(ValidRequest request)
+    {
+        if (!request.ManagerRoleId.HasValue) return true;
+
+        var queryCacheKey = $"GetRoleQuery/{request.ManagerRoleId}";
+        var managerRoleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey);
+        if (managerRoleOrNothing.HasNoValue)
         {
-            reportsTo = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.ReportsToId.Value);
-            if (reportsTo == null)
-                return new List<Error> {DomainErrors.NotFound(nameof(Role), request.ReportsToId)};
+            managerRoleOrNothing =
+                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.ManagerRoleId.Value);
+            if (managerRoleOrNothing.HasValue)
+                _cacheService.Set(queryCacheKey, managerRoleOrNothing);
         }
 
-        var roleCreation = Role.Create(RoleName.Create(request.Name).Value, reportsTo);
-        if (roleCreation.IsFailure) return new List<Error> {roleCreation.Error};
+        return managerRoleOrNothing.HasValue;
+    }
 
-        var role = roleCreation.Value;
-        await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
-        await _unitOfWork.SaveChangesAsync();
+    private ValidRequest GetManagerRole(ValidRequest request)
+    {
+        if (request.ManagerRoleId.HasValue)
+        {
+            var queryCacheKey = $"GetRoleQuery/{request.ManagerRoleId}";
+            request.ManagerRoleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey);
+        }
 
-        return role.ToResponseDto();
+        return request;
+    }
+
+    private async Task<bool> CheckIfRoleIsHierarchyTop(byte? managerRoleId)
+    {
+        if (managerRoleId.HasValue) return true;
+        var headAlreadyExistsCheck =
+            await _unitOfWork.GetRepository<Role, byte>().HasMatches(role => role.ReportsTo == null);
+
+        return headAlreadyExistsCheck.IsFailure;
+    }
+
+    private class ValidRequest
+    {
+        public RoleName Name { get; init; }
+        public byte? ManagerRoleId { get; init; }
+        public Maybe<Role> ManagerRoleOrNothing { get; set; } = Maybe<Role>.None;
     }
 }

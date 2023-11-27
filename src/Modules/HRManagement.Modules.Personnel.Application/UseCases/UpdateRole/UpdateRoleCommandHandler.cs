@@ -17,11 +17,12 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         var role = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.Id);
         if (role == null) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.Id)};
 
-        var rolesWithSaneName = await _unitOfWork.GetRepository<Role, byte>().GetAsync(x => x.Name.Value == request.Name);
+        var rolesWithSaneName =
+            await _unitOfWork.GetRepository<Role, byte>().GetAsync(x => x.Name.Value == request.Name);
         if (rolesWithSaneName.Any(r => r.Id != request.Id))
             return new List<Error> {DomainErrors.ResourceAlreadyExists()};
 
-        Role reportsTo = null;
+        var reportsTo = Maybe<Role>.None;
         if (request.ReportsToId.HasValue)
         {
             reportsTo = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.ReportsToId.Value);
@@ -29,9 +30,9 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
                 return new List<Error> {DomainErrors.NotFound(nameof(Role), request.ReportsToId)};
         }
 
-        role.Update(RoleName.Create(request.Name).Value, reportsTo);
+        role.Value.Update(RoleName.Create(request.Name).Value, reportsTo);
 
-        _unitOfWork.GetRepository<Role, byte>().Update(role);
+        _unitOfWork.GetRepository<Role, byte>().Update(role.Value);
         await _unitOfWork.SaveChangesAsync();
 
         return UnitResult.Success<List<Error>>();

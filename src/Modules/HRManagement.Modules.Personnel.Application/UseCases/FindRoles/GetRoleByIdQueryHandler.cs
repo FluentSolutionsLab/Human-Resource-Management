@@ -16,6 +16,6 @@ public class GetRoleByIdQueryHandler : IQueryHandler<GetRoleByIdQuery, Result<Ro
         var role = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.Id);
         if (role == null) return DomainErrors.NotFound(nameof(Role), request.Id);
 
-        return role.ToResponseDto();
+        return role.Value.ToResponseDto();
     }
 }

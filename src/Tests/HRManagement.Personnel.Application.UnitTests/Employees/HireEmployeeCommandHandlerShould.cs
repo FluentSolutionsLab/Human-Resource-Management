@@ -1,4 +1,5 @@
 using System.Globalization;
+using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Personnel.Application.UnitTests.Builders;
 
@@ -64,6 +65,13 @@ public class HireEmployeeCommandHandlerShould
     public async Task ReturnError_WhenEmployeeAlreadyExists()
     {
         var employee = new EmployeeBuilder().WithFixture().Build();
+        var command = new HireEmployeeCommandBuilder()
+            .WithFixture()
+            .WithEmailAddress(employee.EmailAddress.Email)
+            .WithFirstName(employee.Name.FirstName)
+            .WithDateOfBirth(employee.BirthDate.Date.ToString())
+            .WithLastName(employee.Name.LastName)
+            .Build();
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Employee, Guid>().GetAsync(
                 It.IsAny<Expression<Func<Employee, bool>>>(),
@@ -72,13 +80,9 @@ public class HireEmployeeCommandHandlerShould
                 It.IsAny<int>(),
                 It.IsAny<int>()))
             .ReturnsAsync(new PagedList<Employee>(new[] {employee}, It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()));
-        var command = new HireEmployeeCommandBuilder()
-            .WithFixture()
-            .WithEmailAddress(employee.EmailAddress.Email)
-            .WithFirstName(employee.Name.FirstName)
-            .WithDateOfBirth(employee.BirthDate.Date.ToString())
-            .WithLastName(employee.Name.LastName)
-            .Build();
+        _mockUnitOfWork
+            .Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(command.RoleId))
+            .ReturnsAsync(Role.Create(RoleName.Create("role").Value, Maybe<Role>.None).Value);
 
         var result = await _sut.Handle(command, CancellationToken.None);
 
