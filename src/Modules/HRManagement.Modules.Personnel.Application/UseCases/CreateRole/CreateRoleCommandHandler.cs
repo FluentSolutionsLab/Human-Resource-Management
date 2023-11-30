@@ -39,12 +39,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
                     throw;
                 }
             })
-            .Tap(() =>
-            {
-                foreach (var key in _cacheService.GetAllKeys()
-                             .Where(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
-                    _cacheService.Remove(key);
-            })
+            .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
             .Map(result => result.Value.ToResponseDto());
     }
 

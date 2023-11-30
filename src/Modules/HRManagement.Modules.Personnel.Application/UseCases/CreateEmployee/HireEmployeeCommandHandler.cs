@@ -60,10 +60,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         await _unitOfWork.GetRepository<Employee, Guid>().AddAsync(employee);
         await _unitOfWork.SaveChangesAsync();
 
-        // Clear the memory cache of keys related to the same context
-        var cacheKeys = _cacheService.GetAllKeys();
-        foreach (var key in cacheKeys.Where(k => k.Contains("GetEmployeesQuery")))
-            _cacheService.Remove(key);
+        _cacheService.RemoveAll(k => k.Contains("GetEmployeesQuery"));
 
         return employee.ToResponseDto();
     }

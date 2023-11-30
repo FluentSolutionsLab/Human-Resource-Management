@@ -35,7 +35,13 @@ public class MemoryCacheService : ICacheService
         _memoryCache.Remove(key);
     }
 
-    public List<string> GetAllKeys()
+    public void RemoveAll(Func<string, bool> condition)
+    {
+        foreach (var key in GetAllKeys().Where(condition))
+            Remove(key);
+    }
+
+    private IEnumerable<string> GetAllKeys()
     {
         var coherentState =
             typeof(MemoryCache).GetField("_coherentState", BindingFlags.NonPublic | BindingFlags.Instance);

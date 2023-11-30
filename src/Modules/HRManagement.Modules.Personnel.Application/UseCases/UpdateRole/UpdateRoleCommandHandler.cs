@@ -29,12 +29,7 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
                 _unitOfWork.GetRepository<Role, byte>().Update(roleToUpdate);
                 await _unitOfWork.SaveChangesAsync();
             })
-            .Tap(() =>
-            {
-                foreach (var key in _cacheService.GetAllKeys()
-                             .Where(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
-                    _cacheService.Remove(key);
-            })
+            .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
             .Map(_ => UnitResult.Success<Error>());
     }
 
