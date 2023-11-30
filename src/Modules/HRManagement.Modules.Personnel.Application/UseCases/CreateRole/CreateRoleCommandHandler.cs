@@ -27,17 +27,9 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
             .Map(validRequest => Role.Create(validRequest.Name, validRequest.ManagerRoleOrNothing))
             .Tap(async result =>
             {
-                try
-                {
-                    var role = result.Value;
-                    await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
-                    await _unitOfWork.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                var role = result.Value;
+                await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
+                await _unitOfWork.SaveChangesAsync();
             })
             .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
             .Map(result => result.Value.ToResponseDto());
