@@ -45,7 +45,7 @@ public class CreateRoleCommandHandlerShould
         result.Value.ShouldBeOfType<RoleDto>();
     }
 
-    [Fact(DisplayName = "Fail when a role with same name already exists")]
+    [Fact(DisplayName = "Fail when role name is not unique")]
     public async Task Fail_WhenRoleAlreadyExists()
     {
         _mockUnitOfWork

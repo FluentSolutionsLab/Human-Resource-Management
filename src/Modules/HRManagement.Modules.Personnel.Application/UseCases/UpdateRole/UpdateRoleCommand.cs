@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-namespace HRManagement.Modules.Personnel.Application.UseCases;
-
-public class UpdateRoleCommand : ICommand<UnitResult<List<Error>>>
+public class UpdateRoleCommand : ICommand<UnitResult<Error>>
 {
     public byte Id { get; set; }
     public string Name { get; set; }
