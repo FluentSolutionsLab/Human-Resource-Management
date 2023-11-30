@@ -26,6 +26,7 @@ public class UpdateRoleCommandHandlerShould
             .SetupSequence(service => service.Get<Maybe<Role>>(It.IsAny<string>()))
             .Returns(_newRole)
             .Returns(_newRole)
+            .Returns(_roles["lead-dev"])
             .Returns(_roles["lead-dev"]);
         _mockUnitOfWork
             .Setup(d => d.GetRepository<Role, byte>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
