@@ -21,7 +21,7 @@ public class RoleName : ValueObject
     public static Result<RoleName, Error> Create(Maybe<string> nameOrNothing)
     {
         return nameOrNothing
-            .ToResult(DomainErrors.InvalidName(nameof(Value)))
+            .ToResult(DomainErrors.InvalidInput(nameof(Value)))
             .Map(roleName => roleName.Trim())
             .Ensure(roleName => roleName != string.Empty, DomainErrors.NullOrEmptyName("Role Name"))
             .Map(roleName => new RoleName(roleName));

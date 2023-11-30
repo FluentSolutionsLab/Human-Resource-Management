@@ -1,89 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using HRManagement.Modules.Personnel.Application.UseCases.Services;
 using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, UnitResult<List<Error>>>
+public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeCommand, UnitResult<Error>>
 {
     private readonly ICacheService _cacheService;
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IEmployeeService _employeeService;
+    private readonly IRoleService _roleService;
 
-    public UpdateEmployeeCommandHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
+    public UpdateEmployeeCommandHandler(
+        ICacheService cacheService,
+        IEmployeeService employeeService,
+        IRoleService roleService)
     {
-        _unitOfWork = unitOfWork;
         _cacheService = cacheService;
+        _employeeService = employeeService;
+        _roleService = roleService;
     }
 
-    public async Task<UnitResult<List<Error>>> Handle(UpdateEmployeeCommand request,
+    public async Task<UnitResult<Error>> Handle(UpdateEmployeeCommand request,
         CancellationToken cancellationToken)
     {
-        if (!Guid.TryParse(request.EmployeeId, out var employeeId))
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.EmployeeId)};
-
-        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
-        if (employeeOrNot.HasNoValue)
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), employeeId)};
-
-        var errors = CheckForErrors(
-            request,
-            out var nameCreation,
-            out var emailCreation,
-            out var dateOfBirthCreation,
-            out var hiringDateCreation);
-        if (errors.Any()) return errors;
-
-        Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
-        if (maybeRole.HasNoValue) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.RoleId)};
-
-        if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
-
-        Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
-        if (maybeManager.HasNoValue)
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
-
-        var employee = employeeOrNot.Value;
-
-        var employeeUpdate = employee.Update(
-            nameCreation.Value,
-            emailCreation.Value,
-            dateOfBirthCreation.Value,
-            hiringDateCreation.Value,
-            maybeRole.Value,
-            maybeManager.Value);
-        if (employeeUpdate.IsFailure) return new List<Error> {employeeUpdate.Error};
-
-        _unitOfWork.GetRepository<Employee, Guid>().Update(employee);
-        await _unitOfWork.SaveChangesAsync();
-
-        _cacheService.Remove($"GetEmployeeQuery/{employeeId}");
-
-        return UnitResult.Success<List<Error>>();
-    }
-
-    private List<Error> CheckForErrors(
-        UpdateEmployeeCommand request,
-        out Result<Name, Error> nameCreation,
-        out Result<EmailAddress, Error> emailCreation,
-        out Result<ValueDate, Error> dateOfBirthCreation,
-        out Result<ValueDate, Error> hiringDateCreation
-    )
-    {
-        var errors = new List<Error>();
-
-        nameCreation = Name.Create(request.FirstName, request.LastName);
-        if (nameCreation.IsFailure) errors.Add(nameCreation.Error);
-
-        emailCreation = EmailAddress.Create(request.EmailAddress);
-        if (emailCreation.IsFailure) errors.Add(emailCreation.Error);
-
-        dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
-        if (dateOfBirthCreation.IsFailure) errors.Add(dateOfBirthCreation.Error);
-
-        hiringDateCreation = ValueDate.Create(request.HiringDate);
-        if (hiringDateCreation.IsFailure) errors.Add(hiringDateCreation.Error);
-
-        return errors;
+        return await _employeeService.ValidateRequest(request)
+            .Ensure(dto => _employeeService.CheckIfEmployeeExists(dto.EmployeeId.Value),
+                DomainErrors.NotFound(nameof(Employee), request.EmployeeId))
+            .Map(dto => _employeeService.GetEmployee(dto))
+            .Ensure(dto => _roleService.CheckIfRoleExists(dto.RoleId),
+                DomainErrors.NotFound(nameof(Role), request.RoleId))
+            .Map(dto => _roleService.GetRole(dto))
+            .Ensure(dto => _employeeService.CheckIfEmployeeExists(dto.ManagerId),
+                DomainErrors.NotFound(nameof(Employee), request.ReportsToId))
+            .Map(dto => _employeeService.GetManager(dto))
+            .Map(dto => _employeeService.UpdateEmployee(dto))
+            .Tap(async result => await _employeeService.StoreUpdatedEmployee(result))
+            .Tap(() => _cacheService.RemoveAll(k =>
+                k.Contains("GetEmployeesQuery") || k.Contains("GetEmployeeQuery") || k.Contains("GetRoleQuery")))
+            .Map(_ => UnitResult.Success<Error>());
     }
 }

@@ -42,14 +42,14 @@ public class Name : ValueObject
     {
         var currentName = string.Empty;
         return name
-            .ToResult(DomainErrors.NullOrEmptyName(fieldName))
-            .Tap(x => x.Trim())
-            .Ensure(x => x != string.Empty, DomainErrors.NullOrEmptyName(fieldName))
+            .ToResult(DomainErrors.InvalidInput(fieldName))
+            .Map(x => x.Trim())
+            .Ensure(x => x != string.Empty, DomainErrors.InvalidInput(fieldName))
             .Ensure(x =>
             {
                 currentName = x;
                 return NameRegex.IsMatch(x);
-            }, DomainErrors.InvalidName(currentName));
+            }, DomainErrors.InvalidInput(currentName));
     }
 
     public override string ToString()

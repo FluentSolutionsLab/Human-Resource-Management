@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-namespace HRManagement.Modules.Personnel.Application.UseCases;
-
-public class HireEmployeeCommand : ICommand<Result<EmployeeDto, List<Error>>>
+public class HireEmployeeCommand : ICommand<Result<EmployeeDto, Error>>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

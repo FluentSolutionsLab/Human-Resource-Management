@@ -15,7 +15,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     }
 
     private Employee(Name name, EmailAddress emailAddress, ValueDate birthDate, ValueDate hiringDate, Role role,
-        Employee manager)
+        Maybe<Employee> manager)
     {
         Id = Guid.NewGuid();
         Name = name;
@@ -23,7 +23,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         BirthDate = birthDate;
         HireDate = hiringDate;
         Role = role;
-        Manager = manager;
+        Manager = manager.HasValue ? manager.Value : null;
     }
 
     public Name Name { get; private set; }
@@ -36,7 +36,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     public virtual IReadOnlyList<Employee> ManagedEmployees => _managedEmployees.ToList();
 
     public static Result<Employee, Error> Create(Name name, EmailAddress emailAddress, ValueDate birthDate,
-        ValueDate hiringDate, Role role, Employee reportsTo)
+        ValueDate hiringDate, Role role, Maybe<Employee> reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
@@ -49,7 +49,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
     }
 
     public Result<Employee, Error> Update(Name name, EmailAddress emailAddress, ValueDate birthDate,
-        ValueDate hiringDate, Role role, Employee reportsTo)
+        ValueDate hiringDate, Role role, Maybe<Employee> reportsTo)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(emailAddress);
@@ -63,7 +63,7 @@ public class Employee : Common.Domain.Models.Entity<Guid>
         BirthDate = birthDate;
         HireDate = hiringDate;
         Role = role;
-        Manager = reportsTo;
+        Manager = reportsTo.Value;
 
         return error != null ? error : this;
     }

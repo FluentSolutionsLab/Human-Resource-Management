@@ -3,6 +3,7 @@ using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Pertinence.Repositories;
 using HRManagement.Modules.Personnel.Application;
+using HRManagement.Modules.Personnel.Application.UseCases.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,8 @@ public static class PersistenceServiceRegistration
             var personnelDbContext = ResolveService<PersonnelDbContext>(provider);
             return new UnitOfWork(personnelDbContext);
         });
+        services.AddScoped<IEmployeeService, EmployeeService>();
+        services.AddScoped<IRoleService, RoleService>();
     }
 
     public static void DatabaseInitializer(this IServiceProvider provider, bool isDevelopment)

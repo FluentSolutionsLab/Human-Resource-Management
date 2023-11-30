@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
+﻿namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-namespace HRManagement.Modules.Personnel.Application.UseCases;
-
-public class UpdateEmployeeCommand : ICommand<UnitResult<List<Error>>>
+public class UpdateEmployeeCommand : ICommand<UnitResult<Error>>
 {
     public string EmployeeId { get; set; }
     public string FirstName { get; set; }

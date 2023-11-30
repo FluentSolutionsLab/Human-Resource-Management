@@ -19,32 +19,28 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
     public async Task<Result<PagedList<EmployeeDto>>> Handle(GetEmployeesQuery request,
         CancellationToken cancellationToken)
     {
-        var cacheKeyBuilder = BuildCacheKey(request, out var filter, out var orderBy);
-        var employeeListCacheKey = cacheKeyBuilder.ToString();
-        var employees = _cacheService.Get<PagedList<Employee>>(employeeListCacheKey);
-        if (employees != null) return employees.ToResponseDto();
+        var queryData = ProcessRequestData(request);
+        var employees = _cacheService.Get<Maybe<PagedList<Employee>>>(queryData.CacheKey);
+        if (employees.HasValue) return employees.Value.ToResponseDto();
         employees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(
-            filter,
+            queryData.Filter,
             pageNumber: request.FilterParameters.PageNumber,
             pageSize: request.FilterParameters.PageSize,
-            orderBy: orderBy,
+            orderBy: queryData.OrderBy,
             includeProperties: "Role,Manager,Manager.Role");
-        _cacheService.Set(employeeListCacheKey, employees);
+        _cacheService.Set(queryData.CacheKey, employees);
 
-        return employees.ToResponseDto();
+        return employees.Value.ToResponseDto();
     }
 
-    private static StringBuilder BuildCacheKey(
-        GetEmployeesQuery request,
-        out Expression<Func<Employee, bool>> filter,
-        out Func<IQueryable<Employee>, IOrderedQueryable<Employee>> orderBy)
+    private static QueryData ProcessRequestData(GetEmployeesQuery request)
     {
         var pageNumber = request.FilterParameters.PageNumber;
         var pageSize = request.FilterParameters.PageSize;
         var cacheKeyBuilder = new StringBuilder();
         cacheKeyBuilder.Append($"GetEmployeesQuery?pageNumber={pageNumber}&pageSize={pageSize}");
 
-        filter = null;
+        Expression<Func<Employee, bool>> filter = null;
         if (!string.IsNullOrWhiteSpace(request.FilterParameters.SearchQuery))
         {
             var searchQuery = request.FilterParameters.SearchQuery.Trim();
@@ -55,11 +51,16 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
             cacheKeyBuilder.Append($"&searchQuery={searchQuery}");
         }
 
-        orderBy = queryable =>
+        Func<IQueryable<Employee>, IOrderedQueryable<Employee>> orderBy = queryable =>
             queryable
                 .OrderBy(e => e.Name.LastName)
                 .ThenBy(e => e.Name.FirstName);
 
-        return cacheKeyBuilder;
+        return new QueryData(CacheKey: cacheKeyBuilder.ToString(), Filter: filter, OrderBy: orderBy);
     }
+
+    private record QueryData(
+        string CacheKey,
+        Expression<Func<Employee, bool>> Filter,
+        Func<IQueryable<Employee>, IOrderedQueryable<Employee>> OrderBy);
 }
