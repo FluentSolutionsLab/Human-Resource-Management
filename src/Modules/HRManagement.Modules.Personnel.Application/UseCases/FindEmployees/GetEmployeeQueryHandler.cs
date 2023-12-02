@@ -20,17 +20,17 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
         var queryCacheKey = $"GetEmployeeQuery/{employeeId}";
-        Maybe<Employee> employee = _cacheService.Get<Employee>(queryCacheKey);
-        if (employee != null)
-            return employee.Value.ToResponseDto();
+        Maybe<Employee> employeeOrNothing = _cacheService.Get<Maybe<Employee>>(queryCacheKey);
+        if (employeeOrNothing.HasValue)
+            return employeeOrNothing.Value.ToResponseDto();
 
-        employee = await _unitOfWork.GetRepository<Employee, Guid>()
+        employeeOrNothing = await _unitOfWork.GetRepository<Employee, Guid>()
             .GetByIdAsync(employeeId, "Role,Manager,Manager.Role");
-        if (employee == null)
+        if (employeeOrNothing.HasNoValue)
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        _cacheService.Set(queryCacheKey, employee);
+        _cacheService.Set(queryCacheKey, employeeOrNothing);
 
-        return employee.Value.ToResponseDto();
+        return employeeOrNothing.Value.ToResponseDto();
     }
 }
