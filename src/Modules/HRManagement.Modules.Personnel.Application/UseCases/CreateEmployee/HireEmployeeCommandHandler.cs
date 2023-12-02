@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
-public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, List<Error>>>
+public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, Error>>
 {
     private readonly ICacheService _cacheService;
     private readonly IUnitOfWork _unitOfWork;
@@ -16,76 +15,143 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         _cacheService = cacheService;
     }
 
-    public async Task<Result<EmployeeDto, List<Error>>> Handle(HireEmployeeCommand request,
+    public async Task<Result<EmployeeDto, Error>> Handle(HireEmployeeCommand request,
         CancellationToken cancellationToken)
     {
-        var errors = CheckForErrors(
-            request,
-            out var nameCreation,
-            out var emailCreation,
-            out var dateOfBirthCreation,
-            out var hiringDateCreation);
-        if (errors.Any()) return errors;
-
-        if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
-
-        Maybe<Role> maybeRole = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.RoleId);
-        if (maybeRole.HasNoValue) return new List<Error> {DomainErrors.NotFound(nameof(Role), request.RoleId)};
-        
-        //TODO: Need to deal with CEO case
-
-        Maybe<Employee> maybeManager = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(reportsToId);
-        if (maybeManager.HasNoValue)
-            return new List<Error> {DomainErrors.NotFound(nameof(Employee), request.ReportsToId)};
-
-        Expression<Func<Employee, bool>> existingEmployeeCondition =
-            e => e.Name.FirstName == request.FirstName
-                 && e.Name.LastName == request.LastName
-                 && e.BirthDate.Date == dateOfBirthCreation.Value.Date;
-
-        var existingEmployees = await _unitOfWork.GetRepository<Employee, Guid>().GetAsync(existingEmployeeCondition);
-        if (existingEmployees.Any()) return new List<Error> {DomainErrors.ResourceAlreadyExists()};
-
-        var employeeCreation = Employee.Create(
-            nameCreation.Value,
-            emailCreation.Value,
-            dateOfBirthCreation.Value,
-            hiringDateCreation.Value,
-            maybeRole.Value,
-            maybeManager.Value);
-        if (employeeCreation.IsFailure) return new List<Error> {employeeCreation.Error};
-
-        var employee = employeeCreation.Value;
-        await _unitOfWork.GetRepository<Employee, Guid>().AddAsync(employee);
-        await _unitOfWork.SaveChangesAsync();
-
-        _cacheService.RemoveAll(k => k.Contains("GetEmployeesQuery"));
-
-        return employee.ToResponseDto();
+        return await ValidateRequest(request)
+            .Ensure(dto => CheckIfRoleExists(dto.RoleId), DomainErrors.NotFound(nameof(Role), request.RoleId))
+            .Map(GetRole)
+            .Ensure(dto => CheckIfManagerExists(dto.ManagerId),
+                DomainErrors.NotFound(nameof(Employee), request.ReportsToId))
+            .Map(GetManagerRole)
+            .Ensure(CheckIfEmployeeIsUnique, DomainErrors.ResourceAlreadyExists())
+            .Map(CreateEmployee)
+            .Tap(async result =>
+            {
+                var employee = result.Value.Employee;
+                await _unitOfWork.GetRepository<Employee, Guid>().AddAsync(employee);
+                await _unitOfWork.SaveChangesAsync();
+            })
+            .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetEmployeesQuery")))
+            .Map(result => result.Value.Employee.ToResponseDto());
     }
 
-    private static List<Error> CheckForErrors(
-        HireEmployeeCommand request,
-        out Result<Name, Error> nameCreation,
-        out Result<EmailAddress, Error> emailCreation,
-        out Result<ValueDate, Error> dateOfBirthCreation,
-        out Result<ValueDate, Error> hiringDateCreation)
+    private static Result<HiringDto, Error> ValidateRequest(HireEmployeeCommand request)
     {
-        var errors = new List<Error>();
+        var nameCreation = Name.Create(request.FirstName, request.LastName);
+        if (nameCreation.IsFailure) return nameCreation.Error;
 
-        nameCreation = Name.Create(request.FirstName, request.LastName);
-        if (nameCreation.IsFailure) errors.Add(nameCreation.Error);
+        var emailCreation = EmailAddress.Create(request.EmailAddress);
+        if (emailCreation.IsFailure) return emailCreation.Error;
 
-        emailCreation = EmailAddress.Create(request.EmailAddress);
-        if (emailCreation.IsFailure) errors.Add(emailCreation.Error);
+        var dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
+        if (dateOfBirthCreation.IsFailure) return dateOfBirthCreation.Error;
 
-        dateOfBirthCreation = ValueDate.Create(request.DateOfBirth);
-        if (dateOfBirthCreation.IsFailure) errors.Add(dateOfBirthCreation.Error);
+        var hiringDateCreation = ValueDate.Create(request.HiringDate);
+        if (hiringDateCreation.IsFailure) return hiringDateCreation.Error;
 
-        hiringDateCreation = ValueDate.Create(request.HiringDate);
-        if (hiringDateCreation.IsFailure) errors.Add(hiringDateCreation.Error);
+        if (!Guid.TryParse(request.ReportsToId, out var reportsToId))
+            return DomainErrors.InvalidInput(nameof(request.ReportsToId));
 
-        return errors;
+        return new HiringDto
+        {
+            Name = nameCreation.Value,
+            EmailAddress = emailCreation.Value,
+            DateOfBirth = dateOfBirthCreation.Value,
+            HiringDate = hiringDateCreation.Value,
+            RoleId = request.RoleId,
+            ManagerId = reportsToId
+        };
+    }
+
+    private async Task<bool> CheckIfRoleExists(byte? roleId)
+    {
+        if (!roleId.HasValue) return true;
+
+        var queryCacheKey = $"GetRoleQuery/{roleId}";
+        var roleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey);
+        if (roleOrNothing.HasNoValue)
+        {
+            roleOrNothing =
+                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(roleId.Value);
+            if (roleOrNothing.HasValue)
+                _cacheService.Set(queryCacheKey, roleOrNothing);
+        }
+
+        return roleOrNothing.HasValue;
+    }
+
+    private async Task<bool> CheckIfManagerExists(Guid? managerId)
+    {
+        if (!managerId.HasValue) return true;
+
+        var queryCacheKey = $"GetRoleQuery/{managerId}";
+        var managerOrNothing = _cacheService.Get<Maybe<Employee>>(queryCacheKey);
+        if (managerOrNothing.HasNoValue)
+        {
+            managerOrNothing =
+                await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(managerId.Value);
+            if (managerOrNothing.HasValue)
+                _cacheService.Set(queryCacheKey, managerOrNothing);
+        }
+
+        return managerOrNothing.HasValue;
+    }
+
+    private HiringDto GetRole(HiringDto request)
+    {
+        var queryCacheKey = $"GetRoleQuery/{request.RoleId}";
+        request.RoleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey).Value;
+
+        return request;
+    }
+
+    private HiringDto GetManagerRole(HiringDto request)
+    {
+        var queryCacheKey = $"GetRoleQuery/{request.ManagerId}";
+        request.ManagerOrNothing = _cacheService.Get<Maybe<Employee>>(queryCacheKey).Value;
+
+        return request;
+    }
+
+    private async Task<bool> CheckIfEmployeeIsUnique(HiringDto request)
+    {
+        Expression<Func<Employee, bool>> existingEmployeeCondition =
+            e => e.Name.FirstName == request.Name.FirstName
+                 && e.Name.LastName == request.Name.LastName
+                 && e.BirthDate.Date == request.DateOfBirth.Date;
+        var (_, isFailure) = await _unitOfWork.GetRepository<Employee, Guid>().HasMatches(existingEmployeeCondition);
+
+        return isFailure;
+    }
+
+    private static Result<HiringDto, Error> CreateEmployee(HiringDto dto)
+    {
+        var (_, isFailure, employee, error) = Employee.Create(
+            dto.Name,
+            dto.EmailAddress,
+            dto.DateOfBirth,
+            dto.HiringDate,
+            dto.RoleOrNothing.Value,
+            dto.ManagerOrNothing.Value);
+
+        if (isFailure) return error;
+
+        dto.Employee = employee;
+
+        return dto;
+    }
+
+    private class HiringDto
+    {
+        public Name Name { get; init; }
+        public EmailAddress EmailAddress { get; init; }
+        public ValueDate DateOfBirth { get; init; }
+        public ValueDate HiringDate { get; init; }
+        public byte RoleId { get; init; }
+        public Maybe<Role> RoleOrNothing { get; set; } = Maybe<Role>.None;
+        public Guid ManagerId { get; init; }
+        public Maybe<Employee> ManagerOrNothing { get; set; } = Maybe<Employee>.None;
+        public Employee Employee { get; set; }
     }
 }

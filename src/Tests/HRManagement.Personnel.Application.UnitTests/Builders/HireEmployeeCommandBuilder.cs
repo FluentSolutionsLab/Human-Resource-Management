@@ -42,7 +42,7 @@ public class HireEmployeeCommandBuilder
         _command.LastName = _fakePerson.LastName;
         _command.DateOfBirth = _fakePerson.DateOfBirth.Date.ToString("d");
         _command.HiringDate = new Faker().Date.Recent(60).ToString("d");
-        _command.ReportsToId = It.IsNotNull<Guid>().ToString();
+        _command.ReportsToId = new Faker().Random.Guid().ToString();
         _command.RoleId = It.IsAny<byte>();
 
         return this;

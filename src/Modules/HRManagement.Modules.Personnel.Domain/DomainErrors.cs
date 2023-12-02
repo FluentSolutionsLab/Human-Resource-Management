@@ -14,9 +14,9 @@ public static class DomainErrors
         return new Error("value.not.valid", $"{email} is not a valid email address");
     }
 
-    public static Error InvalidName(string name)
+    public static Error InvalidInput(string input)
     {
-        return new Error("value.not.valid", $"{name} is not a valid name");
+        return new Error("value.not.valid", $"{input} is not a valid value");
     }
 
     public static Error NullOrEmptyName(string fieldName)
