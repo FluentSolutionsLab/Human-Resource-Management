@@ -4,9 +4,8 @@ namespace HRManagement.Personnel.Application.UnitTests.Builders;
 
 public class EmployeeBuilder
 {
-    private static readonly Faker Faker = new();
-
-    private readonly Person _fakePerson = Faker.Person;
+    private readonly Faker _faker = new();
+    private readonly Person _person = new();
     private Name _name;
     private EmailAddress _emailAddress;
     private ValueDate _birthDate;
@@ -16,10 +15,10 @@ public class EmployeeBuilder
 
     public EmployeeBuilder WithFixture()
     {
-        _name = Name.Create(_fakePerson.FirstName, _fakePerson.LastName).Value;
-        _emailAddress = EmailAddress.Create(_fakePerson.Email).Value;
-        _birthDate = ValueDate.Create(_fakePerson.DateOfBirth.ToString("d")).Value;
-        _hiringDate = ValueDate.Create(Faker.Date.Past(15).ToString("d")).Value;
+        _name = Name.Create(_person.FirstName, _person.LastName).Value;
+        _emailAddress = EmailAddress.Create(_person.Email).Value;
+        _birthDate = ValueDate.Create(_person.DateOfBirth.ToString("d")).Value;
+        _hiringDate = ValueDate.Create(_faker.Date.Past(15).ToString("d")).Value;
         _role = Role.Create(RoleName.Create("ceo").Value, null).Value;
         return this;
     }
