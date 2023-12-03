@@ -36,7 +36,7 @@ public class EmployeeService : IEmployeeService
         if (managerOrNothing.HasNoValue)
         {
             managerOrNothing =
-                await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(managerId.Value, "Role,Manager");
+                await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(managerId.Value, "Role");
             if (managerOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, managerOrNothing);
         }
