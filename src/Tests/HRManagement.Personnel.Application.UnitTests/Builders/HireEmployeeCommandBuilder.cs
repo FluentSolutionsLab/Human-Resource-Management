@@ -5,36 +5,6 @@ public class HireEmployeeCommandBuilder
     private readonly HireEmployeeCommand _command = new();
     private readonly Person _fakePerson = new Faker().Person;
 
-    public HireEmployeeCommandBuilder WithEmailAddress(string email)
-    {
-        _command.EmailAddress = email;
-        return this;
-    }
-
-    public HireEmployeeCommandBuilder WithFirstName(string firstName)
-    {
-        _command.FirstName = firstName;
-        return this;
-    }
-
-    public HireEmployeeCommandBuilder WithLastName(string lastName)
-    {
-        _command.LastName = lastName;
-        return this;
-    }
-
-    public HireEmployeeCommandBuilder WithDateOfBirth(string dateOfBirth)
-    {
-        _command.DateOfBirth = dateOfBirth;
-        return this;
-    }
-
-    public HireEmployeeCommandBuilder WithManagerId(string reportsToId)
-    {
-        _command.ReportsToId = reportsToId;
-        return this;
-    }
-
     public HireEmployeeCommandBuilder WithFixture()
     {
         _command.EmailAddress = _fakePerson.Email;

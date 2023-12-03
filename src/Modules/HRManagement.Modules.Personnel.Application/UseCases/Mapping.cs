@@ -38,6 +38,7 @@ public static class Mapping
             LastName = dto.LastName,
             EmailAddress = dto.EmailAddress,
             DateOfBirth = dto.DateOfBirth,
+            HiringDate = dto.HiringDate,
             RoleId = dto.RoleId,
             ReportsToId = dto.ManagerId
         };
@@ -52,6 +53,7 @@ public static class Mapping
             LastName = dto.LastName,
             EmailAddress = dto.EmailAddress,
             DateOfBirth = dto.DateOfBirth,
+            HiringDate = dto.HiringDate,
             RoleId = dto.RoleId,
             ReportsToId = dto.ManagerId
         };

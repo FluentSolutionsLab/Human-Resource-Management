@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Personnel.Domain;
+﻿using HRManagement.Modules.Personnel.Application.UseCases.Services;
+using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
 
@@ -34,15 +35,15 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
     }
 
 
-    private static Result<UpdateDto, Error> ValidateRoleName(UpdateRoleCommand request)
+    private static Result<RoleCreateOrUpdateDto, Error> ValidateRoleName(UpdateRoleCommand request)
     {
         var result = RoleName.Create(request.Name);
         return result.IsSuccess
-            ? Result.Success<UpdateDto, Error>(new UpdateDto
+            ? Result.Success<RoleCreateOrUpdateDto, Error>(new RoleCreateOrUpdateDto
             {
                 Id = request.Id, Name = result.Value, ManagerRoleId = request.ReportsToId
             })
-            : Result.Failure<UpdateDto, Error>(result.Error);
+            : Result.Failure<RoleCreateOrUpdateDto, Error>(result.Error);
     }
 
     private async Task<bool> CheckIfNameIsUnique(RoleName name, byte roleId)
@@ -70,7 +71,7 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         return roleOrNothing.HasValue;
     }
 
-    private UpdateDto GetRoleFromCache(UpdateDto request)
+    private RoleCreateOrUpdateDto GetRoleFromCache(RoleCreateOrUpdateDto request)
     {
         var queryCacheKey = $"GetRoleQuery/{request.Id}";
         request.RoleToUpdate = _cacheService.Get<Maybe<Role>>(queryCacheKey).Value;
@@ -78,7 +79,7 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         return request;
     }
 
-    private UpdateDto GetManagerRoleFromCache(UpdateDto request)
+    private RoleCreateOrUpdateDto GetManagerRoleFromCache(RoleCreateOrUpdateDto request)
     {
         var queryCacheKey = $"GetRoleQuery/{request.ManagerRoleId}";
         request.ManagerRoleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey).Value;
@@ -86,22 +87,10 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         return request;
     }
 
-    private static Role UpdateRole(UpdateDto validRequest)
+    private static Role UpdateRole(RoleCreateOrUpdateDto validRequest)
     {
         var roleToUpdate = validRequest.RoleToUpdate;
         roleToUpdate.Update(validRequest.Name, validRequest.ManagerRoleOrNothing);
         return roleToUpdate;
-    }
-
-    private class UpdateDto
-    {
-        public byte Id { get; init; }
-
-        public RoleName Name { get; init; }
-
-        public Role RoleToUpdate { get; set; }
-
-        public byte? ManagerRoleId { get; init; }
-        public Maybe<Role> ManagerRoleOrNothing { get; set; } = Maybe<Role>.None;
     }
 }

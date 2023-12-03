@@ -1,4 +1,4 @@
-﻿using System;
+﻿using HRManagement.Modules.Personnel.Application.UseCases.Services;
 using HRManagement.Modules.Personnel.Domain;
 
 namespace HRManagement.Modules.Personnel.Application.UseCases;
@@ -21,7 +21,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
                 DomainErrors.ResourceAlreadyExists())
             .Ensure(async validRequest => await CheckIfManagerRoleExists(validRequest.ManagerRoleId),
                 DomainErrors.NotFound(nameof(Role), request.ReportsToId))
-            .Map(validRequest => GetManagerRole(validRequest))
+            .Map(GetManagerRole)
             .Ensure(async validRequest => await CheckIfRoleIsHierarchyTop(validRequest.ManagerRoleId),
                 DomainErrors.ResourceAlreadyExists())
             .Map(validRequest => Role.Create(validRequest.Name, validRequest.ManagerRoleOrNothing))
@@ -35,13 +35,13 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
             .Map(result => result.Value.ToResponseDto());
     }
 
-    private static Result<CreateDto, Error> ValidateRoleName(CreateRoleCommand request)
+    private static Result<RoleCreateOrUpdateDto, Error> ValidateRoleName(CreateRoleCommand request)
     {
         var result = RoleName.Create(request.Name);
         return result.IsSuccess
-            ? Result.Success<CreateDto, Error>(new CreateDto
+            ? Result.Success<RoleCreateOrUpdateDto, Error>(new RoleCreateOrUpdateDto
                 {Name = result.Value, ManagerRoleId = request.ReportsToId})
-            : Result.Failure<CreateDto, Error>(result.Error);
+            : Result.Failure<RoleCreateOrUpdateDto, Error>(result.Error);
     }
 
     private async Task<bool> CheckIfNameIsUnique(RoleName name)
@@ -69,7 +69,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         return managerRoleOrNothing.HasValue;
     }
 
-    private CreateDto GetManagerRole(CreateDto request)
+    private RoleCreateOrUpdateDto GetManagerRole(RoleCreateOrUpdateDto request)
     {
         if (request.ManagerRoleId.HasValue)
         {
@@ -87,12 +87,5 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
             await _unitOfWork.GetRepository<Role, byte>().HasMatches(role => role.ReportsTo == null);
 
         return headAlreadyExistsCheck.IsFailure;
-    }
-
-    private class CreateDto
-    {
-        public RoleName Name { get; init; }
-        public byte? ManagerRoleId { get; init; }
-        public Maybe<Role> ManagerRoleOrNothing { get; set; } = Maybe<Role>.None;
     }
 }

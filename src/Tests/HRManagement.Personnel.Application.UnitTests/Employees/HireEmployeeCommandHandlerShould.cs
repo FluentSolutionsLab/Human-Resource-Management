@@ -1,6 +1,5 @@
-using System.Globalization;
-using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
+using HRManagement.Common.Domain.Models;
+using HRManagement.Modules.Personnel.Application.UseCases.Services;
 using HRManagement.Modules.Personnel.Persistence;
 using HRManagement.Personnel.Application.UnitTests.Builders;
 
@@ -8,32 +7,48 @@ namespace HRManagement.Personnel.Application.UnitTests.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
-    private readonly Mock<ICacheService> _mockCacheService;
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
+    private readonly Mock<IEmployeeService> _mockEmployeeService;
     private readonly Dictionary<string, Role> _roles = DatabaseInitializer.SeedDataRoles;
     private readonly HireEmployeeCommandHandler _sut;
-    private HireEmployeeCommand _command;
+    private readonly HireEmployeeCommand _command;
 
     public HireEmployeeCommandHandlerShould()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
-        _mockUnitOfWork = fixture.Freeze<Mock<IUnitOfWork>>();
-        _mockCacheService = fixture.Freeze<Mock<ICacheService>>();
+        _mockEmployeeService = fixture.Freeze<Mock<IEmployeeService>>();
+        var mockRoleService = fixture.Freeze<Mock<IRoleService>>();
         _sut = fixture.Create<HireEmployeeCommandHandler>();
 
         _command = new HireEmployeeCommandBuilder().WithFixture().Build();
-        _mockCacheService
-            .Setup(service => service.Get<Maybe<Role>>(It.IsAny<string>()))
-            .Returns(_roles["president"]);
-        _mockCacheService
-            .Setup(service => service.Get<Maybe<Employee>>(It.IsAny<string>()))
-            .Returns(new EmployeeBuilder().WithFixture().Build());
-        _mockUnitOfWork
-            .Setup(d => d.GetRepository<Employee, Guid>().HasMatches(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .ReturnsAsync(Result.Failure<bool>("No match found."));
+        var role = _roles["president"];
+        var manager = new EmployeeBuilder().WithFixture().Build();
+        var employee = new EmployeeBuilder().WithFixture().WithRole(role).WithManager(manager).Build();
+
+        mockRoleService
+            .Setup(x => x.CheckIfRoleExists(It.IsAny<byte>()))
+            .ReturnsAsync(true);
+        _mockEmployeeService
+            .Setup(x => x.CheckIfEmployeeExists(It.IsAny<Guid>()))
+            .ReturnsAsync(true);
+        _mockEmployeeService
+            .Setup(x => x.CheckIfEmployeeIsUnique(It.IsAny<EmployeeCreateOrUpdateDto>()))
+            .ReturnsAsync(true);
+
+        _mockEmployeeService
+            .Setup(x => x.ValidateRequest(_command))
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).Build());
+        mockRoleService
+            .Setup(x => x.GetRole(It.IsAny<EmployeeCreateOrUpdateDto>()))
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).Build());
+        _mockEmployeeService
+            .Setup(x => x.GetManager(It.IsAny<EmployeeCreateOrUpdateDto>()))
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager).Build());
+        _mockEmployeeService
+            .Setup(x => x.CreateEmployee(It.IsAny<EmployeeCreateOrUpdateDto>()))
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager).WithEmployee(employee).Build());
     }
 
-    [Fact(DisplayName = "Succeed when request is valid, and employee does not exist yet.")]
+    [Fact(DisplayName = "Succeed when request is valid")]
     public async Task Succeed_WhenPayloadIsValid()
     {
         var result = await _sut.Handle(_command, CancellationToken.None);
@@ -42,52 +57,24 @@ public class HireEmployeeCommandHandlerShould
         result.Value.ShouldBeOfType<EmployeeDto>();
     }
 
-    [Theory(DisplayName = "Fail when firstname or lastname is not valid")]
-    [ClassData(typeof(InvalidNameOnCreationTestData))]
-    public async Task Fail_WhenNameInvalid(string firstName, string lastName)
+    [Fact(DisplayName = "Fail when request is not valid")]
+    public async Task Fail_WhenRequestNotValid()
     {
-        _command = new HireEmployeeCommandBuilder()
-            .WithFixture()
-            .WithFirstName(firstName)
-            .WithLastName(lastName)
-            .Build();
+        _mockEmployeeService
+            .Setup(x => x.ValidateRequest(_command))
+            .Returns(new Error("code", "error"));
 
         var result = await _sut.Handle(_command, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
-        result.Error.Code.ShouldBe(DomainErrors.InvalidInput(It.IsNotNull<string>()).Code);
-    }
-
-    [Theory(DisplayName = "Fail when email is not valid")]
-    [ClassData(typeof(InvalidEmailOnCreationTestData))]
-    public async Task Fail_WhenEmailInvalid(string email)
-    {
-        var command = new HireEmployeeCommandBuilder().WithFixture().WithEmailAddress(email).Build();
-
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        result.Error.ShouldNotBeNull();
-        result.Error.Code.ShouldBe(DomainErrors.InvalidInput(It.IsNotNull<string>()).Code);
-    }
-
-    [Theory(DisplayName = "Fail when date of birth is not valid")]
-    [ClassData(typeof(InvalidDateOfBirthTestData))]
-    public async Task Fail_WhenDateOfBirthInvalid(string dateOfBirth)
-    {
-        var command = new HireEmployeeCommandBuilder().WithFixture().WithDateOfBirth(dateOfBirth).Build();
-
-        var result = await _sut.Handle(command, CancellationToken.None);
-
-        result.Error.ShouldNotBeNull();
-        result.Error.Code.ShouldBe(DomainErrors.InvalidInput(It.IsNotNull<string>()).Code);
     }
 
     [Fact(DisplayName = "Fail when the employee already exists")]
     public async Task Fail_WhenEmployeeAlreadyExists()
     {
-        _mockUnitOfWork
-            .Setup(d => d.GetRepository<Employee, Guid>().HasMatches(It.IsAny<Expression<Func<Employee, bool>>>()))
-            .ReturnsAsync(Result.Success(true));
+        _mockEmployeeService
+            .Setup(x => x.CheckIfEmployeeIsUnique(It.IsAny<EmployeeCreateOrUpdateDto>()))
+            .ReturnsAsync(false);
 
         var result = await _sut.Handle(_command, CancellationToken.None);
 
@@ -98,47 +85,13 @@ public class HireEmployeeCommandHandlerShould
     [Fact(DisplayName = "Fail when the manager does not exist")]
     public async Task Fail_WhenManagerIdIsInvalid()
     {
-        _mockCacheService
-            .Setup(service => service.Get<Maybe<Employee>>(It.IsAny<string>()))
-            .Returns(Maybe<Employee>.None);
+        _mockEmployeeService
+            .Setup(x => x.CheckIfEmployeeExists(It.IsAny<Guid>()))
+            .ReturnsAsync(false);
 
         var result = await _sut.Handle(_command, CancellationToken.None);
 
         result.Error.ShouldNotBeNull();
         result.Error.ShouldBeEquivalentTo(DomainErrors.NotFound(nameof(Employee), _command.ReportsToId));
-    }
-}
-
-public class InvalidDateOfBirthTestData : TheoryData<string>
-{
-    public InvalidDateOfBirthTestData()
-    {
-        Add(null!);
-        Add(string.Empty);
-        Add(new Faker().Random.AlphaNumeric(9));
-        Add(DateTime.Now.AddDays(1).ToString(CultureInfo.CurrentCulture));
-    }
-}
-
-public class InvalidEmailOnCreationTestData : TheoryData<string>
-{
-    public InvalidEmailOnCreationTestData()
-    {
-        Add(null!);
-        Add(string.Empty);
-        Add(new Faker().Random.AlphaNumeric(9));
-    }
-}
-
-public class InvalidNameOnCreationTestData : TheoryData<string, string>
-{
-    public InvalidNameOnCreationTestData()
-    {
-        var person = new Faker().Person;
-
-        Add(null!, person.LastName);
-        Add(string.Empty, person.LastName);
-        Add(person.FirstName, null!);
-        Add(person.FirstName, string.Empty);
     }
 }
