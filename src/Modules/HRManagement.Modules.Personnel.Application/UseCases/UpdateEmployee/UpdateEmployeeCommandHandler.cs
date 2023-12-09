@@ -34,7 +34,8 @@ public class UpdateEmployeeCommandHandler : ICommandHandler<UpdateEmployeeComman
             .Map(dto => _employeeService.GetManager(dto))
             .Map(dto => _employeeService.UpdateEmployee(dto))
             .Tap(async result => await _employeeService.StoreUpdatedEmployee(result))
-            .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetEmployeesQuery") || k.Contains("GetEmployeeQuery")))
+            .Tap(() => _cacheService.RemoveAll(k =>
+                k.Contains("GetEmployeesQuery") || k.Contains("GetEmployeeQuery") || k.Contains("GetRoleQuery")))
             .Map(_ => UnitResult.Success<Error>());
     }
 }

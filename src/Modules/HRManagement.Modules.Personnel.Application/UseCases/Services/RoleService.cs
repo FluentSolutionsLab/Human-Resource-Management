@@ -22,7 +22,7 @@ public class RoleService : IRoleService
         if (roleOrNothing.HasNoValue)
         {
             roleOrNothing =
-                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(roleId.Value);
+                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(roleId.Value, "ReportsTo");
             if (roleOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, roleOrNothing);
         }

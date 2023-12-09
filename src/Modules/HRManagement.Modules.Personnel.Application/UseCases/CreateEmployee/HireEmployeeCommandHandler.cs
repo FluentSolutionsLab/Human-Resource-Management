@@ -32,7 +32,8 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
             .Ensure(dto => _employeeService.CheckIfEmployeeIsUnique(dto), DomainErrors.ResourceAlreadyExists())
             .Map(_employeeService.CreateEmployee)
             .Tap(async result => await _employeeService.StoreCreatedEmployee(result))
-            .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetEmployeesQuery") || k.Contains("GetEmployeeQuery")))
+            .Tap(() => _cacheService.RemoveAll(k =>
+                k.Contains("GetEmployeesQuery") || k.Contains("GetEmployeeQuery") || k.Contains("GetRoleQuery")))
             .Map(result => result.Value.Employee.ToResponseDto());
     }
 }
