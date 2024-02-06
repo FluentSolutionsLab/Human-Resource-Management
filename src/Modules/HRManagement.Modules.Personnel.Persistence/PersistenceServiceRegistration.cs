@@ -18,8 +18,8 @@ public static class PersistenceServiceRegistration
         services.AddApplicationServices();
         services.AddDbContext<PersonnelDbContext>(options =>
         {
-            var connectionString = ResolveService<IOptions<AppSettings>>(services.BuildServiceProvider()).Value.Database
-                .ConnectionStrings.PersonnelManagement;
+            var connectionString = ResolveService<IOptions<AppSettings>>(services.BuildServiceProvider()).Value
+                .ConnectionStrings.Default;
             options.UseSqlServer(connectionString);
             if (isDevelopment)
             {
@@ -40,17 +40,6 @@ public static class PersistenceServiceRegistration
         });
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IRoleService, RoleService>();
-    }
-
-    public static void DatabaseInitializer(this IServiceProvider provider, bool isDevelopment)
-    {
-        var resetDbOnStart = ResolveService<IOptions<AppSettings>>(provider).Value.Database.ResetDbOnStart;
-
-        if (isDevelopment && resetDbOnStart)
-        {
-            var personnelDbContext = ResolveService<PersonnelDbContext>(provider);
-            Persistence.DatabaseInitializer.Initialize(personnelDbContext);
-        }
     }
 
     private static T ResolveService<T>(IServiceProvider provider)
