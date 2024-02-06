@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
-        <UserSecretsId>acf7b268-f0f7-4ce3-9404-609cf34f682c</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +18,12 @@
     <ItemGroup>
         <ProjectReference Include="..\Common\HRManagement.Common.Infrastructure\HRManagement.Common.Infrastructure.csproj"/>
         <ProjectReference Include="..\Modules\HRManagement.Modules.Personnel.Persistence\HRManagement.Modules.Personnel.Persistence.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

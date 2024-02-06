@@ -1,0 +1,8 @@
+﻿services:
+  hrmanagement.api:
+    image: hr_management_api
+    build:
+      context: .
+      dockerfile: src/HRManagement.Api/Dockerfile
+    ports:
+      - 5149:5149

@@ -4,13 +4,12 @@ namespace HRManagement.Common.Application.Models;
 
 public class AppSettings
 {
-    [Required] public Database Database { get; set; }
+    [Required] public ConnectionStrings ConnectionStrings { get; set; }
 }
 
 public class Database
 {
     [Required] public ConnectionStrings ConnectionStrings { get; set; }
-    public bool ResetDbOnStart { get; set; }
 }
 
 public class ConnectionStrings
