@@ -1,6 +1,7 @@
 ﻿services:
-  hrmanagement.api:
+  hr_management_api:
     image: hr_management_api
+    container_name: hr_management_api
     build:
       context: .
       dockerfile: src/HRManagement.Api/Dockerfile
@@ -14,13 +15,13 @@
       - .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__PersonnelManagement=Server=sqlserver;Database=HRManagement;User=sa;Password=${DB_PASSWORD:-Password123};TrustServerCertificate=True
+      - ConnectionStrings__Default=Server=sqlserver;Database=HRManagement;User=sa;Password=${DB_PASSWORD:-Password123};TrustServerCertificate=True
     volumes:
       - ~/.rdbg:/remote_debugger:rw
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
+    container_name: hr_management_sqlserver
     env_file:
       - .env
     environment:
@@ -41,6 +42,7 @@
 
   sqlserver.configurator:
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: hr_management_sqlserver_config
     env_file:
       - .env
     volumes:

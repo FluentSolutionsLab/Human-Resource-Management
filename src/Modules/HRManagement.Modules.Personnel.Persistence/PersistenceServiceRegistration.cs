@@ -19,7 +19,7 @@ public static class PersistenceServiceRegistration
         services.AddDbContext<PersonnelDbContext>(options =>
         {
             var connectionString = ResolveService<IOptions<AppSettings>>(services.BuildServiceProvider()).Value
-                .ConnectionStrings.PersonnelManagement;
+                .ConnectionStrings.Default;
             options.UseSqlServer(connectionString);
             if (isDevelopment)
             {
