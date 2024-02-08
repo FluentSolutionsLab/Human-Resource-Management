@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.UseCases;
+using HRManagement.Modules.Staff.Application.UseCases;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +23,7 @@ public class RolesController : CommonController
     [ProducesResponseType(typeof(IEnumerable<RoleDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> Find([FromQuery] int pageSize = 50)
     {
-        var query = new GetRolesQuery{PageSize = pageSize};
+        var query = new GetRolesQuery {PageSize = pageSize};
         var (_, _, value, _) = await _mediator.Send(query);
         return Ok(value);
     }

@@ -15,6 +15,9 @@ BEGIN
 END
 GO
 
+DROP TABLE [PersonnelManagement].[Employee];
+GO
+
 DROP TABLE [PersonnelManagement].[Role];
 GO
 
@@ -27,9 +30,6 @@ CREATE TABLE [PersonnelManagement].[Role]
     FOREIGN KEY (ReportsToId) REFERENCES [PersonnelManagement].[Role] (Id)
     );
 CREATE INDEX IX_Role_ReportsToId ON [PersonnelManagement].[Role] (ReportsToId);
-GO
-
-DROP TABLE [PersonnelManagement].[Employee];
 GO
 
 -- Create Employee table

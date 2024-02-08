@@ -1,6 +1,6 @@
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Infrastructure;
-using HRManagement.Modules.Personnel.Persistence;
+using HRManagement.Modules.Staff.Persistence;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;

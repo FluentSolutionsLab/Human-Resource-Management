@@ -1,0 +1,7 @@
+﻿namespace HRManagement.Modules.Staff.Application.UseCases;
+
+public class TerminateEmployeeCommand : ICommand<UnitResult<Error>>
+{
+    public string EmployeeId { get; set; }
+    public string TerminationDate { get; set; }
+}
