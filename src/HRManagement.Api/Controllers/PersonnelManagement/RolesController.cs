@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.UseCases;
+using HRManagement.Modules.Staff.Application.UseCases;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

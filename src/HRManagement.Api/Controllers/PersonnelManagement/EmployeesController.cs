@@ -4,7 +4,7 @@ using CSharpFunctionalExtensions;
 using HRManagement.Api.Utils;
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.UseCases;
+using HRManagement.Modules.Staff.Application.UseCases;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

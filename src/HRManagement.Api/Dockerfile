@@ -13,10 +13,10 @@ COPY ["src/HRManagement.Api/HRManagement.Api.csproj", "src/HRManagement.Api/"]
 COPY ["src/Common/HRManagement.Common.Infrastructure/HRManagement.Common.Infrastructure.csproj", "src/Common/HRManagement.Common.Infrastructure/"]
 COPY ["src/Common/HRManagement.Common.Application/HRManagement.Common.Application.csproj", "src/Common/HRManagement.Common.Application/"]
 COPY ["src/Common/HRManagement.Common.Domain/HRManagement.Common.Domain.csproj", "src/Common/HRManagement.Common.Domain/"]
-COPY ["src/Modules/HRManagement.Modules.Personnel.Persistence/HRManagement.Modules.Personnel.Persistence.csproj", "src/Modules/HRManagement.Modules.Personnel.Persistence/"]
+COPY ["src/Modules/HRManagement.Modules.Staff.Persistence/HRManagement.Modules.Staff.Persistence.csproj", "src/Modules/HRManagement.Modules.Staff.Persistence/"]
 COPY ["src/Common/HRManagement.Common.Pertinence/HRManagement.Common.Pertinence.csproj", "src/Common/HRManagement.Common.Pertinence/"]
-COPY ["src/Modules/HRManagement.Modules.Personnel.Application/HRManagement.Modules.Personnel.Application.csproj", "src/Modules/HRManagement.Modules.Personnel.Application/"]
-COPY ["src/Modules/HRManagement.Modules.Personnel.Domain/HRManagement.Modules.Personnel.Domain.csproj", "src/Modules/HRManagement.Modules.Personnel.Domain/"]
+COPY ["src/Modules/HRManagement.Modules.Staff.Application/HRManagement.Modules.Staff.Application.csproj", "src/Modules/HRManagement.Modules.Staff.Application/"]
+COPY ["src/Modules/HRManagement.Modules.Staff.Domain/HRManagement.Modules.Staff.Domain.csproj", "src/Modules/HRManagement.Modules.Staff.Domain/"]
 RUN dotnet restore "src/HRManagement.Api/HRManagement.Api.csproj"
 COPY . .
 WORKDIR "/src/src/HRManagement.Api"

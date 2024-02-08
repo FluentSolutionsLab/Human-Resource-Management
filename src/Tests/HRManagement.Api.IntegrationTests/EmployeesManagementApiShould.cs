@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using Bogus;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Personnel.Application.UseCases;
-using HRManagement.Modules.Personnel.Domain;
+using HRManagement.Modules.Staff.Application.UseCases;
+using HRManagement.Modules.Staff.Domain;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
