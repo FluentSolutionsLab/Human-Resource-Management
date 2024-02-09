@@ -3,7 +3,7 @@
 public class UpdateRoleCommandBuilder
 {
     private readonly UpdateRoleCommand _command = new();
-    
+
     public UpdateRoleCommandBuilder WithId(byte id)
     {
         _command.Id = id;

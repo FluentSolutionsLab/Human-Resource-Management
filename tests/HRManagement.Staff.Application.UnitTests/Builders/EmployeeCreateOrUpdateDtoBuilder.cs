@@ -1,5 +1,4 @@
 ﻿using HRManagement.Modules.Staff.Application.UseCases.Services;
-using HRManagement.Modules.Staff.Domain;
 
 namespace HRManagement.Staff.Application.UnitTests.Builders;
 
@@ -27,7 +26,7 @@ public class EmployeeCreateOrUpdateDtoBuilder
         _dto.RoleId = command.RoleId;
         return this;
     }
-    
+
     public EmployeeCreateOrUpdateDtoBuilder WithRole(Role role)
     {
         _dto.RoleOrNothing = role;
@@ -45,7 +44,7 @@ public class EmployeeCreateOrUpdateDtoBuilder
         _dto.Employee = employee;
         return this;
     }
-    
+
     public EmployeeCreateOrUpdateDto Build()
     {
         return _dto;

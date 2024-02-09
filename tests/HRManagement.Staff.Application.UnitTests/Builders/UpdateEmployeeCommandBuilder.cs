@@ -1,6 +1,4 @@
-﻿using HRManagement.Modules.Staff.Domain;
-
-namespace HRManagement.Staff.Application.UnitTests.Builders;
+﻿namespace HRManagement.Staff.Application.UnitTests.Builders;
 
 public class UpdateEmployeeCommandBuilder
 {

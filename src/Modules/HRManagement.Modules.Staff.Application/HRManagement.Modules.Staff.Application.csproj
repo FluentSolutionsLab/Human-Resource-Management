@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Common\HRManagement.Common.Application\HRManagement.Common.Application.csproj"/>
-        <ProjectReference Include="..\HRManagement.Modules.Staff.Domain\HRManagement.Modules.Staff.Domain.csproj" />
+        <ProjectReference Include="..\HRManagement.Modules.Staff.Domain\HRManagement.Modules.Staff.Domain.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

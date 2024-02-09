@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Application.UnitTests.Builders;
 
@@ -8,12 +7,12 @@ namespace HRManagement.Staff.Application.UnitTests.Roles;
 
 public class CreateRoleCommandHandlerShould
 {
-    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Mock<ICacheService> _mockCacheService;
+    private readonly Mock<IUnitOfWork> _mockUnitOfWork;
     private readonly Dictionary<string, Role> _roles = DatabaseInitializer.SeedDataRoles;
     private readonly CreateRoleCommandHandler _sut;
-    private Role _newRole;
     private CreateRoleCommand _command;
+    private Role _newRole;
 
     public CreateRoleCommandHandlerShould()
     {

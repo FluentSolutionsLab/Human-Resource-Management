@@ -4,8 +4,8 @@ namespace HRManagement.Modules.Staff.Application.UseCases;
 
 public class GetRoleByIdQueryHandler : IQueryHandler<GetRoleByIdQuery, Result<RoleDto, Error>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _cacheService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public GetRoleByIdQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {

@@ -1,6 +1,5 @@
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Staff.Application.UseCases.Services;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Application.UnitTests.Builders;
 
@@ -8,10 +7,10 @@ namespace HRManagement.Staff.Application.UnitTests.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
+    private readonly HireEmployeeCommand _command;
     private readonly Mock<IEmployeeService> _mockEmployeeService;
     private readonly Dictionary<string, Role> _roles = DatabaseInitializer.SeedDataRoles;
     private readonly HireEmployeeCommandHandler _sut;
-    private readonly HireEmployeeCommand _command;
 
     public HireEmployeeCommandHandlerShould()
     {
@@ -43,10 +42,12 @@ public class HireEmployeeCommandHandlerShould
             .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).Build());
         _mockEmployeeService
             .Setup(x => x.GetManager(It.IsAny<EmployeeCreateOrUpdateDto>()))
-            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager).Build());
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager)
+                .Build());
         _mockEmployeeService
             .Setup(x => x.CreateEmployee(It.IsAny<EmployeeCreateOrUpdateDto>()))
-            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager).WithEmployee(employee).Build());
+            .Returns(new EmployeeCreateOrUpdateDtoBuilder().WithFixture(_command).WithRole(role).WithManager(manager)
+                .WithEmployee(employee).Build());
     }
 
     [Fact(DisplayName = "Succeed when request is valid")]

@@ -1,18 +1,17 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Staff.Application.UnitTests.Builders;
 
 namespace HRManagement.Staff.Application.UnitTests.Employees;
 
 public class GetEmployeeQueryHandlerShould
 {
+    private readonly Employee _employee;
     private readonly IFixture _fixture;
     private readonly Mock<ICacheService> _mockCacheService;
     private readonly Mock<IUnitOfWork> _mockUnitOfWork;
-    private readonly GetEmployeeQueryHandler _sut;
-    private readonly Employee _employee;
     private readonly GetEmployeeQuery _query;
+    private readonly GetEmployeeQueryHandler _sut;
 
     public GetEmployeeQueryHandlerShould()
     {

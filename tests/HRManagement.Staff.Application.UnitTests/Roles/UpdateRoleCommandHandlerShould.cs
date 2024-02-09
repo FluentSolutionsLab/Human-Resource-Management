@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Application.UnitTests.Builders;
 

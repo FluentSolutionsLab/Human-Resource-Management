@@ -1,5 +1,5 @@
-﻿using HRManagement.Modules.Staff.Domain;
-using HRManagement.Modules.Staff.Application.UseCases.Services;
+﻿using HRManagement.Modules.Staff.Application.UseCases.Services;
+using HRManagement.Modules.Staff.Domain;
 
 namespace HRManagement.Modules.Staff.Application.UseCases;
 

@@ -3,7 +3,7 @@
 public class CreateRoleCommandBuilder
 {
     private readonly CreateRoleCommand _command = new();
-    
+
     public CreateRoleCommandBuilder WithName(string name)
     {
         _command.Name = name;

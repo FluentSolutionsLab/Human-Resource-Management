@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Modules.Staff.Domain;
 
 namespace HRManagement.Staff.Application.UnitTests.Builders;
 
@@ -7,12 +6,12 @@ public class EmployeeBuilder
 {
     private readonly Faker _faker = new();
     private readonly Person _person = new();
-    private Name _name;
-    private EmailAddress _emailAddress;
     private ValueDate _birthDate;
+    private EmailAddress _emailAddress;
     private ValueDate _hiringDate;
-    private Role _role;
     private Maybe<Employee> _manager = Maybe<Employee>.None;
+    private Name _name;
+    private Role _role;
 
     public EmployeeBuilder WithFixture()
     {

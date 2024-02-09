@@ -17,13 +17,13 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Common\HRManagement.Common.Infrastructure\HRManagement.Common.Infrastructure.csproj"/>
-        <ProjectReference Include="..\Modules\HRManagement.Modules.Staff.Persistence\HRManagement.Modules.Staff.Persistence.csproj" />
+        <ProjectReference Include="..\Modules\HRManagement.Modules.Staff.Persistence\HRManagement.Modules.Staff.Persistence.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+        <Content Include="..\..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

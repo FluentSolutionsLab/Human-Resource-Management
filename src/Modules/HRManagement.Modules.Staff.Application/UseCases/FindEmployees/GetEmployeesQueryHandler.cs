@@ -56,7 +56,7 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
                 .OrderBy(e => e.Name.LastName)
                 .ThenBy(e => e.Name.FirstName);
 
-        return new QueryData(CacheKey: cacheKeyBuilder.ToString(), Filter: filter, OrderBy: orderBy);
+        return new QueryData(cacheKeyBuilder.ToString(), filter, orderBy);
     }
 
     private record QueryData(

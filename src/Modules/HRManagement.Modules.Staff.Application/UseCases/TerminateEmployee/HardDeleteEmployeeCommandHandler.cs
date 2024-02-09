@@ -17,7 +17,7 @@ public class HardDeleteEmployeeCommandHandler : ICommandHandler<HardDeleteEmploy
         if (!Guid.TryParse(request.EmployeeId, out var employeeId))
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
-        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
+        var employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Employee), employeeId);
 
         _unitOfWork.GetRepository<Employee, Guid>().Delete(employeeOrNot.Value);

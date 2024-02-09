@@ -7,8 +7,6 @@ namespace HRManagement.Modules.Staff.Domain;
 
 public class RoleName : ValueObject
 {
-    public string Value { get; }
-
     protected RoleName()
     {
     }
@@ -17,6 +15,8 @@ public class RoleName : ValueObject
     {
         Value = value;
     }
+
+    public string Value { get; }
 
     public static Result<RoleName, Error> Create(Maybe<string> nameOrNothing)
     {

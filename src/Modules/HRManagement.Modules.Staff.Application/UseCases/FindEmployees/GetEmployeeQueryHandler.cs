@@ -20,7 +20,7 @@ public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<Em
             return DomainErrors.NotFound(nameof(Employee), request.EmployeeId);
 
         var queryCacheKey = $"GetEmployeeQuery/{employeeId}";
-        Maybe<Employee> employeeOrNothing = _cacheService.Get<Maybe<Employee>>(queryCacheKey);
+        var employeeOrNothing = _cacheService.Get<Maybe<Employee>>(queryCacheKey);
         if (employeeOrNothing.HasValue)
             return employeeOrNothing.Value.ToResponseDto();
 

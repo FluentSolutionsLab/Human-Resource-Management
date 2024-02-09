@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Staff.Application.UseCases.Services;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Application.UnitTests.Builders;
 
@@ -9,11 +8,11 @@ namespace HRManagement.Staff.Application.UnitTests.Employees;
 
 public class UpdateEmployeeCommandHandlerShould
 {
+    private readonly UpdateEmployeeCommand _command;
     private readonly Employee _employee;
     private readonly Mock<IEmployeeService> _mockEmployeeService;
     private readonly Dictionary<string, Role> _roles = DatabaseInitializer.SeedDataRoles;
     private readonly UpdateEmployeeCommandHandler _sut;
-    private readonly UpdateEmployeeCommand _command;
 
     public UpdateEmployeeCommandHandlerShould()
     {

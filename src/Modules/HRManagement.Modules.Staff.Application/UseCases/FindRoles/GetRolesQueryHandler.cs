@@ -5,8 +5,8 @@ namespace HRManagement.Modules.Staff.Application.UseCases;
 
 public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<List<RoleDto>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ICacheService _cacheService;
+    private readonly IUnitOfWork _unitOfWork;
 
     public GetRolesQueryHandler(IUnitOfWork unitOfWork, ICacheService cacheService)
     {

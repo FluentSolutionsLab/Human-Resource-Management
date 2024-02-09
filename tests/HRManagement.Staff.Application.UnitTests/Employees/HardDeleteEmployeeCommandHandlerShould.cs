@@ -1,5 +1,4 @@
 ﻿using HRManagement.Common.Application.Contracts;
-using HRManagement.Modules.Staff.Domain;
 using HRManagement.Staff.Application.UnitTests.Builders;
 
 namespace HRManagement.Staff.Application.UnitTests.Employees;

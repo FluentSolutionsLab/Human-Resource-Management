@@ -15,6 +15,11 @@ public sealed class Error : ICombine
     public string Code { get; }
     public string Message { get; }
 
+    public ICombine Combine(ICombine value)
+    {
+        return value;
+    }
+
     public string Serialize()
     {
         return $"{Code}{Separator}{Message}";
@@ -31,10 +36,5 @@ public sealed class Error : ICombine
             throw new Exception($"Invalid error serialization: '{serialized}'");
 
         return new Error(data[0], data[1]);
-    }
-
-    public ICombine Combine(ICombine value)
-    {
-        return value;
     }
 }

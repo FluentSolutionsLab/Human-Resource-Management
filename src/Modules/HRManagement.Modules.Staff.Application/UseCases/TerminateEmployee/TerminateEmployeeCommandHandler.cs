@@ -20,7 +20,7 @@ public class TerminateEmployeeCommandHandler : ICommandHandler<TerminateEmployee
         var terminationDateCreation = ValueDate.Create(request.TerminationDate);
         if (terminationDateCreation.IsFailure) UnitResult.Failure(terminationDateCreation.Error);
 
-        Maybe<Employee> employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
+        var employeeOrNot = await _unitOfWork.GetRepository<Employee, Guid>().GetByIdAsync(employeeId);
         if (employeeOrNot.HasNoValue) return DomainErrors.NotFound(nameof(Employee), employeeId);
 
         var employee = employeeOrNot.Value;
