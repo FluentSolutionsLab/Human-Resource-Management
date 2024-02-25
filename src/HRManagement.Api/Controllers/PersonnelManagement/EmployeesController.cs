@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CSharpFunctionalExtensions;
 using HRManagement.Api.Utils;
@@ -9,7 +10,6 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Newtonsoft.Json;
 
 namespace HRManagement.Api.Controllers.PersonnelManagement;
 
@@ -33,7 +33,7 @@ public class EmployeesController : CommonController
         var result = await _mediator.Send(request);
 
         var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, parameters, "FindAll", _linker);
-        Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(paginationMetadata));
+        Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
         return Ok(result.Value);
     }
