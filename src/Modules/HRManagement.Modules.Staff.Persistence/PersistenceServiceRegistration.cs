@@ -13,7 +13,7 @@ namespace HRManagement.Modules.Staff.Persistence;
 
 public static class PersistenceServiceRegistration
 {
-    public static void AddModulePersonnelManagement(this IServiceCollection services, bool isDevelopment)
+    public static void AddStaffManagementModule(this IServiceCollection services, bool isDevelopment)
     {
         services.AddApplicationServices();
         services.AddDbContext<PersonnelDbContext>(options =>
