@@ -38,10 +38,10 @@ public class CreateRoleCommandHandlerShould
         _command = new CreateRoleCommandBuilder().WithName(_newRole.Name.Value).WithManagerId(_newRole.ReportsTo.Id)
             .Build();
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Setup(d => d.GetRepository<Role, int>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
             .ReturnsAsync(Result.Failure<bool>("No match found."));
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(It.IsAny<byte>()))
+            .Setup(d => d.GetRepository<Role, int>().GetByIdAsync(It.IsAny<byte>()))
             .ReturnsAsync(_roles["lead-dev"]);
     }
 
@@ -59,7 +59,7 @@ public class CreateRoleCommandHandlerShould
     public async Task Fail_WhenRoleAlreadyExists()
     {
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Setup(d => d.GetRepository<Role, int>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
             .ReturnsAsync(Result.Success(true));
 
         var result = await _sut.Handle(_command, CancellationToken.None);
@@ -76,7 +76,7 @@ public class CreateRoleCommandHandlerShould
             .Returns(Maybe<Role>.None);
 
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().GetByIdAsync(_command.ReportsToId.Value))
+            .Setup(d => d.GetRepository<Role, int>().GetByIdAsync(_command.ReportsToId.Value))
             .ReturnsAsync(Maybe<Role>.None);
 
         var result = await _sut.Handle(_command, CancellationToken.None);
@@ -91,7 +91,7 @@ public class CreateRoleCommandHandlerShould
         _newRole = _roles["ceo"];
         _command = new CreateRoleCommandBuilder().WithName(_newRole.Name.Value).Build();
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().HasMatches(role => role.ReportsTo == null))
+            .Setup(d => d.GetRepository<Role, int>().HasMatches(role => role.ReportsTo == null))
             .ReturnsAsync(Result.Success(true));
 
         var result = await _sut.Handle(_command, CancellationToken.None);

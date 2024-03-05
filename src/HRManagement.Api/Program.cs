@@ -1,6 +1,6 @@
 using HRManagement.Common.Application.Models;
 using HRManagement.Common.Infrastructure;
-using HRManagement.Modules.Staff.Persistence;
+using HRManagement.Modules.Staff;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
@@ -19,12 +19,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo {Title = "HR Management API", Version = "v1"});
+    c.EnableAnnotations();
 });
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 builder.Services.AddMemoryCache();
 
 // Add modules
-builder.Services.AddStaffManagementModule(env.IsDevelopment());
+builder.Services.AddStaffManagementModule();
 builder.Services.AddInfrastructureServices();
 
 var app = builder.Build();

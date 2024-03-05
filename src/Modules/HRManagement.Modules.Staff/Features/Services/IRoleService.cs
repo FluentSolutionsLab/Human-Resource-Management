@@ -2,6 +2,6 @@
 
 public interface IRoleService
 {
-    Task<bool> CheckIfRoleExists(byte? roleId);
+    Task<bool> CheckIfRoleExists(int? roleId);
     EmployeeCreateOrUpdateDto GetRole(EmployeeCreateOrUpdateDto request);
 }

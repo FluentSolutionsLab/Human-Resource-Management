@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{D815
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Staff.Tests", "tests\HRManagement.Staff.Tests\HRManagement.Staff.Tests.csproj", "{7306EE5D-792D-4307-87D3-9BD32A1DDB5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HRManagement.Common.Endpoints", "src\Common\HRManagement.Common.Endpoints\HRManagement.Common.Endpoints.csproj", "{DAB895C6-9574-498F-B83E-A8A15EC9058E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -94,6 +96,10 @@ Global
 		{7306EE5D-792D-4307-87D3-9BD32A1DDB5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7306EE5D-792D-4307-87D3-9BD32A1DDB5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7306EE5D-792D-4307-87D3-9BD32A1DDB5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAB895C6-9574-498F-B83E-A8A15EC9058E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAB895C6-9574-498F-B83E-A8A15EC9058E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAB895C6-9574-498F-B83E-A8A15EC9058E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAB895C6-9574-498F-B83E-A8A15EC9058E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E23F9287-EDCA-4ED8-96E7-7EAF38B4C35A} = {F9CC4D5A-8F81-493E-8075-4AB8C96360F2}
@@ -113,5 +119,6 @@ Global
 		{D8151D34-9FC1-48D1-82B7-AD9380A72ED9} = {6E6ECBF8-30B9-41F5-98E1-AA4B740D6CA2}
 		{65FBAE66-CEB3-4152-80C3-384E25D6C96F} = {D8151D34-9FC1-48D1-82B7-AD9380A72ED9}
 		{7306EE5D-792D-4307-87D3-9BD32A1DDB5E} = {65FBAE66-CEB3-4152-80C3-384E25D6C96F}
+		{DAB895C6-9574-498F-B83E-A8A15EC9058E} = {827E5FF0-B1F1-4EE2-894A-B777D3F991CF}
 	EndGlobalSection
 EndGlobal

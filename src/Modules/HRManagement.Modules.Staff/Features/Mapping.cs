@@ -37,9 +37,9 @@ public static class Mapping
         };
     }
 
-    public static HireEmployeeCommand ToHireEmployeeCommand(this HireEmployeeDto dto)
+    public static CreateEmployeeCommand ToHireEmployeeCommand(this CreateEmployeeDto dto)
     {
-        return new HireEmployeeCommand
+        return new CreateEmployeeCommand
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,

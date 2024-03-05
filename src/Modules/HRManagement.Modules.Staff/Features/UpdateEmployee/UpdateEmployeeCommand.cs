@@ -12,6 +12,6 @@ public class UpdateEmployeeCommand : ICommand<UnitResult<Error>>
     public string EmailAddress { get; set; }
     public string DateOfBirth { get; set; }
     public string HiringDate { get; set; }
-    public byte RoleId { get; set; }
+    public int RoleId { get; set; }
     public string ReportsToId { get; set; }
 }

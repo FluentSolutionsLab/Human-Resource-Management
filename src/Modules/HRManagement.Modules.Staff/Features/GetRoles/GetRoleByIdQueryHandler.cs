@@ -22,7 +22,7 @@ public class GetRoleByIdQueryHandler : IQueryHandler<GetRoleByIdQuery, Result<Ro
         var roleOrNothing = _cacheService.Get<Maybe<Role>>(queryCacheKey);
         if (roleOrNothing.HasNoValue)
         {
-            roleOrNothing = await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(request.Id, "ReportsTo");
+            roleOrNothing = await _unitOfWork.GetRepository<Role, int>().GetByIdAsync(request.Id, "ReportsTo");
             if (roleOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, roleOrNothing);
             else

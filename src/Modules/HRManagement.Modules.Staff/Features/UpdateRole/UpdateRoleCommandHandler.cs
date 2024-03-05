@@ -31,7 +31,7 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
             .Map(validRequest => UpdateRole(validRequest))
             .Tap(async roleToUpdate =>
             {
-                _unitOfWork.GetRepository<Role, byte>().Update(roleToUpdate);
+                _unitOfWork.GetRepository<Role, int>().Update(roleToUpdate);
                 await _unitOfWork.SaveChangesAsync();
             })
             .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
@@ -50,15 +50,15 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
             : Result.Failure<RoleCreateOrUpdateDto, Error>(result.Error);
     }
 
-    private async Task<bool> CheckIfNameIsUnique(RoleName name, byte roleId)
+    private async Task<bool> CheckIfNameIsUnique(RoleName name, int roleId)
     {
-        var nameIsNotUniqueCheck = await _unitOfWork.GetRepository<Role, byte>()
+        var nameIsNotUniqueCheck = await _unitOfWork.GetRepository<Role, int>()
             .HasMatches(role => role.Name.Value == name.Value && role.Id != roleId);
 
         return nameIsNotUniqueCheck.IsFailure;
     }
 
-    private async Task<bool> CheckIfRoleExists(byte? roleId)
+    private async Task<bool> CheckIfRoleExists(int? roleId)
     {
         if (!roleId.HasValue) return true;
 
@@ -67,7 +67,7 @@ public class UpdateRoleCommandHandler : ICommandHandler<UpdateRoleCommand, UnitR
         if (roleOrNothing.HasNoValue)
         {
             roleOrNothing =
-                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(roleId.Value);
+                await _unitOfWork.GetRepository<Role, int>().GetByIdAsync(roleId.Value);
             if (roleOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, roleOrNothing);
         }

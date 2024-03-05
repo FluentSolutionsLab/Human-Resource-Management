@@ -10,7 +10,7 @@ public class EmployeeCreateOrUpdateDtoBuilder
 {
     private readonly EmployeeCreateOrUpdateDto _dto = new();
 
-    public EmployeeCreateOrUpdateDtoBuilder WithFixture(HireEmployeeCommand command)
+    public EmployeeCreateOrUpdateDtoBuilder WithFixture(CreateEmployeeCommand command)
     {
         _dto.Name = Name.Create(command.FirstName, command.LastName).Value;
         _dto.EmailAddress = EmailAddress.Create(command.EmailAddress).Value;

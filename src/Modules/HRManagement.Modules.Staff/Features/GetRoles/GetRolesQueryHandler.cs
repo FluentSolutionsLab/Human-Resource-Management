@@ -21,7 +21,7 @@ public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<List<Rol
         var rolesOrNothing = _cacheService.Get<Maybe<List<Role>>>(queryCacheKey);
         if (rolesOrNothing.HasNoValue)
         {
-            rolesOrNothing = await _unitOfWork.GetRepository<Role, byte>().GetAsync(pageSize: request.PageSize);
+            rolesOrNothing = await _unitOfWork.GetRepository<Role, int>().GetAsync(pageSize: request.PageSize);
             _cacheService.Set(queryCacheKey, rolesOrNothing);
         }
 

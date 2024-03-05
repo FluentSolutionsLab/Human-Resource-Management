@@ -7,13 +7,13 @@ using HRManagement.Modules.Staff.Models;
 
 namespace HRManagement.Modules.Staff.Features.CreateEmployee;
 
-public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, Result<EmployeeDto, Error>>
+public class CreateEmployeeCommandHandler : ICommandHandler<CreateEmployeeCommand, Result<EmployeeDto, Error>>
 {
     private readonly ICacheService _cacheService;
     private readonly IEmployeeService _employeeService;
     private readonly IRoleService _roleService;
 
-    public HireEmployeeCommandHandler(
+    public CreateEmployeeCommandHandler(
         ICacheService cacheService,
         IEmployeeService employeeService,
         IRoleService roleService)
@@ -23,7 +23,7 @@ public class HireEmployeeCommandHandler : ICommandHandler<HireEmployeeCommand, R
         _roleService = roleService;
     }
 
-    public async Task<Result<EmployeeDto, Error>> Handle(HireEmployeeCommand request,
+    public async Task<Result<EmployeeDto, Error>> Handle(CreateEmployeeCommand request,
         CancellationToken cancellationToken)
     {
         return await _employeeService.ValidateRequest(request)

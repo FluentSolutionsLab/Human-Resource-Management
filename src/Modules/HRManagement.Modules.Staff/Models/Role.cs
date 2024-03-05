@@ -4,7 +4,7 @@ using HRManagement.Modules.Staff.Models.ValueObjects;
 
 namespace HRManagement.Modules.Staff.Models;
 
-public class Role : Common.Domain.Models.Entity<byte>
+public class Role : Common.Domain.Models.Entity<int>
 {
     protected Role()
     {

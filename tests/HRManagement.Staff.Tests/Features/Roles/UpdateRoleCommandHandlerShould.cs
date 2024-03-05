@@ -38,7 +38,7 @@ public class UpdateRoleCommandHandlerShould
             .Returns(_roles["lead-dev"])
             .Returns(_roles["lead-dev"]);
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Setup(d => d.GetRepository<Role, int>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
             .ReturnsAsync(Result.Failure<bool>("No match found."));
         _command = new UpdateRoleCommandBuilder()
             .WithId(1)
@@ -54,7 +54,7 @@ public class UpdateRoleCommandHandlerShould
         var result = await _sut.Handle(_command, CancellationToken.None);
 
         result.IsSuccess.ShouldBeTrue();
-        _mockUnitOfWork.Verify(work => work.GetRepository<Role, byte>().Update(It.IsAny<Role>()), Times.Once);
+        _mockUnitOfWork.Verify(work => work.GetRepository<Role, int>().Update(It.IsAny<Role>()), Times.Once);
         _mockUnitOfWork.Verify(work => work.SaveChangesAsync(), Times.Once);
     }
 
@@ -73,7 +73,7 @@ public class UpdateRoleCommandHandlerShould
     public async Task RoleNameIsNotUnique()
     {
         _mockUnitOfWork
-            .Setup(d => d.GetRepository<Role, byte>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
+            .Setup(d => d.GetRepository<Role, int>().HasMatches(It.IsAny<Expression<Func<Role, bool>>>()))
             .ReturnsAsync(Result.Success(true));
 
         var result = await _sut.Handle(_command, CancellationToken.None);
