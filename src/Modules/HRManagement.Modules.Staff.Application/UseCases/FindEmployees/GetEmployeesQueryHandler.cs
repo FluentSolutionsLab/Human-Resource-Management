@@ -41,9 +41,9 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         cacheKeyBuilder.Append($"GetEmployeesQuery?pageNumber={pageNumber}&pageSize={pageSize}");
 
         Expression<Func<Employee, bool>> filter = null;
-        if (!string.IsNullOrWhiteSpace(request.FilterParameters.SearchQuery))
+        if (!string.IsNullOrWhiteSpace(request.FilterParameters.KeyWord))
         {
-            var searchQuery = request.FilterParameters.SearchQuery.Trim();
+            var searchQuery = request.FilterParameters.KeyWord.Trim();
             filter = employee => employee.Name.FirstName.Contains(searchQuery)
                                  || employee.Name.LastName.Contains(searchQuery)
                                  || employee.EmailAddress.Email.Contains(searchQuery)

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace HRManagement.Modules.Staff.Features.FindRoles;
+namespace HRManagement.Modules.Staff.Features.GetRoles;
 
 [Route(BaseApiPath + "/roles")]
 public class GetRoleByIdEndpoint : CommonController

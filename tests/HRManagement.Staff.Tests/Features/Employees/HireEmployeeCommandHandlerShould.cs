@@ -3,7 +3,7 @@ using AutoFixture.AutoMoq;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Staff;
 using HRManagement.Modules.Staff.Features.CreateEmployee;
-using HRManagement.Modules.Staff.Features.FindEmployees;
+using HRManagement.Modules.Staff.Features.GetEmployees;
 using HRManagement.Modules.Staff.Features.Services;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Persistence;

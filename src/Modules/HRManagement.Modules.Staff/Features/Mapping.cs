@@ -2,8 +2,8 @@
 using HRManagement.Common.Application.Utilities;
 using HRManagement.Modules.Staff.Features.CreateEmployee;
 using HRManagement.Modules.Staff.Features.CreateRole;
-using HRManagement.Modules.Staff.Features.FindEmployees;
-using HRManagement.Modules.Staff.Features.FindRoles;
+using HRManagement.Modules.Staff.Features.GetEmployees;
+using HRManagement.Modules.Staff.Features.GetRoles;
 using HRManagement.Modules.Staff.Features.UpdateEmployee;
 using HRManagement.Modules.Staff.Features.UpdateRole;
 using HRManagement.Modules.Staff.Models;

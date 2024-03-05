@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Staff.Features.FindEmployees;
+using HRManagement.Modules.Staff.Features.GetEmployees;
 
 namespace HRManagement.Modules.Staff.Features.CreateEmployee;
 

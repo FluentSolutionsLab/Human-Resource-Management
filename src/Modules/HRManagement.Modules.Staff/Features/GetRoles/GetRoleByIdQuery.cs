@@ -2,7 +2,7 @@
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Domain.Models;
 
-namespace HRManagement.Modules.Staff.Features.FindRoles;
+namespace HRManagement.Modules.Staff.Features.GetRoles;
 
 public class GetRoleByIdQuery : IQuery<Result<RoleDto, Error>>
 {

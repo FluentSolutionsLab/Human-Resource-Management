@@ -1,4 +1,4 @@
-﻿namespace HRManagement.Api.Models;
+﻿namespace HRManagement.Modules.Staff.Features;
 
 public enum ResourceUriType
 {

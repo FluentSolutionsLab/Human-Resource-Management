@@ -3,7 +3,7 @@ using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Modules.Staff.Models;
 
-namespace HRManagement.Modules.Staff.Features.FindEmployees;
+namespace HRManagement.Modules.Staff.Features.GetEmployees;
 
 public class GetEmployeeQueryHandler : IQueryHandler<GetEmployeeQuery, Result<EmployeeDto, Error>>
 {

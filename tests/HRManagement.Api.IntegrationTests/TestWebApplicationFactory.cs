@@ -1,4 +1,5 @@
-﻿using HRManagement.Modules.Staff.Persistence;
+﻿using HRManagement.Modules.Staff.Data;
+using HRManagement.Modules.Staff.Persistence;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,11 +15,11 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         builder.ConfigureServices(services =>
         {
             var descriptor =
-                services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<PersonnelDbContext>));
+                services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<StaffDbContext>));
 
             if (descriptor != null) services.Remove(descriptor);
 
-            services.AddDbContext<PersonnelDbContext>(options =>
+            services.AddDbContext<StaffDbContext>(options =>
             {
                 options.UseInMemoryDatabase("PersonnelDbContextInMemoryTest");
                 options.EnableSensitiveDataLogging();
@@ -28,7 +29,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
             using var scope = sp.CreateScope();
             var scopedServices = scope.ServiceProvider;
-            var context = scopedServices.GetRequiredService<PersonnelDbContext>();
+            var context = scopedServices.GetRequiredService<StaffDbContext>();
             var logger = scopedServices.GetRequiredService<ILogger<WebApplicationFactory<Program>>>();
 
             context.Database.EnsureCreated();

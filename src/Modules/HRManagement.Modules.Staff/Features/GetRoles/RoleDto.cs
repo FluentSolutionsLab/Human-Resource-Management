@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace HRManagement.Modules.Staff.Features.FindRoles;
+namespace HRManagement.Modules.Staff.Features.GetRoles;
 
 public class RoleDto
 {

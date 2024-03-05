@@ -18,7 +18,7 @@ public class FilterParameters
         set => _pageSize = ComputePageSize(value);
     }
 
-    public string SearchQuery { get; set; }
+    public string KeyWord { get; set; }
 
     private int ComputePageNumber(int value)
     {

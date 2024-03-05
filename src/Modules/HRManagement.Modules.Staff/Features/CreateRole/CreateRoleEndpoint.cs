@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Domain.Models;
 using HRManagement.Common.Endpoints;
-using HRManagement.Modules.Staff.Features.FindRoles;
+using HRManagement.Modules.Staff.Features.GetRoles;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
