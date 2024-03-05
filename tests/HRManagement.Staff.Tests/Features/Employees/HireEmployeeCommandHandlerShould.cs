@@ -1,12 +1,12 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff;
+using HRManagement.Modules.Staff.Data;
 using HRManagement.Modules.Staff.Features.CreateEmployee;
 using HRManagement.Modules.Staff.Features.GetEmployees;
 using HRManagement.Modules.Staff.Features.Services;
 using HRManagement.Modules.Staff.Models;
-using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Tests.Features.Builders;
 using Moq;
 using Shouldly;

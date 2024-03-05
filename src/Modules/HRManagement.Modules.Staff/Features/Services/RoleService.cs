@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
+using HRManagement.BuildingBlocks.Contracts;
 using HRManagement.Modules.Staff.Models;
 
 namespace HRManagement.Modules.Staff.Features.Services;

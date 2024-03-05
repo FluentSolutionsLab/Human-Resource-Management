@@ -1,5 +1,5 @@
-using HRManagement.Common.Application.Models;
-using HRManagement.Common.Infrastructure;
+using HRManagement.BuildingBlocks.Caching;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff;
 using MediatR;
 using Microsoft.AspNetCore.Builder;

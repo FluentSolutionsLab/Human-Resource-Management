@@ -1,8 +1,8 @@
 ﻿using System.Linq.Expressions;
 using System.Text;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Application.Models;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Models;
 
 namespace HRManagement.Modules.Staff.Features.GetEmployees;

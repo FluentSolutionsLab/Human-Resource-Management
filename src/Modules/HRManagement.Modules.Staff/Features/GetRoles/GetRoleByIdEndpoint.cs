@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
-using HRManagement.Common.Endpoints;
+using HRManagement.BuildingBlocks.Endpoints;
+using HRManagement.BuildingBlocks.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;

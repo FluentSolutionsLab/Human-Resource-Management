@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Application.Models;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
 
 namespace HRManagement.Modules.Staff.Features.GetEmployees;
 

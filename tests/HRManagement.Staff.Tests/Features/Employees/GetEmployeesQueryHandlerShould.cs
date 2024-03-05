@@ -2,8 +2,8 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Application.Models;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Features.GetEmployees;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Staff.Tests.Features.Builders;

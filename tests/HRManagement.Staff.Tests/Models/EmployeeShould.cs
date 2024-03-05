@@ -1,6 +1,6 @@
 using Bogus;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 using Shouldly;

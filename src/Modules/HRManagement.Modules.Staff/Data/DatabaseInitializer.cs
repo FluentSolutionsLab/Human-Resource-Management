@@ -1,10 +1,9 @@
 ﻿using Bogus;
-using HRManagement.Modules.Staff.Data;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
-namespace HRManagement.Modules.Staff.Persistence;
+namespace HRManagement.Modules.Staff.Data;
 
 public static class DatabaseInitializer
 {

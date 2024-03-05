@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
+using HRManagement.BuildingBlocks.Contracts;
 
 namespace HRManagement.Modules.Staff.Features.GetRoles;
 

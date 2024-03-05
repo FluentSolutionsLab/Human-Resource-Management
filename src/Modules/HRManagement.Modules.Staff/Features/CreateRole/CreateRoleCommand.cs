@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Features.GetRoles;
 
 namespace HRManagement.Modules.Staff.Features.CreateRole;

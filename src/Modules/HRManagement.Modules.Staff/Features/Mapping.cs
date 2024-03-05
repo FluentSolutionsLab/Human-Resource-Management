@@ -1,5 +1,5 @@
-﻿using HRManagement.Common.Application.Models;
-using HRManagement.Common.Application.Utilities;
+﻿using HRManagement.BuildingBlocks.Models;
+using HRManagement.BuildingBlocks.Utilities;
 using HRManagement.Modules.Staff.Features.CreateEmployee;
 using HRManagement.Modules.Staff.Features.CreateRole;
 using HRManagement.Modules.Staff.Features.GetEmployees;
