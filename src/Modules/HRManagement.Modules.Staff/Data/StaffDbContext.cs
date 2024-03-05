@@ -3,8 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HRManagement.Modules.Staff.Data;
 
-public class StaffDbContext(DbContextOptions<StaffDbContext> options) : DbContext(options)
+public class StaffDbContext : DbContext
 {
+    public StaffDbContext(DbContextOptions<StaffDbContext> options) : base(options)
+    {
+    }
+
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Role> Roles { get; set; }
 

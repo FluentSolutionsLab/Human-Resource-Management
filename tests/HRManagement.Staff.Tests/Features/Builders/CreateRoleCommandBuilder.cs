@@ -12,7 +12,7 @@ public class CreateRoleCommandBuilder
         return this;
     }
 
-    public CreateRoleCommandBuilder WithManagerId(byte id)
+    public CreateRoleCommandBuilder WithManagerId(int id)
     {
         _command.ReportsToId = id;
         return this;

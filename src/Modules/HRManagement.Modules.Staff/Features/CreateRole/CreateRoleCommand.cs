@@ -8,5 +8,5 @@ namespace HRManagement.Modules.Staff.Features.CreateRole;
 public class CreateRoleCommand : ICommand<Result<RoleDto, Error>>
 {
     public string Name { get; set; }
-    public byte? ReportsToId { get; set; }
+    public int? ReportsToId { get; set; }
 }

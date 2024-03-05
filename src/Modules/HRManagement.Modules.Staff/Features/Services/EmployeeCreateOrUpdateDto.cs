@@ -11,7 +11,7 @@ public class EmployeeCreateOrUpdateDto
     public EmailAddress EmailAddress { get; set; }
     public ValueDate DateOfBirth { get; set; }
     public ValueDate HiringDate { get; set; }
-    public byte RoleId { get; set; }
+    public int RoleId { get; set; }
     public Maybe<Role> RoleOrNothing { get; set; } = Maybe<Role>.None;
     public Guid ManagerId { get; set; }
     public Maybe<Employee> ManagerOrNothing { get; set; } = Maybe<Employee>.None;

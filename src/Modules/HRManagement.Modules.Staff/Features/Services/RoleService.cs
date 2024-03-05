@@ -15,7 +15,7 @@ public class RoleService : IRoleService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<bool> CheckIfRoleExists(byte? roleId)
+    public async Task<bool> CheckIfRoleExists(int? roleId)
     {
         if (!roleId.HasValue) return true;
 
@@ -24,7 +24,7 @@ public class RoleService : IRoleService
         if (roleOrNothing.HasNoValue)
         {
             roleOrNothing =
-                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(roleId.Value, "ReportsTo");
+                await _unitOfWork.GetRepository<Role, int>().GetByIdAsync(roleId.Value, "ReportsTo");
             if (roleOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, roleOrNothing);
         }

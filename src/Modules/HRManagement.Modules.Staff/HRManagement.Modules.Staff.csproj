@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Common\HRManagement.Common.Endpoints\HRManagement.Common.Endpoints.csproj" />
         <ProjectReference Include="..\..\Common\HRManagement.Common.Pertinence\HRManagement.Common.Pertinence.csproj"/>
     </ItemGroup>
 

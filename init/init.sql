@@ -24,11 +24,11 @@ GO
 -- Create Role table
 CREATE TABLE [PersonnelManagement].[Role]
 (
-    Id TINYINT PRIMARY KEY NOT NULL,
+    Id INT PRIMARY KEY IDENTITY(1, 1) NOT NULL,
     Name NVARCHAR(MAX),
-    ReportsToId TINYINT,
+    ReportsToId INT,
     FOREIGN KEY (ReportsToId) REFERENCES [PersonnelManagement].[Role] (Id)
-    );
+);
 CREATE INDEX IX_Role_ReportsToId ON [PersonnelManagement].[Role] (ReportsToId);
 GO
 
@@ -42,15 +42,16 @@ CREATE TABLE [PersonnelManagement].[Employee]
     DateOfBirth DATE NOT NULL,
     HireDate DATE NOT NULL,
     TerminationDate DATE,
-    RoleId TINYINT DEFAULT (CONVERT([TINYINT],(0))) NOT NULL,
+    RoleId INT DEFAULT (CONVERT([TINYINT],(0))) NOT NULL,
     ManagerId UNIQUEIDENTIFIER,
     FOREIGN KEY (RoleId) REFERENCES [PersonnelManagement].[Role] (Id),
     FOREIGN KEY (ManagerId) REFERENCES [PersonnelManagement].[Employee] (Id)
-    );
+);
 CREATE INDEX IX_Employee_ManagerId ON [PersonnelManagement].[Employee] (ManagerId);
 CREATE INDEX IX_Employee_RoleId ON [PersonnelManagement].[Employee] (RoleId);
 GO
 
+SET IDENTITY_INSERT [PersonnelManagement].[Role] ON;
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (1, N'CEO', null);
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (2, N'President', 1);
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (3, N'Vice President', 2);
@@ -64,6 +65,7 @@ INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (10, N'B
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (11, N'Junior Software Developer', 8);
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (12, N'Intermediate Software Developer', 8);
 INSERT INTO [PersonnelManagement].[Role] (Id, Name, ReportsToId) VALUES (13, N'Senior Software Developer', 8);
+SET IDENTITY_INSERT [PersonnelManagement].[Role] OFF;
 
 INSERT INTO [Personnelmanagement].[Employee] (Id, FirstName, LastName, Email, DateOfBirth, HireDate, TerminationDate, RoleId, ManagerId) VALUES (N'130871f7-26e0-43e4-8b00-16d9c271c499', N'Anna', N'Baumbach', N'Anna93@yahoo.com', N'1994-09-20', N'2019-04-23', null, 1, null);
 INSERT INTO [Personnelmanagement].[Employee] (Id, FirstName, LastName, Email, DateOfBirth, HireDate, TerminationDate, RoleId, ManagerId) VALUES (N'6c7c1657-951f-48f5-8744-febff2cb1e6d', N'Irving', N'Gleichner', N'Irving_Gleichner@hotmail.com', N'1990-09-02', N'2013-12-04', null, 2, N'130871f7-26e0-43e4-8b00-16d9c271c499');

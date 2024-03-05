@@ -14,6 +14,6 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
             .Navigation(x => x.Name)
             .IsRequired();
         builder.HasOne(x => x.ReportsTo).WithMany();
-        builder.Property<byte?>("ReportsToId").HasColumnName("ReportsToId");
+        builder.Property<int?>("ReportsToId").HasColumnName("ReportsToId");
     }
 }

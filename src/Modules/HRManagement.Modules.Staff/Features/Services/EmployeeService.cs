@@ -26,7 +26,7 @@ public class EmployeeService : IEmployeeService
             command.HiringDate, command.ReportsToId, command.RoleId, command.EmployeeId);
     }
 
-    public Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(HireEmployeeCommand command)
+    public Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(CreateEmployeeCommand command)
     {
         return ValidateRequest(command.FirstName, command.LastName, command.EmailAddress, command.DateOfBirth,
             command.HiringDate, command.ReportsToId, command.RoleId);
@@ -124,7 +124,7 @@ public class EmployeeService : IEmployeeService
 
     private static Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(
         string firstName, string lastName, string emailAddress, string dateOfBirth, string hiringDate,
-        string reportsToId, byte roleId, string employeeId = null)
+        string reportsToId, int roleId, string employeeId = null)
     {
         var nameCreation = Name.Create(firstName, lastName);
         if (nameCreation.IsFailure) return nameCreation.Error;

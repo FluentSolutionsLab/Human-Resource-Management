@@ -6,7 +6,7 @@ namespace HRManagement.Modules.Staff.Features.UpdateRole;
 
 public class UpdateRoleCommand : ICommand<UnitResult<Error>>
 {
-    public byte Id { get; set; }
+    public int Id { get; set; }
     public string Name { get; set; }
-    public byte? ReportsToId { get; set; }
+    public int? ReportsToId { get; set; }
 }

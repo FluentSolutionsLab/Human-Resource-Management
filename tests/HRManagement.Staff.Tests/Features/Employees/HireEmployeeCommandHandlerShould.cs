@@ -16,17 +16,17 @@ namespace HRManagement.Staff.Tests.Features.Employees;
 
 public class HireEmployeeCommandHandlerShould
 {
-    private readonly HireEmployeeCommand _command;
+    private readonly CreateEmployeeCommand _command;
     private readonly Mock<IEmployeeService> _mockEmployeeService;
     private readonly Dictionary<string, Role> _roles = DatabaseInitializer.SeedDataRoles;
-    private readonly HireEmployeeCommandHandler _sut;
+    private readonly CreateEmployeeCommandHandler _sut;
 
     public HireEmployeeCommandHandlerShould()
     {
         var fixture = new Fixture().Customize(new AutoMoqCustomization());
         _mockEmployeeService = fixture.Freeze<Mock<IEmployeeService>>();
         var mockRoleService = fixture.Freeze<Mock<IRoleService>>();
-        _sut = fixture.Create<HireEmployeeCommandHandler>();
+        _sut = fixture.Create<CreateEmployeeCommandHandler>();
 
         _command = new HireEmployeeCommandBuilder().WithFixture().Build();
         var role = _roles["president"];

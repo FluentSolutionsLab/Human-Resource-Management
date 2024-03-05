@@ -33,7 +33,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
             .Tap(async result =>
             {
                 var role = result.Value;
-                await _unitOfWork.GetRepository<Role, byte>().AddAsync(role);
+                await _unitOfWork.GetRepository<Role, int>().AddAsync(role);
                 await _unitOfWork.SaveChangesAsync();
             })
             .Tap(() => _cacheService.RemoveAll(k => k.Contains("GetRoleQuery") || k.Contains("GetRolesQuery")))
@@ -51,13 +51,13 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
 
     private async Task<bool> CheckIfNameIsUnique(RoleName name)
     {
-        var nameIsNotUniqueCheck = await _unitOfWork.GetRepository<Role, byte>()
+        var nameIsNotUniqueCheck = await _unitOfWork.GetRepository<Role, int>()
             .HasMatches(role => role.Name.Value == name.Value);
 
         return nameIsNotUniqueCheck.IsFailure;
     }
 
-    private async Task<bool> CheckIfManagerRoleExists(byte? managerRoleId)
+    private async Task<bool> CheckIfManagerRoleExists(int? managerRoleId)
     {
         if (!managerRoleId.HasValue) return true;
 
@@ -66,7 +66,7 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         if (managerRoleOrNothing.HasNoValue)
         {
             managerRoleOrNothing =
-                await _unitOfWork.GetRepository<Role, byte>().GetByIdAsync(managerRoleId.Value);
+                await _unitOfWork.GetRepository<Role, int>().GetByIdAsync(managerRoleId.Value);
             if (managerRoleOrNothing.HasValue)
                 _cacheService.Set(queryCacheKey, managerRoleOrNothing);
         }
@@ -85,11 +85,11 @@ public class CreateRoleCommandHandler : ICommandHandler<CreateRoleCommand, Resul
         return request;
     }
 
-    private async Task<bool> CheckIfRoleIsHierarchyTop(byte? managerRoleId)
+    private async Task<bool> CheckIfRoleIsHierarchyTop(int? managerRoleId)
     {
         if (managerRoleId.HasValue) return true;
         var headAlreadyExistsCheck =
-            await _unitOfWork.GetRepository<Role, byte>().HasMatches(role => role.ReportsTo == null);
+            await _unitOfWork.GetRepository<Role, int>().HasMatches(role => role.ReportsTo == null);
 
         return headAlreadyExistsCheck.IsFailure;
     }

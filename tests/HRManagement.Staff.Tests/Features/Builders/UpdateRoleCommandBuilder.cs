@@ -18,7 +18,7 @@ public class UpdateRoleCommandBuilder
         return this;
     }
 
-    public UpdateRoleCommandBuilder WithManagerId(byte id)
+    public UpdateRoleCommandBuilder WithManagerId(int id)
     {
         _command.ReportsToId = id;
         return this;

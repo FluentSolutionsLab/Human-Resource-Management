@@ -6,7 +6,7 @@ namespace HRManagement.Staff.Tests.Features.Builders;
 
 public class HireEmployeeCommandBuilder
 {
-    private readonly HireEmployeeCommand _command = new();
+    private readonly CreateEmployeeCommand _command = new();
     private readonly Person _fakePerson = new Faker().Person;
 
     public HireEmployeeCommandBuilder WithFixture()
@@ -22,7 +22,7 @@ public class HireEmployeeCommandBuilder
         return this;
     }
 
-    public HireEmployeeCommand Build()
+    public CreateEmployeeCommand Build()
     {
         return _command;
     }

@@ -8,7 +8,7 @@ namespace HRManagement.Modules.Staff.Features.Services;
 public interface IEmployeeService
 {
     Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(UpdateEmployeeCommand command);
-    Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(HireEmployeeCommand command);
+    Result<EmployeeCreateOrUpdateDto, Error> ValidateRequest(CreateEmployeeCommand command);
     Task<bool> CheckIfEmployeeExists(Guid? managerId);
     EmployeeCreateOrUpdateDto GetEmployee(EmployeeCreateOrUpdateDto dto);
     EmployeeCreateOrUpdateDto GetManager(EmployeeCreateOrUpdateDto dto);

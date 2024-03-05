@@ -5,7 +5,7 @@ using HRManagement.Modules.Staff.Features.FindEmployees;
 
 namespace HRManagement.Modules.Staff.Features.CreateEmployee;
 
-public class HireEmployeeCommand : ICommand<Result<EmployeeDto, Error>>
+public class CreateEmployeeCommand : ICommand<Result<EmployeeDto, Error>>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
