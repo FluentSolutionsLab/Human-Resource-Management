@@ -22,7 +22,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\HRManagement.Api\HRManagement.Api.csproj"/>
-        <ProjectReference Include="..\..\src\Modules\HRManagement.Modules.Staff\HRManagement.Modules.Staff.csproj" />
+        <ProjectReference Include="..\..\src\Modules\HRManagement.Modules.Staff\HRManagement.Modules.Staff.csproj"/>
     </ItemGroup>
 
 </Project>

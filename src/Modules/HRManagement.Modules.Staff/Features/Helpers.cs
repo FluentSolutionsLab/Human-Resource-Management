@@ -1,4 +1,4 @@
-﻿using HRManagement.Common.Application.Models;
+﻿using HRManagement.BuildingBlocks.Models;
 using Microsoft.AspNetCore.Routing;
 
 namespace HRManagement.Modules.Staff.Features;

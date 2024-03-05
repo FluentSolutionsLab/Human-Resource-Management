@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 
 namespace HRManagement.Modules.Staff.Models;
 
-public class Employee : Common.Domain.Models.Entity<Guid>
+public class Employee : BuildingBlocks.Models.Entity<Guid>
 {
     private readonly List<Employee> _managedEmployees = new();
 

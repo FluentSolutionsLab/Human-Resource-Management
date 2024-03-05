@@ -2,7 +2,7 @@
 using AutoFixture.AutoMoq;
 using Bogus;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
+using HRManagement.BuildingBlocks.Contracts;
 using HRManagement.Modules.Staff;
 using HRManagement.Modules.Staff.Features.GetEmployees;
 using HRManagement.Modules.Staff.Models;

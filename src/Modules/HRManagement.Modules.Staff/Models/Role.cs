@@ -1,10 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 
 namespace HRManagement.Modules.Staff.Models;
 
-public class Role : Common.Domain.Models.Entity<int>
+public class Role : BuildingBlocks.Models.Entity<int>
 {
     protected Role()
     {

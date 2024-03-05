@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Application.Models;
-using HRManagement.Common.Pertinence.Repositories;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
+using HRManagement.BuildingBlocks.Repositories;
 using HRManagement.Modules.Staff.Data;
 using HRManagement.Modules.Staff.Features.Services;
 using MediatR;

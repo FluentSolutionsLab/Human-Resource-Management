@@ -1,7 +1,7 @@
 using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
-using ValueObject = HRManagement.Common.Domain.Models.ValueObject;
+using HRManagement.BuildingBlocks.Models;
+using ValueObject = HRManagement.BuildingBlocks.Models.ValueObject;
 
 namespace HRManagement.Modules.Staff.Models;
 

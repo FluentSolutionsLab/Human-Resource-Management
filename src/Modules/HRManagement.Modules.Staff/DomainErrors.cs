@@ -1,4 +1,4 @@
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 
 namespace HRManagement.Modules.Staff;
 

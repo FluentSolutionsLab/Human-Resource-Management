@@ -1,13 +1,13 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff;
+using HRManagement.Modules.Staff.Data;
 using HRManagement.Modules.Staff.Features.Services;
 using HRManagement.Modules.Staff.Features.UpdateEmployee;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
-using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Tests.Features.Builders;
 using Moq;
 using Shouldly;

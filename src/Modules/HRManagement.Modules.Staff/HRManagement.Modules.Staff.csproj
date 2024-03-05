@@ -5,13 +5,15 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\Common\HRManagement.Common.Endpoints\HRManagement.Common.Endpoints.csproj" />
-        <ProjectReference Include="..\..\Common\HRManagement.Common.Pertinence\HRManagement.Common.Pertinence.csproj"/>
-    </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bogus" Version="34.0.2" />
+        <PackageReference Include="Bogus" Version="34.0.2"/>
     </ItemGroup>
+
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\BuildingBlocks\HRManagement.BuildingBlocks\HRManagement.BuildingBlocks.csproj"/>
+    </ItemGroup>
+
 
 </Project>

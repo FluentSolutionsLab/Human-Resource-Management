@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using CSharpFunctionalExtensions;
-using HRManagement.Common.Application.Contracts;
-using HRManagement.Common.Domain.Models;
+using HRManagement.BuildingBlocks.Contracts;
+using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff.Features.CreateEmployee;
 using HRManagement.Modules.Staff.Features.UpdateEmployee;
 using HRManagement.Modules.Staff.Models;
