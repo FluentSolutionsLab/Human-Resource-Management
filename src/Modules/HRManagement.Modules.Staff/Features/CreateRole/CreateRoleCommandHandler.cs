@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Staff.Features.FindRoles;
+using HRManagement.Modules.Staff.Features.GetRoles;
 using HRManagement.Modules.Staff.Features.Services;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;

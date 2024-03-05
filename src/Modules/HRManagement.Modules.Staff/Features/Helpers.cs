@@ -1,8 +1,7 @@
-﻿using HRManagement.Api.Models;
-using HRManagement.Common.Application.Models;
+﻿using HRManagement.Common.Application.Models;
 using Microsoft.AspNetCore.Routing;
 
-namespace HRManagement.Api.Utils;
+namespace HRManagement.Modules.Staff.Features;
 
 public static class Helpers
 {

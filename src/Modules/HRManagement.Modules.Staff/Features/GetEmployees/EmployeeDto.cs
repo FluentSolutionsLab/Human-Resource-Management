@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace HRManagement.Modules.Staff.Features.FindEmployees;
+namespace HRManagement.Modules.Staff.Features.GetEmployees;
 
 public class EmployeeDto
 {

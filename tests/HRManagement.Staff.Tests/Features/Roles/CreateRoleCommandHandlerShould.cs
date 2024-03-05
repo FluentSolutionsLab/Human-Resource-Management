@@ -5,7 +5,7 @@ using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Modules.Staff;
 using HRManagement.Modules.Staff.Features.CreateRole;
-using HRManagement.Modules.Staff.Features.FindRoles;
+using HRManagement.Modules.Staff.Features.GetRoles;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Persistence;
 using HRManagement.Staff.Tests.Features.Builders;

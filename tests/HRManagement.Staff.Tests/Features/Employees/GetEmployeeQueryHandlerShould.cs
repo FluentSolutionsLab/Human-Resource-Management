@@ -4,7 +4,7 @@ using Bogus;
 using CSharpFunctionalExtensions;
 using HRManagement.Common.Application.Contracts;
 using HRManagement.Modules.Staff;
-using HRManagement.Modules.Staff.Features.FindEmployees;
+using HRManagement.Modules.Staff.Features.GetEmployees;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Staff.Tests.Features.Builders;
 using Moq;

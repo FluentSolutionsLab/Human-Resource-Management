@@ -5,7 +5,7 @@ using HRManagement.Common.Application.Contracts;
 using HRManagement.Common.Application.Models;
 using HRManagement.Modules.Staff.Models;
 
-namespace HRManagement.Modules.Staff.Features.FindEmployees;
+namespace HRManagement.Modules.Staff.Features.GetEmployees;
 
 public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<PagedList<EmployeeDto>>>
 {
@@ -43,9 +43,9 @@ public class GetEmployeesQueryHandler : IQueryHandler<GetEmployeesQuery, Result<
         cacheKeyBuilder.Append($"GetEmployeesQuery?pageNumber={pageNumber}&pageSize={pageSize}");
 
         Expression<Func<Employee, bool>> filter = null;
-        if (!string.IsNullOrWhiteSpace(request.FilterParameters.SearchQuery))
+        if (!string.IsNullOrWhiteSpace(request.FilterParameters.KeyWord))
         {
-            var searchQuery = request.FilterParameters.SearchQuery.Trim();
+            var searchQuery = request.FilterParameters.KeyWord.Trim();
             filter = employee => employee.Name.FirstName.Contains(searchQuery)
                                  || employee.Name.LastName.Contains(searchQuery)
                                  || employee.EmailAddress.Email.Contains(searchQuery)
