@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using HRManagement.Modules.Staff.Features.UpdateEmployee;
+using HRManagement.Modules.Staff.Features.Employees.Update;
 using HRManagement.Modules.Staff.Models;
 using Moq;
 

@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using HRManagement.BuildingBlocks.Models;
-using HRManagement.Modules.Staff.Features.CreateEmployee;
-using HRManagement.Modules.Staff.Features.UpdateEmployee;
+using HRManagement.Modules.Staff.Features.Employees.Create;
+using HRManagement.Modules.Staff.Features.Employees.Update;
 
 namespace HRManagement.Modules.Staff.Features.Services;
 

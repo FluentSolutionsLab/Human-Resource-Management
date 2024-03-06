@@ -3,8 +3,8 @@ using AutoFixture.AutoMoq;
 using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff;
 using HRManagement.Modules.Staff.Data;
-using HRManagement.Modules.Staff.Features.CreateEmployee;
-using HRManagement.Modules.Staff.Features.GetEmployees;
+using HRManagement.Modules.Staff.Features.Employees.Create;
+using HRManagement.Modules.Staff.Features.Employees.Get;
 using HRManagement.Modules.Staff.Features.Services;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Staff.Tests.Features.Builders;
@@ -34,7 +34,7 @@ public class HireEmployeeCommandHandlerShould
         var employee = new EmployeeBuilder().WithFixture().WithRole(role).WithManager(manager).Build();
 
         mockRoleService
-            .Setup(x => x.CheckIfRoleExists(It.IsAny<byte>()))
+            .Setup(x => x.CheckIfRoleExists(It.IsAny<int>()))
             .ReturnsAsync(true);
         _mockEmployeeService
             .Setup(x => x.CheckIfEmployeeExists(It.IsAny<Guid>()))

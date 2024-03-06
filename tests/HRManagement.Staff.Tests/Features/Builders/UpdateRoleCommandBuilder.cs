@@ -1,4 +1,4 @@
-﻿using HRManagement.Modules.Staff.Features.UpdateRole;
+﻿using HRManagement.Modules.Staff.Features.Roles.Update;
 
 namespace HRManagement.Staff.Tests.Features.Builders;
 

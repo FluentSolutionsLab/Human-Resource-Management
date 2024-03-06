@@ -1,7 +1,8 @@
 ﻿using System.Net;
-using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Staff.Application.UseCases;
-using HRManagement.Modules.Staff.Domain;
+using HRManagement.BuildingBlocks.Models;
+using HRManagement.Modules.Staff;
+using HRManagement.Modules.Staff.Features.Roles.Get;
+using HRManagement.Modules.Staff.Models;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
@@ -10,7 +11,7 @@ namespace HRManagement.Api.IntegrationTests;
 
 public class RolesManagementApiShould : IClassFixture<TestWebApplicationFactory>
 {
-    private const string ApiEndpoint = "/api/roles";
+    private const string ApiEndpoint = "/api/v1/roles";
     private readonly HttpClient _httpClient;
 
     public RolesManagementApiShould(TestWebApplicationFactory factory)

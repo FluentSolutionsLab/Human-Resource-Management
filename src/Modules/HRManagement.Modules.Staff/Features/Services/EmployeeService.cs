@@ -2,8 +2,8 @@
 using CSharpFunctionalExtensions;
 using HRManagement.BuildingBlocks.Contracts;
 using HRManagement.BuildingBlocks.Models;
-using HRManagement.Modules.Staff.Features.CreateEmployee;
-using HRManagement.Modules.Staff.Features.UpdateEmployee;
+using HRManagement.Modules.Staff.Features.Employees.Create;
+using HRManagement.Modules.Staff.Features.Employees.Update;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 

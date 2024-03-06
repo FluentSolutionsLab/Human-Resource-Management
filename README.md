@@ -4,6 +4,6 @@ A project showcasing the use of the monolith modular architecture with domain-dr
 
 ## Modules
 
-### Personnel Management
-This module provides CRUD abilities on personnel information
+### [Staff Management](docs%2FStaff-Management.md)
+This module provides CRUD actions on staff information.
 

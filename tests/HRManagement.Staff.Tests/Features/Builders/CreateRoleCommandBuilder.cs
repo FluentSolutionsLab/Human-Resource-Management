@@ -1,4 +1,4 @@
-﻿using HRManagement.Modules.Staff.Features.CreateRole;
+﻿using HRManagement.Modules.Staff.Features.Roles.Create;
 
 namespace HRManagement.Staff.Tests.Features.Builders;
 

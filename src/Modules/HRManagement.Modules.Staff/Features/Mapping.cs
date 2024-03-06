@@ -1,11 +1,11 @@
 ﻿using HRManagement.BuildingBlocks.Models;
 using HRManagement.BuildingBlocks.Utilities;
-using HRManagement.Modules.Staff.Features.CreateEmployee;
-using HRManagement.Modules.Staff.Features.CreateRole;
-using HRManagement.Modules.Staff.Features.GetEmployees;
-using HRManagement.Modules.Staff.Features.GetRoles;
-using HRManagement.Modules.Staff.Features.UpdateEmployee;
-using HRManagement.Modules.Staff.Features.UpdateRole;
+using HRManagement.Modules.Staff.Features.Employees.Create;
+using HRManagement.Modules.Staff.Features.Employees.Get;
+using HRManagement.Modules.Staff.Features.Employees.Update;
+using HRManagement.Modules.Staff.Features.Roles.Create;
+using HRManagement.Modules.Staff.Features.Roles.Get;
+using HRManagement.Modules.Staff.Features.Roles.Update;
 using HRManagement.Modules.Staff.Models;
 
 namespace HRManagement.Modules.Staff.Features;

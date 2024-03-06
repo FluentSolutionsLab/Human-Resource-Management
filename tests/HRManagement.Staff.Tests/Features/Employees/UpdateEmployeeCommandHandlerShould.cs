@@ -4,8 +4,8 @@ using CSharpFunctionalExtensions;
 using HRManagement.BuildingBlocks.Models;
 using HRManagement.Modules.Staff;
 using HRManagement.Modules.Staff.Data;
+using HRManagement.Modules.Staff.Features.Employees.Update;
 using HRManagement.Modules.Staff.Features.Services;
-using HRManagement.Modules.Staff.Features.UpdateEmployee;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Modules.Staff.Models.ValueObjects;
 using HRManagement.Staff.Tests.Features.Builders;
@@ -40,7 +40,7 @@ public class UpdateEmployeeCommandHandlerShould
             .ReturnsAsync(true)
             .ReturnsAsync(true);
         mockRoleService
-            .Setup(x => x.CheckIfRoleExists(It.IsAny<byte>()))
+            .Setup(x => x.CheckIfRoleExists(It.IsAny<int>()))
             .ReturnsAsync(true);
 
         _mockEmployeeService

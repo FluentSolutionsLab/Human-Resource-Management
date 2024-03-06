@@ -4,7 +4,7 @@ using AutoFixture.AutoMoq;
 using CSharpFunctionalExtensions;
 using HRManagement.BuildingBlocks.Contracts;
 using HRManagement.BuildingBlocks.Models;
-using HRManagement.Modules.Staff.Features.GetEmployees;
+using HRManagement.Modules.Staff.Features.Employees.Get;
 using HRManagement.Modules.Staff.Models;
 using HRManagement.Staff.Tests.Features.Builders;
 using Moq;
@@ -60,6 +60,7 @@ public class GetEmployeesQueryHandlerShould
                 It.IsAny<int>(),
                 It.IsAny<int>()))
             .ReturnsAsync(_pagedList);
+
         var result = await _sut.Handle(_query, CancellationToken.None);
 
         result.Value.ShouldNotBeNull();

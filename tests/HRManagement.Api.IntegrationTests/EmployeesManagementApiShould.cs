@@ -1,8 +1,9 @@
 ﻿using System.Net;
 using Bogus;
-using HRManagement.Common.Domain.Models;
-using HRManagement.Modules.Staff.Application.UseCases;
-using HRManagement.Modules.Staff.Domain;
+using HRManagement.BuildingBlocks.Models;
+using HRManagement.Modules.Staff;
+using HRManagement.Modules.Staff.Features.Employees.Get;
+using HRManagement.Modules.Staff.Models;
 using Newtonsoft.Json;
 using Shouldly;
 using Xunit;
@@ -11,7 +12,7 @@ namespace HRManagement.Api.IntegrationTests;
 
 public class EmployeesManagementApiShould : IClassFixture<TestWebApplicationFactory>
 {
-    private const string ApiEndpoint = "/api/employees";
+    private const string ApiEndpoint = "/api/v1/employees";
 
     private readonly HttpClient _httpClient;
 

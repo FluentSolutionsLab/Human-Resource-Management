@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using HRManagement.Modules.Staff.Features.CreateEmployee;
+using HRManagement.Modules.Staff.Features.Employees.Create;
 using Moq;
 
 namespace HRManagement.Staff.Tests.Features.Builders;
