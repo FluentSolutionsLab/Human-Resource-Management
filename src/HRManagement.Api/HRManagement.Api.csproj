@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>disable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>733d165e-9daf-4c6a-9efb-e5c285f06c4e</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

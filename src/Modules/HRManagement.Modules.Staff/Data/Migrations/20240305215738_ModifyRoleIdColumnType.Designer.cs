@@ -4,16 +4,19 @@ using HRManagement.Modules.Staff.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace HRManagement.Modules.Staff.Persistence.Migrations
+namespace HRManagement.Modules.Staff.Data.Migrations
 {
     [DbContext(typeof(StaffDbContext))]
-    partial class PersonnelDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240305215738_ModifyRoleIdColumnType")]
+    partial class ModifyRoleIdColumnType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
