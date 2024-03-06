@@ -40,7 +40,7 @@ public class UpdateEmployeeCommandHandlerShould
             .ReturnsAsync(true)
             .ReturnsAsync(true);
         mockRoleService
-            .Setup(x => x.CheckIfRoleExists(It.IsAny<byte>()))
+            .Setup(x => x.CheckIfRoleExists(It.IsAny<int>()))
             .ReturnsAsync(true);
 
         _mockEmployeeService
