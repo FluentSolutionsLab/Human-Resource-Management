@@ -6,6 +6,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace HRManagement.Modules.Staff.Features.UpdateRole;
 
+[Route(BaseApiPath + "/roles")]
 public class UpdateRoleEndpoint : CommonController
 {
     [HttpPut("{id}")]

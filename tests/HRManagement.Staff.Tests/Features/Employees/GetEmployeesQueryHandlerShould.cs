@@ -60,6 +60,7 @@ public class GetEmployeesQueryHandlerShould
                 It.IsAny<int>(),
                 It.IsAny<int>()))
             .ReturnsAsync(_pagedList);
+
         var result = await _sut.Handle(_query, CancellationToken.None);
 
         result.Value.ShouldNotBeNull();

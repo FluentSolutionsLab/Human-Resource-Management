@@ -34,7 +34,7 @@ public class HireEmployeeCommandHandlerShould
         var employee = new EmployeeBuilder().WithFixture().WithRole(role).WithManager(manager).Build();
 
         mockRoleService
-            .Setup(x => x.CheckIfRoleExists(It.IsAny<byte>()))
+            .Setup(x => x.CheckIfRoleExists(It.IsAny<int>()))
             .ReturnsAsync(true);
         _mockEmployeeService
             .Setup(x => x.CheckIfEmployeeExists(It.IsAny<Guid>()))
