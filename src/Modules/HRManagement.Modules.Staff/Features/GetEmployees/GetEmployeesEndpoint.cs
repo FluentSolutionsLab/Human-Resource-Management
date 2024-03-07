@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using HRManagement.BuildingBlocks.Endpoints;
+using HRManagement.BuildingBlocks.Utilities;
 using HRManagement.BuildingBlocks.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,7 +27,7 @@ public class GetEmployeesEndpoint : CommonController
         var request = new GetEmployeesQuery {FilterParameters = parameters};
         var result = await Mediator.Send(request);
 
-        var paginationMetadata = Helpers.BuildPaginationMetadata(result.Value, parameters, "GetEmployees", _linker);
+        var paginationMetadata = Utilities.BuildPaginationMetadata(result.Value, parameters, "GetEmployees", _linker);
         Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
         return Ok(result.Value);

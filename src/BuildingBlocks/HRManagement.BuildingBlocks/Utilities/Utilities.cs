@@ -1,10 +1,15 @@
 ﻿using HRManagement.BuildingBlocks.Models;
 using Microsoft.AspNetCore.Routing;
 
-namespace HRManagement.Modules.Staff.Features;
+namespace HRManagement.BuildingBlocks.Utilities;
 
-public static class Helpers
+public static class Utilities
 {
+    public static string ToISO8601String(this DateOnly date)
+    {
+        return date.ToString("O");
+    }
+    
     public static object BuildPaginationMetadata<TResponseDto>(PagedList<TResponseDto> value, FilterParameters filter,
         string actionMethod, LinkGenerator linker)
     {

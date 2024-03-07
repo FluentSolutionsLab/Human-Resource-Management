@@ -1,4 +1,4 @@
-﻿namespace HRManagement.Modules.Staff.Features;
+﻿namespace HRManagement.BuildingBlocks.Utilities;
 
 public enum ResourceUriType
 {
