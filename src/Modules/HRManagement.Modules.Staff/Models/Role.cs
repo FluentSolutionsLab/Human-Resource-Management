@@ -39,7 +39,10 @@ public class Role : BuildingBlocks.Models.Entity<int>
         return Name.Value;
     }
 
-    // USED ONLY FOR INTEGRATION TEST
+    /// <summary>
+    /// USED ONLY FOR INTEGRATION TEST 
+    /// </summary>
+    /// <param name="id">Hardcoded ID for testing purposes</param>
     public void SetId(byte id)
     {
         Id = id;
