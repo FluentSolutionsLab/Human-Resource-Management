@@ -21,7 +21,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
             services.AddDbContext<StaffDbContext>(options =>
             {
-                options.UseInMemoryDatabase("PersonnelDbContextInMemoryTest");
+                options.UseInMemoryDatabase($"HRManagement-{Guid.NewGuid()}");
                 options.EnableSensitiveDataLogging();
             });
 
@@ -40,7 +40,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "An error occurred seeding the database with test messages. Error: {ExMessage}", ex.Message);
+                logger.LogError(ex, "An error occurred seeding the database with test data. Error: {ExMessage}", ex.Message);
             }
         });
 
